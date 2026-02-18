@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import { Home, User, Mail } from "lucide-react";
 
-
 export default function NavMain() {
     const navItems = [
         {
@@ -18,7 +17,6 @@ export default function NavMain() {
             link: "#feature",
             icon: <User className="h-4 w-4 text-neutral-500 dark:text-white" />,
         },
-
     ];
 
     return (
@@ -42,15 +40,8 @@ export default function NavMain() {
                                         variant="link"
                                         size="lg"
                                         className="hover:no-underline px-2 text-sm text-dark "
-                                        // onClick={() => {
-                                        //     document
-                                        //         .getElementById("home")
-                                        //         .scrollIntoView({
-                                        //             behavior: "smooth",
-                                        //         });
-                                        // }}
                                     >
-                                        Home
+                                        <Link href="/">Home</Link>
                                     </Button>
                                 </li>
                                 <li>
@@ -58,15 +49,8 @@ export default function NavMain() {
                                         variant="link"
                                         size="lg"
                                         className="hover:no-underline px-2 text-sm text-dark "
-                                        // onClick={() => {
-                                        //     document
-                                        //         .getElementById("feature")
-                                        //         .scrollIntoView({
-                                        //             behavior: "smooth",
-                                        //         });
-                                        // }}
                                     >
-                                        Feature
+                                        <Link href="#feature">Feature</Link>
                                     </Button>
                                 </li>
                             </ul>
@@ -81,7 +65,6 @@ export default function NavMain() {
                     </div>
                 </Container>
             </header>
-           
         </>
     );
 }
