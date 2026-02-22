@@ -32,7 +32,7 @@ class UserController extends Controller
         // login
         auth()->login($user);
 
-        return redirect("/")->with("message", "User registered and logged in");
+        return redirect("/app")->with("message", "User registered and logged in");
     }
     public function authenticate(Request $request)
     {
@@ -43,7 +43,7 @@ class UserController extends Controller
 
         if (auth()->attempt($data)) {
             $request->session()->regenerate();
-            return redirect()->intended("/");
+            return redirect()->intended("/app");
         }
 
         return back()->withInput()->withErrors(["email" => "Invalid credentials"]);

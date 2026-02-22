@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Field,
     FieldDescription,
@@ -12,9 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import { Spinner } from "@/components/ui/spinner";
-import { ArrowUpRight, Building } from "lucide-react";
+import { ArrowUpRight, Building, Eye, EyeClosed } from "lucide-react";
 
 export default function LoginForm() {
+    const [showPassword, setShowPassword] = useState<Boolean>(false);
     const { data, setData, post, processing, errors } = useForm({
         email: "",
         password: "",
@@ -23,7 +24,14 @@ export default function LoginForm() {
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
         console.log(data);
-        post("/login");
+        post("/auth/login");
+    };
+
+    const handleShowPassword = (type: any) => {
+        if (showPassword) {
+            return setShowPassword(false);
+        }
+        return setShowPassword(true);
     };
 
     return (
@@ -56,17 +64,49 @@ export default function LoginForm() {
                                 Forgot your password?
                             </a>
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
-                            className={
-                                errors.password ? "border-destructive" : ""
-                            }
-                        />
+                        <div className="relative w-full">
+                                    <Input
+                                        id="password"
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        value={data.password}
+                                        onChange={(e) =>
+                                            setData("password", e.target.value)
+                                        }
+                                        className={
+                                            errors.password
+                                                ? "border-destructive"
+                                                : ""
+                                        }
+                                    />
+
+                                    {showPassword ? (
+                                        <Button
+                                            className="z-10 absolute top-0 right-0 h-full"
+                                            size={"icon-sm"}
+                                            variant={"ghost"}
+                                            type="button"
+                                            onClick={() =>
+                                                handleShowPassword("pass")
+                                            }
+                                        >
+                                            <Eye className="" />
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            className="z-10 absolute top-0 right-0 h-full"
+                                            size={"icon-sm"}
+                                            variant={"ghost"}
+                                            type="button"
+                                            onClick={() =>
+                                                handleShowPassword("pass")
+                                            }
+                                        >
+                                            <EyeClosed className="" />
+                                        </Button>
+                                    )}
+                                </div>
                         {errors.password && (
                             <FieldError className="text-sm">
                                 {errors.password}

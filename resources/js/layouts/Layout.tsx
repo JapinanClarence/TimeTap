@@ -5,9 +5,9 @@ import { LayoutProps } from "@/types/ui";
 export default function Layout({ children }: LayoutProps) {
     return (
         <div className="relative">
-           <NavMain/>
+            <NavMain />
             <main>{children}</main>
-            <NavFooter/>
+            <NavFooter />
         </div>
     );
 }

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import { Home, User, Mail } from "lucide-react";
 
-export default function NavMain() {
+export default function NavMain() {  
+
     const navItems = [
         {
             name: "Home",
@@ -55,7 +56,6 @@ export default function NavMain() {
                                 </li>
                             </ul>
                         </div>
-
                         <Button className="px-5 py-1 ">
                             <Link href={"/login"}>Log in</Link>
                         </Button>

@@ -7,3 +7,8 @@ export type LayoutProps = {
 export type AuthLayoutProps = {
     children: ReactNode;
 };
+
+export type AppLayoutProps ={
+    children: ReactNode;
+    showHeader?: boolean
+}
