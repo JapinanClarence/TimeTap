@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QRController;
@@ -14,11 +15,32 @@ Route::middleware(["guest"])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("welcome");
     Route::get("/login", [UserController::class, "login"])->name("login");
     Route::post("/auth/login", [UserController::class, "authenticate"]);
+    Route::get("/register/organization", [UserController::class, "showOrgRegister"]);
+    Route::post("/register/organization", [UserController::class,"storeOrgRegister"]);
     Route::get("/register", [UserController::class, "create"])->name("register");
     Route::post("/auth/register", [UserController::class, "store"]);
 });
 
-Route::middleware(["auth"])->group(function () {
-    Route::get("/app", [DashboardController::class, "index"])->name("dashboard");
-    Route::get("/app/qr", [QRController::class,"index"])->name("qr");
+// --- AUTHENTICATED SHARED ROUTES ---
+Route::middleware(['auth'])->group(function () {
+    Route::post("/logout", [UserController::class, "logout"])->name('logout');
+    
+    // Redirect logic: A central route to send users to their respective home
+    // Route::get('/home', function () {
+    //     return auth()->user()->role === 'admin' 
+    //         ? redirect()->route('admin.dashboard') 
+    //         : redirect()->route('app.index');
+    // });
+});
+
+// --- USER ONLY ROUTES ---
+Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
+    Route::get("/", [AppController::class, "index"])->name("app.index");
+    Route::get("/qr", [QRController::class, "index"])->name("qr");
+});
+
+// --- ADMIN ONLY ROUTES ---
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get("/dashboard", [DashboardController::class, "index"])->name("admin.dashboard");
+    // Add other admin routes here (e.g., User Management, Reports)
 });

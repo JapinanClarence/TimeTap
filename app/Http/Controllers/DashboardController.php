@@ -7,8 +7,10 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index(){
-        
-         return Inertia::render("app/index");
+    public function index()
+    {
+
+        return Inertia::render("admin/index");
+
     }
 }

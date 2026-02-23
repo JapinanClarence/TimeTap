@@ -132,7 +132,7 @@ export default function LoginForm() {
                             <div className="">
                                 Creating an account for a team?
                                 <br />
-                                <Link className="text-primary hover:underline">
+                                <Link className="text-primary hover:underline" href={"/register/organization"}>
                                     Create an organization account{" "}
                                     <ArrowUpRight className="inline-block w-3 h-3" />
                                 </Link>

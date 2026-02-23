@@ -56,7 +56,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({
         {bars.map((bar) => (
           <div
             key={bar}
-            className={`h-2 flex-1 rounded transition-all duration-300 ${getBarColor(
+            className={`h-1.5 flex-1 rounded transition-all duration-300 ${getBarColor(
               bar
             )}`}
           />

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Container from "./ui/container";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { Settings, Timer } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserDataProp } from "@/types/user";
 import { dateOnly, formatSimpleDate } from "@/util/dateUtil";
+import { Button } from "./ui/button";
+import Sheet from "./app/Sheet";
 
 interface PageProps {
     auth: { user: UserDataProp };
@@ -14,6 +16,12 @@ interface PageProps {
 export default function MobileHeader() {
     const page = usePage<PageProps>();
     const { auth } = page.props;
+    const [openSheet, setOpenSheet] = useState(false);
+    const { post } = useForm();
+    const handleLogout = () => {
+        console.log("pressed");
+        post("/logout");
+    };
 
     return (
         <header className="fixed top-0 z-50 w-full border-b bg-background ">
@@ -35,16 +43,32 @@ export default function MobileHeader() {
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="">
-                        <p className="text-muted-foreground text-sm">Good Morning,</p>
+                        <p className="text-muted-foreground text-sm">
+                            Good Morning,
+                        </p>
                         <h2 className="font-semibold text-xl">
                             {auth?.user.first_name} {auth?.user.last_name}
                         </h2>
                     </div>
                 </div>
                 <div>
-                    <Settings />
+                    <Button
+                        variant={"ghost"}
+                        size={"icon-lg"}
+                        onClick={(e) => {
+                            (e.currentTarget as HTMLButtonElement).blur(); // Manually remove focus
+                            setOpenSheet(true);
+                        }}
+                    >
+                        <Settings />
+                    </Button>
                 </div>
             </Container>
+            <Sheet
+                open={openSheet}
+                onClose={() => setOpenSheet(false)}
+                onLogout={handleLogout}
+            />
         </header>
     );
 }

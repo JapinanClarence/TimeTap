@@ -46,4 +46,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function ownedOrganization()
+    {
+        return $this->hasOne(Organization::class, 'owner_id');
+    }
+
+    public function organizations()
+    {
+        return $this->belongsToMany(Organization::class);
+    }
 }
