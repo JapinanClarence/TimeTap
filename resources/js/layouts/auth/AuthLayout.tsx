@@ -1,9 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Timer } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import { AuthLayoutProps } from "@/types/ui";
+
+interface AuthLayoutProps {
+    children: ReactNode;
+}
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
     return (

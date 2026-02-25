@@ -1,4 +1,4 @@
-import RegisterOrgForm from '@/components/forms/register-org-form'
+import RegisterOrgForm from '@/features/auth/components/register-org-form'
 import AuthLayout from '@/layouts/auth/AuthLayout'
 import React from 'react'
 

@@ -1,4 +1,3 @@
-import { SheetProps } from "@/types/sheet";
 import React from "react";
 import {
     Drawer,
@@ -12,6 +11,13 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "../../../components/ui/button";
+
+interface SheetProps {
+    open: boolean;
+    onClose: ()=>void;
+    onLogout: ()=>void;
+}
+
 export default function Sheet({ open, onClose, onLogout }: SheetProps) {
     return (
         <Drawer

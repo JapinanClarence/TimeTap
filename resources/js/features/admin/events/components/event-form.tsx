@@ -5,6 +5,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import { Field, FieldGroup } from "@/components/ui/field";
 import React from "react";
 
 interface EventFormProps {
@@ -13,7 +14,7 @@ interface EventFormProps {
     onOpenChange: () => void;
 }
 
-export const EventForm = ({ title, open, onOpenChange }: EventFormProps) => {
+export default function EventForm ({ title, open, onOpenChange }: EventFormProps){
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={""} showCloseButton={false}>
@@ -24,7 +25,16 @@ export const EventForm = ({ title, open, onOpenChange }: EventFormProps) => {
                         save.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="overflow-y-auto max-h-[calc(95vh-120px)]"></div>
+                <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+                    <form>
+                        <FieldGroup>
+                            <Field>
+                                
+                            </Field>
+                        </FieldGroup>
+
+                    </form>
+                </div>
             </DialogContent>
         </Dialog>
     );

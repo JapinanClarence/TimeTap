@@ -1,10 +1,8 @@
 import React from "react";
-import LoginForm from "@/components/forms/login-form";
-import Container from "@/components/ui/container";
+import LoginForm from "@/features/auth/components/login-form";
 import GradientBg from "@/components/ui/gradient-bg";
-import AuthLayout from "@/layouts/auth/AuthLayout";
 import { Link } from "@inertiajs/react";
-import { ArrowUpRight, Building, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -12,7 +10,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 
 export default function Login() {
     return (

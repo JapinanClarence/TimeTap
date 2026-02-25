@@ -3,10 +3,8 @@
 import { useState, useMemo } from "react";
 import { useForm } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,8 +13,8 @@ import {
     FieldError,
     FieldGroup,
     FieldLabel,
-} from "../ui/field";
-import PasswordStrength from "../ui/password-strength";
+} from "../../../components/ui/field";
+import PasswordStrength from "../../../components/ui/password-strength";
 import { Eye, EyeClosed } from "lucide-react";
 
 const passwordType = {

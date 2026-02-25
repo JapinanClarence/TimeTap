@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Header } from "@/components/ui/header";
 import { DataTable } from "@/features/admin/events/components/data-table";
 import {columns, Payment} from "@/features/admin/events/components/columns";
-import { EventForm } from "@/features/admin/events/components/event-form";
+import EventForm  from "@/features/admin/events/components/event-form";
 
 const data: Payment[] = [
     {

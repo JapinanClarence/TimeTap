@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useForm } from "@inertiajs/react";
 import { Spinner } from "@/components/ui/spinner";
 import { Eye, EyeClosed } from "lucide-react";
-import PasswordStrength from "../ui/password-strength";
+import PasswordStrength from "../../../components/ui/password-strength";
 
 const passwordType = {
     password: "pass",
