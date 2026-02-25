@@ -1,6 +1,6 @@
 import QRScanner from "@/components/app/QR/QRScanner";
 import { Button } from "@/components/ui/button";
-import AppLayout from "@/layouts/AppLayout";
+import AppLayout from "@/layouts/app/AppLayout";
 import { ScanQrCode, Upload } from "lucide-react";
 import React from "react";
 

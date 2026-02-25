@@ -2,7 +2,7 @@ import React from "react";
 import LoginForm from "@/components/forms/login-form";
 import Container from "@/components/ui/container";
 import GradientBg from "@/components/ui/gradient-bg";
-import AuthLayout from "@/layouts/AuthLayout";
+import AuthLayout from "@/layouts/auth/AuthLayout";
 import { Link } from "@inertiajs/react";
 import { ArrowUpRight, Building, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";

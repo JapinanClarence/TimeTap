@@ -1,6 +1,6 @@
 import { ScanQrCode } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import Container from "./ui/container";
+import Container from "../../components/ui/container";
 import {
     HomeIcon,
     CalendarIcon,

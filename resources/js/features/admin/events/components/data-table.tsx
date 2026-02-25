@@ -12,7 +12,6 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -22,24 +21,21 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import { Plus } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    onAdd: ()=>void;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    onAdd,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -66,7 +62,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <>
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between gap-2 py-4">
                 <Input
                     placeholder="Filter emails..."
                     value={
@@ -81,7 +77,12 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
-                <DataTableViewOptions  table={table}/>
+                <div className="flex items-center gap-2 ">
+                    <Button className="" size={"sm"} onClick={onAdd}>
+                        <Plus /> <span className="hidden md:flex">Add Event</span>
+                    </Button>
+                    <DataTableViewOptions table={table} />
+                </div>
             </div>
             <div className="overflow-hidden rounded-md border">
                 <Table>
@@ -138,7 +139,7 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
             <div className=" py-4">
-               <DataTablePagination table={table}/>
+                <DataTablePagination table={table} />
             </div>
         </>
     );

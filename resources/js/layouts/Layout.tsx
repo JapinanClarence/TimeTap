@@ -1,5 +1,5 @@
-import NavMain from "@/components/nav-main";
-import NavFooter from "@/components/nav-footer";
+import NavMain from "@/layouts/nav-main";
+import NavFooter from "@/layouts/nav-footer";
 import { LayoutProps } from "@/types/ui";
 
 export default function Layout({ children }: LayoutProps) {

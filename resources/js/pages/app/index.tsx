@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import AppLayout from "@/layouts/AppLayout";
+import AppLayout from "@/layouts/app/AppLayout";
 import Container from "@/components/ui/container";
 import { formatSimpleDate, formatWeekDayOnly } from "@/util/dateUtil";
 import { cn } from "@/lib/utils";

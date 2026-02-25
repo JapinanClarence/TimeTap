@@ -1,7 +1,7 @@
 
 import { AppLayoutProps } from "@/types/ui";
-import MobileNav from "@/components/mobile-nav";
-import MobileHeader from "@/components/mobile-header";
+import MobileNav from "@/layouts/app/mobile-nav";
+import MobileHeader from "@/layouts/app/mobile-header";
 
 export default function AppLayout({ children, showHeader = true }: AppLayoutProps) {
     return (
