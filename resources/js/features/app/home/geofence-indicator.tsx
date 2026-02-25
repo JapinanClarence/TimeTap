@@ -1,7 +1,7 @@
 import { MapPin, Navigation } from "lucide-react";
 import React from "react";
 
-export default function GeofenceIndicator({isInRange}: {
+export function GeofenceIndicator({isInRange}: {
     isInRange: boolean;
 }) {
     return (

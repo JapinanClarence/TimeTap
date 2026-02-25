@@ -3,7 +3,7 @@ import AppLayout from "@/layouts/app/AppLayout";
 import Container from "@/components/ui/container";
 import { formatSimpleDate, formatWeekDayOnly } from "@/util/dateUtil";
 import { cn } from "@/lib/utils";
-import EventCard from "@/components/ui/event-card";
+import EventCard from "@/features/app/home/event-card";
 import {
     ArrowRight,
     ArrowRightLeft,
@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import UpcomingEventCard from "@/components/ui/upcoming-event-card";
-import GeofenceIndicator from "@/components/ui/geofence-indicator";
+import { UpcomingEventCard } from "@/features/app/home/upcoming-event-card";
+import {GeofenceIndicator} from "@/features/app/home/geofence-indicator";
 
 const upcomingEvent = [
     {

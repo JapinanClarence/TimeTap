@@ -4,9 +4,8 @@ import { Link, useForm, usePage } from "@inertiajs/react";
 import { Settings, Timer } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserDataProp } from "@/types/user";
-import { dateOnly, formatSimpleDate } from "@/util/dateUtil";
-import { Button } from "../../components/ui/button";
-import Sheet from "../../components/app/Sheet";
+import { Button } from "@/components/ui/button";
+import Sheet from "@/features/app/settings/Sheet";
 
 interface PageProps {
     auth: { user: UserDataProp };

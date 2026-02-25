@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
-export default function QRScanner({
+export function QRScanner({
     open,
     onScan,
     onError,

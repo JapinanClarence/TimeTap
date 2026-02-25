@@ -1,6 +1,6 @@
 import React from "react";
 import QRCode from "react-qr-code";
-export default function QRGenerator() {
+export  function QRGenerator() {
     return (
         <div>
             <QRCode
