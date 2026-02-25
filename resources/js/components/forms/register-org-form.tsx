@@ -78,14 +78,14 @@ export default function RegisterOrgForm() {
     };
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-            <Card className="w-full max-w-xl shadow-xl rounded-2xl">
+            <Card className="w-full max-w-xl shadow-none border-none bg-transparent md:border md:bg-card md:shadow-xl md:rounded-2xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl font-semibold text-center">
+                    <CardTitle className="text-xl md:text-2xl font-semibold text-center">
                         Create Organization Account
                     </CardTitle>
 
                     {/* 🔥 Step Indicator */}
-                    <div className="mt-6 flex items-center justify-center gap-50 relative">
+                    <div className="mt-6 flex items-center justify-center gap-30 md:gap-50 relative">
                         {/* Animated Progress Line */}
                         <div className="absolute top-4 left-0 w-full h-1 bg-muted rounded-full" />
 
@@ -112,7 +112,9 @@ export default function RegisterOrgForm() {
                             >
                                 1
                             </motion.div>
-                            <span className="text-xs mt-2">Personal Details</span>
+                            <span className="text-xs mt-2">
+                                Personal Details
+                            </span>
                         </div>
 
                         {/* Step 2 */}

@@ -33,9 +33,9 @@ export default function NavMain() {
                         </div>
                     </Link>
 
-                    <div className="hidden md:flex flex-row  items-center space-x-2">
+                    <div className="flex flex-row  items-center space-x-2">
                         <div>
-                            <ul className="flex flex-row ">
+                            <ul className="hidden md:flex flex-row ">
                                 <li>
                                     <Button
                                         variant="link"
@@ -59,7 +59,7 @@ export default function NavMain() {
                         <Button className="px-5 py-1 ">
                             <Link href={"/login"}>Log in</Link>
                         </Button>
-                        <Button variant="outline" className="px-5 py-1">
+                        <Button variant="outline" className="hidden md:flex px-5 py-1">
                             <Link href={"/register"}>Register</Link>
                         </Button>
                     </div>

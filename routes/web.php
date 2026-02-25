@@ -26,11 +26,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post("/logout", [UserController::class, "logout"])->name('logout');
     
     // Redirect logic: A central route to send users to their respective home
-    // Route::get('/home', function () {
-    //     return auth()->user()->role === 'admin' 
-    //         ? redirect()->route('admin.dashboard') 
-    //         : redirect()->route('app.index');
-    // });
+    Route::get('/home', function () {
+        return auth()->user()->role === 'admin' 
+            ? redirect()->route('admin.dashboard') 
+            : redirect()->route('app.index');
+    });
 });
 
 // --- USER ONLY ROUTES ---
@@ -41,6 +41,6 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
 
 // --- ADMIN ONLY ROUTES ---
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get("/dashboard", [DashboardController::class, "index"])->name("admin.dashboard");
-    // Add other admin routes here (e.g., User Management, Reports)
+    Route::get("/", [DashboardController::class, "index"])->name("admin.dashboard");
+   
 });

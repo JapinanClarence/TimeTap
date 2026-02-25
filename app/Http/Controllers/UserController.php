@@ -46,7 +46,7 @@ class UserController extends Controller
 
         if (auth()->attempt($data)) {
             $request->session()->regenerate();
-            return redirect()->intended("/app");
+            return redirect()->intended("/home");
         }
 
         return back()->withInput()->withErrors(["email" => "Invalid credentials"]);

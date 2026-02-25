@@ -40,7 +40,7 @@ export default function Login() {
             </div>
             <GradientBg
                 className={
-                    "flex-1/2 flex flex-col justify-between py-8 px-8 lg:px-10 xl:px-30"
+                    "hidden flex-1/2 md:flex flex-col justify-between py-8 px-8 lg:px-10 xl:px-30"
                 }
             >
                 <div className="inline-flex justify-end">
