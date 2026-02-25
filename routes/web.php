@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AppController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,6 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
 
 // --- ADMIN ONLY ROUTES ---
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get("/", [DashboardController::class, "index"])->name("admin.dashboard");
-   
+    Route::get("/", [DashboardController::class, "index"])->name("admin.dashboard");   
+    Route::get("/events", [EventController::class, "index"]);
 });
