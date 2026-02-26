@@ -57,7 +57,7 @@ export default function RegisterOrgForm() {
 
     const prevStep = () => setStep(1);
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SubmitEvent) => {
         e.preventDefault();
         post("/register/organization");
     };
@@ -379,7 +379,7 @@ export default function RegisterOrgForm() {
                                             onClick={nextStep}
                                             disabled={!isStep1Valid}
                                         >
-                                            Next
+                                            Continue
                                         </Button>
                                     </FieldGroup>
                                 </motion.div>

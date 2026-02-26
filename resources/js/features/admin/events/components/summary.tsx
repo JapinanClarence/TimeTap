@@ -39,7 +39,7 @@ export const Summary = ({ data }: SummaryProps) => {
                     </div>
                     <Separator />
                     <div className="grid md:grid-cols-3 items-center gap-2">
-                        <div className="leading-none h-20 p-2 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
+                        <div className="leading-none h-20 p-5 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
                             <MapPin className="inline size-4 text-muted-foreground" />
                             <div className="space-y-2">
                                 <h3 className="font-semibold">Location</h3>
@@ -49,7 +49,7 @@ export const Summary = ({ data }: SummaryProps) => {
                             </div>
                         </div>
 
-                        <div className="leading-none h-20 p-2 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
+                        <div className="leading-none h-20 p-5 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
                             <Calendar className="inline size-4 text-muted-foreground" />
                             <div className="space-y-2">
                                 <h3 className="font-semibold">Date</h3>
@@ -59,7 +59,7 @@ export const Summary = ({ data }: SummaryProps) => {
                             </div>
                         </div>
 
-                        <div className="leading-none h-20 p-2 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
+                        <div className="leading-none h-20 p-5 rounded-lg border shadow-xs flex items-start justify-baseline gap-2">
                             <Clock className="inline size-4 text-muted-foreground" />
                             <div className="space-y-2">
                                 <h3 className="font-semibold">Time</h3>

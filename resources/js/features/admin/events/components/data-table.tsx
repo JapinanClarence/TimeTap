@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
                 <div className="flex items-center gap-2 ">
-                    <Link href={"/admin/add-event"}>
+                    <Link href={"/admin/events/add"}>
                         <Button className="" size={"sm"}>
                             <Plus />{" "}
                             <span className="hidden md:flex">Add Event</span>

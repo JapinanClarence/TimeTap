@@ -1,34 +1,15 @@
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Check, Clock2Icon, ClockPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Combobox,
-    ComboboxContent,
-    ComboboxEmpty,
-    ComboboxInput,
-    ComboboxItem,
-    ComboboxList,
-} from "@/components/ui/combobox";
 import { useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { EventType } from "@/types/event";
-import { description } from "../../dashboard/components/chat-area-interactive";
 import { AnimatePresence, motion } from "framer-motion";
 import { GeofenceMap } from "./geofence-map";
 import EventForm from "./event-form";
 import { eventSchema } from "../schema/event.schema";
 import { Summary } from "./summary";
-import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 interface EventFormProps {
     title?: string;
@@ -82,6 +63,29 @@ export default function Form({ title }: EventFormProps) {
     };
 
     const prevStep = () => setStep((prev) => prev - 1);
+
+     const submit = (e: React.FormEvent) => {
+            e.preventDefault();
+
+            post("/admin/events/add", {
+                // Triggered if the request is successful (Status 200-300)
+                onSuccess: () => {
+                    toast.success("Event created successfully!");
+                },
+                // Triggered if there are validation errors (Status 422)
+                onError: (errors) => {
+                    // Check if there are specific errors or just show a general message
+                    const errorCount = Object.keys(errors).length;
+                    toast.error(
+                        `Failed to upload: ${errorCount} fields require attention.`,
+                    );
+                },
+                // Optional: Triggered on any finish (success or error)
+                onFinish: () => {
+                    // Useful for stopping a loading spinner if you have one
+                },
+            });
+        };
     return (
         <>
             <div>
@@ -184,19 +188,10 @@ export default function Form({ title }: EventFormProps) {
                     {/* Extra spacing for the absolute positioned labels */}
                     <div className="h-10" />
                 </div>
-                <form className="relative">
+                <form className="relative" onSubmit={submit}>
                     <AnimatePresence mode="wait">
                         {step === STEPS.first_step && (
-                            <motion.div
-                            // key={"step1"}
-                            // initial={{ x: 50 }}
-                            // animate={{ x: 0 }}
-                            // exit={{ x: -50 }}
-                            // transition={{
-                            //     duration: 0.3,
-                            //     ease: "easeInOut",
-                            // }}
-                            >
+                            <motion.div>
                                 <EventForm
                                     data={data}
                                     setData={setData}
@@ -205,16 +200,7 @@ export default function Form({ title }: EventFormProps) {
                             </motion.div>
                         )}
                         {step === STEPS.second_step && (
-                            <motion.div
-                            // key={"step2"}
-                            // initial={{ x: 50 }}
-                            // animate={{ x: 0 }}
-                            // exit={{ x: -50 }}
-                            // transition={{
-                            //     duration: 0.3,
-                            //     ease: "easeInOut",
-                            // }}
-                            >
+                            <motion.div>
                                 <GeofenceMap
                                     data={data}
                                     setData={setData}
@@ -223,36 +209,47 @@ export default function Form({ title }: EventFormProps) {
                             </motion.div>
                         )}
                         {step === STEPS.third_step && (
-                            <motion.div
-                            // key={"step2"}
-                            // initial={{ x: 50 }}
-                            // animate={{ x: 0 }}
-                            // exit={{ x: -50 }}
-                            // transition={{
-                            //     duration: 0.3,
-                            //     ease: "easeInOut",
-                            // }}
-                            >
+                            <motion.div>
                                 <Summary data={data} />
                             </motion.div>
                         )}
                     </AnimatePresence>
+                    <div className="mt-5 flex items-center justify-between md:justify-end gap-2">
+                        <Button
+                            type="button"
+                            variant={"outline"}
+                            disabled={step === STEPS.first_step}
+                            onClick={prevStep}
+                        >
+                            Back
+                        </Button>
+                        {step === STEPS.third_step ? (
+                            <Button
+                                key="submit-btn"
+                                type="submit"
+                                variant="default"
+                                disabled={processing}
+                            >
+                                {processing ? (
+                                    <>
+                                        <Spinner /> Submitting...
+                                    </>
+                                ) : (
+                                    <>Submit</>
+                                )}
+                            </Button>
+                        ) : (
+                            <Button
+                                key="next-btn"
+                                type="button"
+                                variant="outline"
+                                onClick={nextStep}
+                            >
+                                Next
+                            </Button>
+                        )}
+                    </div>
                 </form>
-            </div>
-            <div className="mt-5 flex items-center justify-between md:justify-end gap-2">
-                <Button
-                    variant={"outline"}
-                    disabled={step === STEPS.first_step}
-                    onClick={prevStep}
-                >
-                    Back
-                </Button>
-                <Button
-                    variant={step === STEPS.third_step ? "default" : "outline"}
-                    onClick={nextStep}
-                >
-                    {step === STEPS.third_step ? "Submit" : "Next"}
-                </Button>
             </div>
         </>
     );

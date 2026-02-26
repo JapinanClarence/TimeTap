@@ -74,6 +74,7 @@ class UserController extends Controller
                 'last_name' => $data["last_name"],
                 'email' => $data["email"],
                 'password' => bcrypt($data["password"]),
+                "role" => "admin"
             ]);
 
             $organization = Organization::create([
@@ -89,7 +90,7 @@ class UserController extends Controller
 
 
 
-        return redirect("/dashboard")->with("message", "User registered and logged in");
+        return redirect("/home")->with("message", "User registered and logged in");
     }
     public function logout(Request $request)
     {

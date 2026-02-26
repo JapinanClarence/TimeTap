@@ -3,16 +3,64 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    //
-    public function index (){
-         return Inertia::render("admin/events");
-    }
-    public function create(){
-         return Inertia::render("admin/add-event");
-    }
+     //
+     public function index()
+     {
+          return Inertia::render("admin/events");
+     }
+     public function create()
+     {
+          return Inertia::render("admin/add-event");
+     }
+     public function store(Request $request)
+     {
+          $data = $request->validate([
+               "title" => "required|string|max:255",
+               "description" => "nullable|string",
+               "location" => "required|string",
+               "start_date" => "required|date",
+               "end_date" => "required|date|after_or_equal:start_date",
+               "start_time" => "required|date_format:H:i:s", // Matches '12:00:00'
+               "end_time" => "required|date_format:H:i:s",
+
+               // Validate the array AND its contents
+               "coordinates" => "required|array|min:3",
+               "coordinates.*.long" => "required|numeric",
+               "coordinates.*.lat" => "required|numeric",
+          ]);
+
+          // 1. Extract coordinates
+          $coords = $data['coordinates'];
+
+          // 2. Format as: "long lat, long lat, long lat"
+          $pointsString = collect($coords)
+               ->map(fn($c) => "{$c['long']} {$c['lat']}")
+               ->implode(', ');
+
+          // 3. Polygons MUST close. Append the first point to the end.
+          $firstPoint = "{$coords[0]['long']} {$coords[0]['lat']}";
+          $wkt = "POLYGON(({$pointsString}, {$firstPoint}))";
+
+          // 4. Create the record
+          // We use ST_GeomFromText to convert the string into a spatial object
+          Event::create([
+               'title' => $data['title'],
+               'description' => $data['description'],
+               'location' => $data['location'],
+               'start_date' => $data['start_date'],
+               'end_date' => $data['end_date'],
+               'start_time' => $data['start_time'],
+               'end_time' => $data['end_time'],
+               'area' => DB::raw("ST_GeomFromText('{$wkt}', 4326)"),
+          ]);
+
+          return redirect()->route("admin.events")->with('success', 'Event created successfully with geofence!');
+     }
 }

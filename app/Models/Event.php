@@ -9,4 +9,19 @@ class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory;
+   protected $fillable = [
+        'title',
+        'description',
+        'location',
+        'start_date',
+        'end_date',
+        'start_time',
+        'end_time',
+        'area', // This will store our Polygon
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
+    ];
 }
