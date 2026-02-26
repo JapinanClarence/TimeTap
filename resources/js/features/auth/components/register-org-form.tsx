@@ -40,7 +40,7 @@ export default function RegisterOrgForm() {
         org_profile: "",
     });
 
-    // ✅ STEP 1 VALIDATION (Frontend)
+    // ✅ STEP 1 VALIDATION
     const isStep1Valid = useMemo(() => {
         return (
             data.first_name.trim() !== "" &&

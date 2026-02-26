@@ -1,11 +1,13 @@
 import { AppSidebar } from "@/layouts/dashboard/app-sidebar";
-import {SiteHeader} from "@/layouts/dashboard/site-header"
+import { SiteHeader } from "@/layouts/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { LayoutProps } from "@/types/ui";
+import React, { ReactNode } from "react";
 
-import React from "react";
+interface AdminLayoutProps {
+    children: ReactNode;
+}
 
-export default function AdminLayout({ children }: LayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
         <div className="[--header-height:calc(--spacing(14))]">
             <SidebarProvider

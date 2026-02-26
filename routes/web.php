@@ -44,4 +44,5 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/", [DashboardController::class, "index"])->name("admin.dashboard");   
     Route::get("/events", [EventController::class, "index"]);
+    Route::get("/add-event", [EventController::class, "create"]);
 });

@@ -12,4 +12,7 @@ class EventController extends Controller
     public function index (){
          return Inertia::render("admin/events");
     }
+    public function create(){
+         return Inertia::render("admin/add-event");
+    }
 }

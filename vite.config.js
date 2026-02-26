@@ -22,4 +22,7 @@ export default defineConfig({
             "@": "/resources/js",
         },
     },
+    optimizeDeps: {
+        include: ["maplibre-gl"],
+    },
 });

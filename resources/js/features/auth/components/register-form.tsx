@@ -62,7 +62,7 @@ export default function RegisterForm() {
                             <Input
                                 id="first_name"
                                 type="text"
-                                placeholder="Firstname..."
+                                placeholder=""
                                 value={data.first_name}
                                 onChange={(e) =>
                                     setData("first_name", e.target.value)
@@ -84,7 +84,7 @@ export default function RegisterForm() {
                             <Input
                                 id="last_name"
                                 type="text"
-                                placeholder="Lastname..."
+                                placeholder=""
                                 value={data.last_name}
                                 onChange={(e) =>
                                     setData("last_name", e.target.value)

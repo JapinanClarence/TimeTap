@@ -25,17 +25,16 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Plus } from "lucide-react";
+import { Link } from "@inertiajs/react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    onAdd: ()=>void;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    onAdd,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -78,9 +77,12 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
                 <div className="flex items-center gap-2 ">
-                    <Button className="" size={"sm"} onClick={onAdd}>
-                        <Plus /> <span className="hidden md:flex">Add Event</span>
-                    </Button>
+                    <Link href={"/admin/add-event"}>
+                        <Button className="" size={"sm"}>
+                            <Plus />{" "}
+                            <span className="hidden md:flex">Add Event</span>
+                        </Button>
+                    </Link>
                     <DataTableViewOptions table={table} />
                 </div>
             </div>
