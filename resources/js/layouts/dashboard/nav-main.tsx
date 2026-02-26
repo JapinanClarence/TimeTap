@@ -10,6 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "@inertiajs/react";
 
 export function NavMain({
     items,
@@ -27,10 +28,10 @@ export function NavMain({
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton tooltip={item.title} asChild>
-                                <a href={item.url}>
+                                <Link href={item.url}>
                                     {item.icon && <item.icon />}
                                     <span>{item.title}</span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}

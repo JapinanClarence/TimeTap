@@ -32,10 +32,12 @@ export default function EventForm({ data, setData, errors }: EventFormProps) {
     return (
         <div>
             <div className="mb-2">
-                <h1 className="font-semibold">Event Details</h1>
-                <p className="text-sm text-muted-foreground">
-                    Fill in all required fields and click submit to save.{" "}
-                </p>
+                <div>
+                    <h1 className="font-semibold">Basic Information</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Complete the required fields below to configure your event's primary details.
+                    </p>
+                </div>
             </div>
             <FieldGroup>
                 <Field>
@@ -121,7 +123,6 @@ export default function EventForm({ data, setData, errors }: EventFormProps) {
                                 id="time-from"
                                 type="time"
                                 step="1"
-                                defaultValue="00:00:00"
                                 value={data.start_time}
                                 onChange={(e) =>
                                     setData("start_time", e.target.value)
@@ -149,7 +150,6 @@ export default function EventForm({ data, setData, errors }: EventFormProps) {
                                 id="time-to"
                                 type="time"
                                 step="1"
-                                defaultValue="00:00:00"
                                 value={data.end_time}
                                 onChange={(e) =>
                                     setData("end_time", e.target.value)

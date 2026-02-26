@@ -9,7 +9,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock2Icon, ClockPlus } from "lucide-react";
+import { Check, Clock2Icon, ClockPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Combobox,
@@ -27,6 +27,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GeofenceMap } from "./geofence-map";
 import EventForm from "./event-form";
 import { eventSchema } from "../schema/event.schema";
+import { Summary } from "./summary";
+import { cn } from "@/lib/utils";
 
 interface EventFormProps {
     title?: string;
@@ -49,6 +51,7 @@ export default function Form({ title }: EventFormProps) {
             end_date: "",
             start_time: "",
             end_time: "",
+            coordinates: [],
         });
 
     const validate = () => {
@@ -64,7 +67,6 @@ export default function Form({ title }: EventFormProps) {
                     setError(field as keyof EventType, issue.message);
                 }
             });
-
             return false;
         }
         clearErrors();
@@ -83,7 +85,106 @@ export default function Form({ title }: EventFormProps) {
     return (
         <>
             <div>
-                <form>
+                <div className="px-4">
+                    {/* Container with padding equal to circle radius */}
+                    <div className="mx-auto md:w-[80%] relative flex items-center justify-between">
+                        {/* Background Gray Line (Total track) */}
+                        <div className="absolute top-4 left-0 w-full h-1 bg-muted rounded-full" />
+
+                        {/* Animated Primary Line */}
+                        <motion.div
+                            initial={false}
+                            animate={{
+                                width:
+                                    step === STEPS.first_step
+                                        ? "0%"
+                                        : step === STEPS.second_step
+                                          ? "50%"
+                                          : "100%",
+                            }}
+                            transition={{ duration: 0.4, ease: "circOut" }}
+                            className="absolute top-4 left-0 h-1 bg-primary rounded-full"
+                        />
+
+                        {/* Step 1 */}
+                        <div className="relative flex flex-col items-center z-10 w-fit">
+                            <motion.div
+                                animate={{
+                                    scale: step === STEPS.first_step ? 1.1 : 1,
+                                    backgroundColor:
+                                        step >= STEPS.first_step
+                                            ? "var(--primary)"
+                                            : "#e5e7eb",
+                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-medium"
+                            >
+                                {step > STEPS.first_step ? (
+                                    <Check className="size-4" />
+                                ) : (
+                                    "1"
+                                )}
+                            </motion.div>
+                            <div className="absolute top-10 whitespace-nowrap text-center">
+                                <span className="text-[10px] md:text-xs font-semibold text-muted-foreground">
+                                    Event Details
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Step 2 */}
+                        <div className="relative flex flex-col items-center z-10 w-fit">
+                            <motion.div
+                                animate={{
+                                    scale: step === STEPS.second_step ? 1.1 : 1,
+                                    backgroundColor:
+                                        step >= STEPS.second_step
+                                            ? "var(--primary)"
+                                            : "#e5e7eb",
+                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-medium"
+                            >
+                                {step > STEPS.second_step ? (
+                                    <Check className="size-4" />
+                                ) : (
+                                    "2"
+                                )}
+                            </motion.div>
+                            <div className="absolute top-10 whitespace-nowrap text-center">
+                                <span className="text-[10px] md:text-xs font-semibold text-muted-foreground">
+                                    Geofence
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Step 3 */}
+                        <div className="relative flex flex-col items-center z-10 w-fit">
+                            <motion.div
+                                animate={{
+                                    scale: step === STEPS.third_step ? 1.1 : 1,
+                                    backgroundColor:
+                                        step >= STEPS.third_step
+                                            ? "var(--primary)"
+                                            : "#e5e7eb",
+                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-medium"
+                            >
+                                {step > STEPS.third_step ? (
+                                    <Check className="size-4" />
+                                ) : (
+                                    "3"
+                                )}
+                            </motion.div>
+                            <div className="absolute top-10 whitespace-nowrap text-center">
+                                <span className="text-[10px] md:text-xs font-semibold text-muted-foreground">
+                                    Summary
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Extra spacing for the absolute positioned labels */}
+                    <div className="h-10" />
+                </div>
+                <form className="relative">
                     <AnimatePresence mode="wait">
                         {step === STEPS.first_step && (
                             <motion.div
@@ -114,13 +215,31 @@ export default function Form({ title }: EventFormProps) {
                             //     ease: "easeInOut",
                             // }}
                             >
-                                <GeofenceMap />
+                                <GeofenceMap
+                                    data={data}
+                                    setData={setData}
+                                    errors={errors}
+                                />
+                            </motion.div>
+                        )}
+                        {step === STEPS.third_step && (
+                            <motion.div
+                            // key={"step2"}
+                            // initial={{ x: 50 }}
+                            // animate={{ x: 0 }}
+                            // exit={{ x: -50 }}
+                            // transition={{
+                            //     duration: 0.3,
+                            //     ease: "easeInOut",
+                            // }}
+                            >
+                                <Summary data={data} />
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </form>
             </div>
-            <div className="mt-5 flex items-center justify-between md:justify-end gap-5">
+            <div className="mt-5 flex items-center justify-between md:justify-end gap-2">
                 <Button
                     variant={"outline"}
                     disabled={step === STEPS.first_step}
@@ -128,7 +247,10 @@ export default function Form({ title }: EventFormProps) {
                 >
                     Back
                 </Button>
-                <Button variant={"outline"} onClick={nextStep}>
+                <Button
+                    variant={step === STEPS.third_step ? "default" : "outline"}
+                    onClick={nextStep}
+                >
                     {step === STEPS.third_step ? "Submit" : "Next"}
                 </Button>
             </div>
