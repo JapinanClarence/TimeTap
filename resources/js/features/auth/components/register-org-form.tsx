@@ -15,7 +15,7 @@ import {
     FieldLabel,
 } from "../../../components/ui/field";
 import PasswordStrength from "../../../components/ui/password-strength";
-import { Eye, EyeClosed } from "lucide-react";
+import { Check, Eye, EyeClosed } from "lucide-react";
 
 const passwordType = {
     password: "pass",
@@ -83,53 +83,62 @@ export default function RegisterOrgForm() {
                     </CardTitle>
 
                     {/* 🔥 Step Indicator */}
-                    <div className="mt-6 flex items-center justify-center gap-30 md:gap-50 relative">
-                        {/* Animated Progress Line */}
-                        <div className="absolute top-4 left-0 w-full h-1 bg-muted rounded-full" />
+                    <div className="mt-8 px-1">
+                        <div className="relative w-full">
+                            {/* Progress Track (Gray Background) */}
+                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                {/* Animated Active Fill */}
+                                <motion.div
+                                    initial={false}
+                                    animate={{
+                                        // Step 1: 50% (indicates progress within first half)
+                                        // or 0% if you prefer it to only fill once Step 1 is done.
+                                        width: step === 1 ? "50%" : "100%",
+                                    }}
+                                    transition={{
+                                        duration: 0.5,
+                                        ease: "circOut",
+                                    }}
+                                    className="h-full bg-primary"
+                                />
+                            </div>
 
-                        <motion.div
-                            initial={false}
-                            animate={{
-                                width: step === 1 ? "50%" : "100%",
-                            }}
-                            transition={{ duration: 0.4 }}
-                            className="absolute top-4 left-0 h-1 bg-primary rounded-full"
-                        />
+                            {/* Labels Container */}
+                            <div className="flex  mt-3">
+                                <div
+                                    className={`${step == 1 ? "flex" : "hidden"} flex-col items-start`}
+                                >
+                                    <span
+                                        className={`text-xs md:text-sm font-bold transition-colors duration-300 ${
+                                            step >= 1
+                                                ? "text-primary"
+                                                : "text-muted-foreground"
+                                        }`}
+                                    >
+                                        Personal Details
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                                        Step 1
+                                    </span>
+                                </div>
 
-                        {/* Step 1 */}
-                        <div className="flex flex-col items-center z-10">
-                            <motion.div
-                                animate={{
-                                    scale: step === 1 ? 1.1 : 1,
-                                    backgroundColor:
-                                        step >= 1
-                                            ? "var(--primary)"
-                                            : "#e5e7eb",
-                                }}
-                                className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-medium"
-                            >
-                                1
-                            </motion.div>
-                            <span className="text-xs mt-2">
-                                Personal Details
-                            </span>
-                        </div>
-
-                        {/* Step 2 */}
-                        <div className="flex flex-col items-center z-10">
-                            <motion.div
-                                animate={{
-                                    scale: step === 2 ? 1.1 : 1,
-                                    backgroundColor:
-                                        step === 2
-                                            ? "var(--primary)"
-                                            : "#e5e7eb",
-                                }}
-                                className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-medium"
-                            >
-                                2
-                            </motion.div>
-                            <span className="text-xs mt-2">Organization</span>
+                                <div
+                                    className={`${step < 2 ? "hidden" : "flex"} flex-col items-start text-right`}
+                                >
+                                    <span
+                                        className={`text-xs md:text-sm font-bold transition-colors duration-300 ${
+                                            step >= 2
+                                                ? "text-primary"
+                                                : "text-muted-foreground"
+                                        }`}
+                                    >
+                                        Organization
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                                        Step 2
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </CardHeader>
