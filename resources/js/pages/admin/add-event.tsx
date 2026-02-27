@@ -1,19 +1,9 @@
 import AdminLayout from "@/layouts/dashboard/AdminLayout";
 import React, { useState } from "react";
-import { columns, Payment } from "@/features/admin/events/components/columns";
 import Form from "@/features/admin/events/components/form";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
-
-const data: Payment[] = [
-    {
-        id: "728ed52f",
-        amount: 100,
-        status: "pending",
-        email: "m@example.com",
-    },
-];
 
 export default function Events() {
     const [showForm, setShowForm] = useState<boolean>(false);

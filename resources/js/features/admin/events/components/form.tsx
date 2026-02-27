@@ -32,6 +32,7 @@ export default function Form({ title }: EventFormProps) {
             end_date: "",
             start_time: "",
             end_time: "",
+            status:"active",
             coordinates: [],
         });
 

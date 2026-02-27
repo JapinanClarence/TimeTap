@@ -46,4 +46,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/events", [EventController::class, "index"])->name("admin.events");
     Route::get("/events/add", [EventController::class, "create"]);
     Route::post("/events/add", [EventController::class, "store"]);
+    Route::patch("/events/{event}", [EventController::class, "updateStatus"])->name("event.updateStatus");
 });

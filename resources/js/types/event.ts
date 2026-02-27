@@ -6,6 +6,7 @@ export type EventType = {
   end_date: string;
   start_time: string;
   end_time:string;
+  status:"active"|"inactive";
   coordinates?: {
     long: number;
     lat: number;

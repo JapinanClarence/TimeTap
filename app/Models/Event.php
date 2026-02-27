@@ -18,7 +18,8 @@ class Event extends Model
         'start_time',
         'end_time',
         'area', // This will store our Polygon
-        'organization_id'
+        'organization_id',
+        'status',
     ];
 
     protected $casts = [

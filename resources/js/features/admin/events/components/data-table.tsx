@@ -30,11 +30,15 @@ import { Link } from "@inertiajs/react";
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    onStatusChange: (id: number, status: string) => void;
+    processingId : number | null,
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    onStatusChange,
+    processingId,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -46,6 +50,10 @@ export function DataTable<TData, TValue>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        meta: {
+            onStatusChange,
+            processingId,
+        },
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),

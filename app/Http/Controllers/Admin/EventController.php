@@ -13,7 +13,17 @@ class EventController extends Controller
      //
      public function index()
      {
-          $events = Event::select('id', 'title', 'description', 'location', 'start_date', 'end_date', 'start_time', 'end_time')
+          $events = Event::select(
+               'id',
+               'title',
+               'description',
+               'location',
+               'start_date',
+               'end_date',
+               'start_time',
+               'end_time',
+               'status'
+          )
                ->latest()
                ->paginate(10) // 10 items per page
                ->withQueryString(); // Keeps filters if you have search/sorting
@@ -73,5 +83,18 @@ class EventController extends Controller
           ]);
 
           return redirect()->route("admin.events")->with('success', 'Event created successfully with geofence!');
+     }
+     public function updateStatus(Request $request, Event $event)
+     {
+          $data = $request->validate([
+               'status' => 'required|in:active,inactive',
+          ]);
+          
+          $event->update([
+               'status' => $data['status']
+          ]);
+
+          // 3. Redirect back (Inertia will refresh the props automatically)
+          return back()->with('message', 'Status updated successfully!');
      }
 }
