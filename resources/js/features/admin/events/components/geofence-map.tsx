@@ -1,12 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Map, MapControls, useMap } from "@/components/ui/map";
+import {
+    Map,
+    MapControls,
+    MapMarker,
+    MapRef,
+    MarkerContent,
+    MarkerLabel,
+    useMap,
+} from "@/components/ui/map";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Layers, Locate, MapPin, RotateCcw, X } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { EventType } from "@/types/event";
 import { ButtonGroup } from "@/components/ui/button-group";
-
+import {motion} from "framer-motion";
 interface GeofenceMapProps {
     data: EventType;
     // This specific signature matches Inertia's useForm hook exactly
@@ -135,7 +143,7 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
 
             <Card className="relative h-[60vh] max:h-[70vh] p-0 overflow-hidden shadow-none">
                 <ButtonGroup className="absolute top-5 right-5 z-5">
-                    <Button
+                    {/* <Button
                         variant="outline"
                         size="sm"
                         onClick={handleGetLocation}
@@ -151,19 +159,27 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
                                 <Locate /> Update Location
                             </>
                         )}
-                    </Button>
+                    </Button> */}
                     <Button
                         type="button"
                         variant={"outline"}
                         size={"sm"}
                         onClick={clearPoints}
                     >
-                        <RotateCcw /> <span className="hidden md:flex">Clear Points</span>
+                        <RotateCcw />{" "}
+                        <span className="hidden md:flex">Clear Points</span>
                     </Button>
                 </ButtonGroup>
 
-                <Map center={center} zoom={15} theme="light">
-                    {/* <MapControls /> */}
+                <Map
+                    center={center}
+                    zoom={15}
+                    styles={{
+                        light: "https://tiles.openfreemap.org/styles/bright",
+                    }}
+                    theme="light"
+                >
+                    <MapControls showZoom={false} showFullscreen showLocate />
                     <MapClickHandler onPointAdd={addPoint} />
                     <UserLocationMarker center={center} accuracy={accuracy} />
                     {/* Visual Layer to show the geofence as the user clicks */}
@@ -288,85 +304,115 @@ function PolygonLayer({ coordinates }: PolygonLayerProps) {
     return null;
 }
 
-function UserLocationMarker({ center, accuracy }: UserMarkerProps) {
+function UserLocationMarker({ center }: UserMarkerProps) {
     const { map, isLoaded } = useMap();
-    const animationRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (!map || !isLoaded) return;
 
         const sourceId = "user-location";
-        const layerId = "user-location-pulse";
-        const dotId = "user-location-dot";
+        const layerId = "user-location-layer";
+        const imageId = "user-location-pulse";
 
-        // 1. Add Source
+        const size = 120;
+
+        // --- 1️⃣ Create pulsing image ---
+        const pulsingDot: any = {
+            width: size,
+            height: size,
+            data: new Uint8Array(size * size * 4),
+
+            onAdd() {
+                const canvas = document.createElement("canvas");
+                canvas.width = this.width;
+                canvas.height = this.height;
+                this.context = canvas.getContext("2d");
+            },
+
+            render() {
+                const duration = 1000; // smoother longer pulse
+                const t = (performance.now() % duration) / duration;
+
+                const context = this.context;
+                const center = size / 2;
+
+                const innerRadius = center * 0.25;
+                const outerRadius = center * 0.7 * t + innerRadius;
+
+                context.clearRect(0, 0, size, size);
+
+                // --- Outer expanding pulse ---
+                context.beginPath();
+                context.arc(center, center, outerRadius, 0, Math.PI * 2);
+                context.fillStyle = `rgba(59,130,246,${1 - t})`; // Tailwind blue-500
+                context.fill();
+
+                // --- Inner solid dot ---
+                context.beginPath();
+                context.arc(center, center, innerRadius, 0, Math.PI * 2);
+                context.fillStyle = "rgba(59,130,246,1)";
+                context.strokeStyle = "white";
+                context.lineWidth = 2;
+                context.fill();
+                context.stroke();
+
+                this.data = context.getImageData(0, 0, size, size).data;
+
+                map.triggerRepaint();
+                return true;
+            },
+        };
+
+        // ---  Add image to map ---
+        if (!map.hasImage(imageId)) {
+            map.addImage(imageId, pulsingDot, { pixelRatio: 2 });
+        }
+
+        // ---  Add GeoJSON source ---
         if (!map.getSource(sourceId)) {
             map.addSource(sourceId, {
                 type: "geojson",
                 data: {
                     type: "Feature",
-                    geometry: { type: "Point", coordinates: center },
+                    geometry: {
+                        type: "Point",
+                        coordinates: center,
+                    },
                     properties: {},
-                },
-            });
-
-            // 2. Add the pulsing outer ring
-            map.addLayer({
-                id: layerId,
-                type: "circle",
-                source: sourceId,
-                paint: {
-                    "circle-radius": 6,
-                    "circle-color": "#3b82f6",
-                    "circle-opacity": 0.5,
-                },
-            });
-
-            // 3. Add the solid center dot
-            map.addLayer({
-                id: dotId,
-                type: "circle",
-                source: sourceId,
-                paint: {
-                    "circle-radius": 6,
-                    "circle-color": "#3b82f6",
-                    "circle-stroke-width": 2,
-                    "circle-stroke-color": "#ffffff",
                 },
             });
         }
 
-        // 4. Update position when center changes
-        (map.getSource(sourceId) as any).setData({
-            type: "Feature",
-            geometry: { type: "Point", coordinates: center },
-            properties: {},
-        });
+        // ---  Add Symbol layer using animated image ---
+        if (!map.getLayer(layerId)) {
+            map.addLayer({
+                id: layerId,
+                type: "symbol",
+                source: sourceId,
+                layout: {
+                    "icon-image": imageId,
+                    "icon-size": 1,
+                },
+            });
+        }
 
-        // 5. Animation Logic (The "Blink/Pulse")
-        let timestamp = 0;
-        const animatePulse = (t: number) => {
-            if (!map.getLayer(layerId)) return;
-
-            // Create a cycle every 2 seconds
-            const duration = 1000;
-            const progress = (t % duration) / duration;
-
-            // Radius goes from 10 to 30, Opacity goes from 0.5 to 0
-            const radius = 10 + progress * 20;
-            const opacity = 0.5 * (1 - progress);
-
-            map.setPaintProperty(layerId, "circle-radius", radius);
-            map.setPaintProperty(layerId, "circle-opacity", opacity);
-
-            animationRef.current = requestAnimationFrame(animatePulse);
-        };
-
-        animationRef.current = requestAnimationFrame(animatePulse);
+        // ---  Update position when center changes ---
+        const source = map.getSource(sourceId) as any;
+        if (source) {
+            source.setData({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: center,
+                },
+                properties: {},
+            });
+        }
 
         return () => {
-            if (animationRef.current)
-                cancelAnimationFrame(animationRef.current);
+            if (map.getLayer(layerId)) map.removeLayer(layerId);
+            if (map.getSource(sourceId)) map.removeSource(sourceId);
+            if (map.hasImage(imageId)) map.removeImage(imageId);
         };
     }, [map, isLoaded, center]);
 
