@@ -69,6 +69,7 @@ export default function Form({ title }: EventFormProps) {
             e.preventDefault();
 
             post("/admin/events/add", {
+                showProgress: false,
                 // Triggered if the request is successful (Status 200-300)
                 onSuccess: () => {
                     toast.success("Event created successfully!");

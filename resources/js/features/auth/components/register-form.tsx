@@ -35,7 +35,9 @@ export default function RegisterForm() {
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
         if (!isPasswordValid) return;
-        post("/auth/register");
+        post("/auth/register", {
+            showProgress:false,
+        });
     };
 
     const handleShowPassword = (type: any) => {

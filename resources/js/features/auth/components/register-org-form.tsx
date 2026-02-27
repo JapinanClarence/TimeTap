@@ -59,7 +59,9 @@ export default function RegisterOrgForm() {
 
     const submit = (e: React.SubmitEvent) => {
         e.preventDefault();
-        post("/register/organization");
+        post("/register/organization", {
+            showProgress:false
+        });
     };
 
     const handleShowPassword = (type: any) => {

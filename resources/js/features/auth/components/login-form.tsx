@@ -23,7 +23,9 @@ export default function LoginForm() {
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
-        post("/auth/login");
+        post("/auth/login", {
+            showProgress: false
+        });
     };
 
     const handleShowPassword = () => {

@@ -45,12 +45,13 @@ export default function Events() {
     const [processingId, setProcessingId] = useState<number | null>(null);
 
     const handleStatusChange = async (id: number, status: string) => {
-        console.log(id, status)
+ 
         router.patch(`/admin/events/${id}`,
             {
                 status: status,
             },
             {
+                showProgress: false,
                 // Keeps the user on the same scroll position after the table updates
                 preserveScroll: true,
                 onBefore: () => setProcessingId(id),
