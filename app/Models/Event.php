@@ -18,10 +18,15 @@ class Event extends Model
         'start_time',
         'end_time',
         'area', // This will store our Polygon
+        'organization_id'
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date'   => 'date',
     ];
+
+     public function organization(){
+        return $this->belongsTo(Organization::class, "organization_id");
+    }
 }

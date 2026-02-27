@@ -24,7 +24,6 @@ return new class extends Migration {
 
             $table->geometry('area'); // This stores the Polygon
             $table->spatialIndex('area'); // Critical for speed
-
             $table->timestamps();
         });
     }

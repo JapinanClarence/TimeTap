@@ -39,7 +39,6 @@ export function NavUser({
 
     const { post } = useForm();
     const handleLogout = () => {
-        console.log("pressed");
         post("/logout");
     };
     return (

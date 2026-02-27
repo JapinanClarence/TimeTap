@@ -23,11 +23,10 @@ export default function LoginForm() {
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
-        console.log(data);
         post("/auth/login");
     };
 
-    const handleShowPassword = (type: any) => {
+    const handleShowPassword = () => {
         if (showPassword) {
             return setShowPassword(false);
         }
@@ -88,7 +87,7 @@ export default function LoginForm() {
                                             variant={"ghost"}
                                             type="button"
                                             onClick={() =>
-                                                handleShowPassword("pass")
+                                                handleShowPassword()
                                             }
                                         >
                                             <Eye className="" />
@@ -100,7 +99,7 @@ export default function LoginForm() {
                                             variant={"ghost"}
                                             type="button"
                                             onClick={() =>
-                                                handleShowPassword("pass")
+                                                handleShowPassword()
                                             }
                                         >
                                             <EyeClosed className="" />

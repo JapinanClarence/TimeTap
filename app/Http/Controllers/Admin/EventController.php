@@ -13,7 +13,15 @@ class EventController extends Controller
      //
      public function index()
      {
-          return Inertia::render("admin/events");
+          $events = Event::select('id', 'title', 'description', 'location', 'start_date', 'end_date', 'start_time', 'end_time')
+               ->latest()
+               ->paginate(10) // 10 items per page
+               ->withQueryString(); // Keeps filters if you have search/sorting
+
+
+          return Inertia::render('admin/events', [
+               'events' => Inertia::defer(fn() => $events)
+          ]);
      }
      public function create()
      {
@@ -48,6 +56,8 @@ class EventController extends Controller
           $firstPoint = "{$coords[0]['long']} {$coords[0]['lat']}";
           $wkt = "POLYGON(({$pointsString}, {$firstPoint}))";
 
+          $org = auth()->user()->ownedOrganization()->first();
+
           // 4. Create the record
           // We use ST_GeomFromText to convert the string into a spatial object
           Event::create([
@@ -59,6 +69,7 @@ class EventController extends Controller
                'start_time' => $data['start_time'],
                'end_time' => $data['end_time'],
                'area' => DB::raw("ST_GeomFromText('{$wkt}', 4326)"),
+               'organization_id' => $org->id,
           ]);
 
           return redirect()->route("admin.events")->with('success', 'Event created successfully with geofence!');

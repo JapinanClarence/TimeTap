@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -13,30 +12,62 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "../../../../components/ui/data-table-column-header";
+import { EventType } from "@/types/event";
+import { formatSimpleDate, formatTime12h } from "@/util/dateUtil";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-    id: string;
-    amount: number;
-    status: "pending" | "processing" | "success" | "failed";
-    email: string;
-};
 
-export const columns: ColumnDef<Payment>[] = [
+
+export const columns: ColumnDef<EventType>[] = [
     {
-        accessorKey: "status",
-        header: "Status",
-    },
-    {
-        accessorKey: "email",
+        accessorKey: "title",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Email" />
+            <div className="ml-2">
+                <DataTableColumnHeader column={column} title="Title" />
+            </div>
         ),
     },
     {
-        accessorKey: "amount",
-        header: "Amount",
+        accessorKey: "description",
+        header: "Description",
+        cell: ({ row }) => (
+            <div className="w-20 truncate">{row.getValue("description")}</div>
+        ),
+    },
+    {
+        accessorKey: "location",
+        header: "Location",
+    },
+    {
+        accessorKey: "start_date",
+        header: "Start date",
+        cell: ({ row }) => {
+            const start_date = formatSimpleDate(row.getValue("start_date"));
+            return <div>{start_date}</div>;
+        },
+    },
+    {
+        accessorKey: "end_date",
+        header: "End date",
+        cell: ({ row }) => {
+            const end_date = formatSimpleDate(row.getValue("end_date"));
+            return <div>{end_date}</div>;
+        },
+    },
+    {
+        accessorKey: "start_time",
+        header: "Start time",
+        cell: ({ row }) => {
+            const start_time = formatTime12h(row.getValue("start_time"));
+            return <div>{start_time}</div>;
+        },
+    },
+    {
+        accessorKey: "end_time",
+        header: "End time",
+        cell: ({ row }) => {
+            const end_time = formatTime12h(row.getValue("end_time"));
+            return <div>{end_time}</div>;
+        },
     },
     {
         id: "actions",
@@ -53,13 +84,6 @@ export const columns: ColumnDef<Payment>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(payment.id)
-                            }
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View customer</DropdownMenuItem>
                         <DropdownMenuItem>

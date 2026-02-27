@@ -26,13 +26,14 @@ import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Plus } from "lucide-react";
 import { Link } from "@inertiajs/react";
+import { Skeleton } from "./skeleton";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function TableSkeleton<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
@@ -62,28 +63,15 @@ export function DataTable<TData, TValue>({
     return (
         <>
             <div className="flex items-center justify-between gap-2 py-4">
-                <Input
-                    placeholder="Search events..."
-                    value={
-                        (table
-                            .getColumn("title")
-                            ?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn("title")
-                            ?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+                <div className="h-9 w-full max-w-sm border rounded-lg"></div>
                 <div className="flex items-center gap-2 ">
                     <Link href={"/admin/events/add"}>
                         <Button className="" size={"sm"}>
-                            <Plus />{" "}
+                            <Plus />
                             <span className="hidden md:flex">Add Event</span>
                         </Button>
                     </Link>
-                    <DataTableViewOptions table={table} />
+                       <DataTableViewOptions table={table} />
                 </div>
             </div>
             <div className="overflow-hidden rounded-md border">
@@ -108,40 +96,19 @@ export function DataTable<TData, TValue>({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    className=""
-                                    key={row.id}
-                                    data-state={
-                                        row.getIsSelected() && "selected"
-                                    }
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext(),
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    No results.
-                                </TableCell>
+                        {Array.from({ length: 5 }).map((_, rowIndex) => (
+                            <TableRow key={rowIndex}>
+                                {Array.from({
+                                    length: table.getAllColumns().length,
+                                }).map((_, cellIndex) => (
+                                    <TableCell key={cellIndex}>
+                                        <Skeleton className="h-5" />
+                                    </TableCell>
+                                ))}
                             </TableRow>
-                        )}
+                        ))}
                     </TableBody>
                 </Table>
-            </div>
-            <div className=" py-4">
-                <DataTablePagination table={table} />
             </div>
         </>
     );
