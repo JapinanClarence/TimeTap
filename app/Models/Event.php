@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory;
-   protected $fillable = [
+    use HasUlids;
+
+    protected $fillable = [
         'title',
         'description',
         'location',
@@ -24,10 +28,11 @@ class Event extends Model
 
     protected $casts = [
         'start_date' => 'date',
-        'end_date'   => 'date',
+        'end_date' => 'date',
     ];
 
-     public function organization(){
+    public function organization()
+    {
         return $this->belongsTo(Organization::class, "organization_id");
     }
 }

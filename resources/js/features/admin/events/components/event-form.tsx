@@ -34,7 +34,7 @@ export default function EventForm({ data, setData, errors, method }: EventFormPr
         <div>
             <div className="mb-2">
                 <div>
-                    <h1 className="font-semibold">{`${method === "edit" && "Edit"} Basic Information`}</h1>
+                    <h1 className="font-semibold">{`${method === "edit" ? "Edit" :""} Basic Information`}</h1>
                     <p className="text-sm text-muted-foreground">
                         Complete the required fields below to configure your event's primary details.
                     </p>
