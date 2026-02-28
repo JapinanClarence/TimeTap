@@ -14,7 +14,7 @@ import { Layers, Locate, MapPin, RotateCcw, X } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { EventType } from "@/types/event";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 interface GeofenceMapProps {
     data: EventType;
     // This specific signature matches Inertia's useForm hook exactly
@@ -179,9 +179,27 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
                     }}
                     theme="light"
                 >
-                    <MapControls showZoom={false} showFullscreen showLocate />
+                    {/* User location marker */}
+                    {center && (
+                        <MapMarker longitude={center[0]} latitude={center[1]}>
+                            <MarkerContent>
+                                <div className="relative">
+                                    {/* The solid inner circle */}
+                                    <div className="h-4 w-4 rounded-full bg-blue-500 border-2 border-white shadow-lg"></div>
+                                    {/* pulsing outer circle animation */}
+                                    <div className="absolute inset-0 h-4 w-4 rounded-full bg-blue-400 animate-ping"></div>
+                                </div>
+                            </MarkerContent>
+                        </MapMarker>
+                    )}
+                    <MapControls
+                        showZoom={false}
+                        showFullscreen
+                        showLocate
+                        showCompass
+                    />
                     <MapClickHandler onPointAdd={addPoint} />
-                    <UserLocationMarker center={center} accuracy={accuracy} />
+                    {/* <UserLocationMarker center={center} accuracy={accuracy} /> */}
                     {/* Visual Layer to show the geofence as the user clicks */}
                     <PolygonLayer coordinates={data.coordinates} />
                 </Map>
@@ -300,121 +318,6 @@ function PolygonLayer({ coordinates }: PolygonLayerProps) {
             });
         }
     }, [map, isLoaded, coordinates]);
-
-    return null;
-}
-
-function UserLocationMarker({ center }: UserMarkerProps) {
-    const { map, isLoaded } = useMap();
-
-    useEffect(() => {
-        if (!map || !isLoaded) return;
-
-        const sourceId = "user-location";
-        const layerId = "user-location-layer";
-        const imageId = "user-location-pulse";
-
-        const size = 120;
-
-        // --- 1️⃣ Create pulsing image ---
-        const pulsingDot: any = {
-            width: size,
-            height: size,
-            data: new Uint8Array(size * size * 4),
-
-            onAdd() {
-                const canvas = document.createElement("canvas");
-                canvas.width = this.width;
-                canvas.height = this.height;
-                this.context = canvas.getContext("2d");
-            },
-
-            render() {
-                const duration = 1000; // smoother longer pulse
-                const t = (performance.now() % duration) / duration;
-
-                const context = this.context;
-                const center = size / 2;
-
-                const innerRadius = center * 0.25;
-                const outerRadius = center * 0.7 * t + innerRadius;
-
-                context.clearRect(0, 0, size, size);
-
-                // --- Outer expanding pulse ---
-                context.beginPath();
-                context.arc(center, center, outerRadius, 0, Math.PI * 2);
-                context.fillStyle = `rgba(59,130,246,${1 - t})`; // Tailwind blue-500
-                context.fill();
-
-                // --- Inner solid dot ---
-                context.beginPath();
-                context.arc(center, center, innerRadius, 0, Math.PI * 2);
-                context.fillStyle = "rgba(59,130,246,1)";
-                context.strokeStyle = "white";
-                context.lineWidth = 2;
-                context.fill();
-                context.stroke();
-
-                this.data = context.getImageData(0, 0, size, size).data;
-
-                map.triggerRepaint();
-                return true;
-            },
-        };
-
-        // ---  Add image to map ---
-        if (!map.hasImage(imageId)) {
-            map.addImage(imageId, pulsingDot, { pixelRatio: 2 });
-        }
-
-        // ---  Add GeoJSON source ---
-        if (!map.getSource(sourceId)) {
-            map.addSource(sourceId, {
-                type: "geojson",
-                data: {
-                    type: "Feature",
-                    geometry: {
-                        type: "Point",
-                        coordinates: center,
-                    },
-                    properties: {},
-                },
-            });
-        }
-
-        // ---  Add Symbol layer using animated image ---
-        if (!map.getLayer(layerId)) {
-            map.addLayer({
-                id: layerId,
-                type: "symbol",
-                source: sourceId,
-                layout: {
-                    "icon-image": imageId,
-                    "icon-size": 1,
-                },
-            });
-        }
-
-        // ---  Update position when center changes ---
-        const source = map.getSource(sourceId) as any;
-        if (source) {
-            source.setData({
-                type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: center,
-                },
-                properties: {},
-            });
-        }
-
-        return () => {
-            if (map.getLayer(layerId)) map.removeLayer(layerId);
-            if (map.getSource(sourceId)) map.removeSource(sourceId);
-            if (map.hasImage(imageId)) map.removeImage(imageId);
-        };
-    }, [map, isLoaded, center]);
 
     return null;
 }
