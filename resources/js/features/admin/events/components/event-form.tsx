@@ -23,9 +23,10 @@ interface EventFormProps {
     data: EventType;
     setData: (key: keyof EventType, value: string) => void;
     errors: any;
+    method:string;
 }
 
-export default function EventForm({ data, setData, errors }: EventFormProps) {
+export default function EventForm({ data, setData, errors, method }: EventFormProps) {
     const [date, setDate] = React.useState<Date | undefined>(
         new Date(new Date().getFullYear(), new Date().getMonth(), 12),
     );
@@ -33,7 +34,7 @@ export default function EventForm({ data, setData, errors }: EventFormProps) {
         <div>
             <div className="mb-2">
                 <div>
-                    <h1 className="font-semibold">Basic Information</h1>
+                    <h1 className="font-semibold">{`${method === "edit" && "Edit"} Basic Information`}</h1>
                     <p className="text-sm text-muted-foreground">
                         Complete the required fields below to configure your event's primary details.
                     </p>

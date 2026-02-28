@@ -14,6 +14,7 @@ import {
     ArrowUpDown,
     Check,
     Cross,
+    Edit,
     Loader2,
     Minus,
     MoreHorizontal,
@@ -30,6 +31,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Link } from "@inertiajs/react";
+
 
 export const columns: ColumnDef<EventType>[] = [
     {
@@ -148,6 +151,12 @@ export const columns: ColumnDef<EventType>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link href={`/admin/events/edit/${row.original.id}`}>
+                                <Edit />
+                                Edit Event
+                            </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                             <QrCode />
                             Generate QR

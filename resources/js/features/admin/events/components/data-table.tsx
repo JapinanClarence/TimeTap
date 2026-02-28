@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     onStatusChange: (id: number, status: string) => void;
-    processingId : number | null,
+    processingId: number | null;
 }
 
 export function DataTable<TData, TValue>({
@@ -45,6 +45,9 @@ export function DataTable<TData, TValue>({
         React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({});
+    const [globalFilter, setGlobalFilter] = React.useState("");
+
+    const filterColumns = ["status", "title", "location"];
 
     const table = useReactTable({
         data,
@@ -60,10 +63,22 @@ export function DataTable<TData, TValue>({
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: (row, columnId, filterValue) => {
+            const searchableValue = String(filterValue).toLowerCase();
+
+            return filterColumns.some((id) => {
+                const cellValue = row.getValue(id);
+                return String(cellValue)
+                    .toLowerCase()
+                    .includes(searchableValue);
+            });
+        },
         state: {
             sorting,
             columnFilters,
             columnVisibility,
+            globalFilter,
         },
     });
 
@@ -71,17 +86,9 @@ export function DataTable<TData, TValue>({
         <>
             <div className="flex items-center justify-between gap-2 py-4">
                 <Input
-                    placeholder="Search events..."
-                    value={
-                        (table
-                            .getColumn("title")
-                            ?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn("title")
-                            ?.setFilterValue(event.target.value)
-                    }
+                    placeholder="Filter events..."
+                    value={globalFilter}
+                    onChange={(event) => setGlobalFilter(event.target.value)}
                     className="max-w-sm"
                 />
                 <div className="flex items-center gap-2 ">

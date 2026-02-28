@@ -1,7 +1,7 @@
 import { Check, Clock2Icon, ClockPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useMemo, useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { useMemo, useState, useEffect } from "react";
+import { router, useForm } from "@inertiajs/react";
 import { EventType } from "@/types/event";
 import { AnimatePresence, motion } from "framer-motion";
 import { GeofenceMap } from "./geofence-map";
@@ -12,7 +12,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 
 interface EventFormProps {
-    title?: string;
+    method?: "add" | "edit";
+    event_data?: EventType;
 }
 
 const STEPS = {
@@ -21,10 +22,27 @@ const STEPS = {
     third_step: 3,
 };
 
-export default function Form({ title }: EventFormProps) {
+export default function Form({ method = "add", event_data }: EventFormProps) {
     const [step, setStep] = useState(1);
-    const { data, setData, post, processing, errors, setError, clearErrors } =
-        useForm<EventType>({
+
+    // when editing, pull defaults from the passed-in `event_data`; note the
+    // coords live under `area.coordinates`.  fall back to empty/blank values
+    // for the add case (or missing properties).
+    const initialData: EventType = useMemo(() => {
+        if (method === "edit" && event_data) {
+            return {
+                title: event_data.title || "",
+                description: event_data.description || "",
+                location: event_data.location || "",
+                start_date: event_data.start_date || "",
+                end_date: event_data.end_date || "",
+                start_time: event_data.start_time || "",
+                end_time: event_data.end_time || "",
+                status: event_data.status ?? "active",
+                coordinates: event_data.coordinates || [],
+            } as EventType;
+        }
+        return {
             title: "",
             description: "",
             location: "",
@@ -32,13 +50,25 @@ export default function Form({ title }: EventFormProps) {
             end_date: "",
             start_time: "",
             end_time: "",
-            status:"active",
+            status: "active",
             coordinates: [],
-        });
+        } as EventType;
+    }, [method, event_data]);
+
+    const { data, setData, post, processing, errors, setError, clearErrors } =
+        useForm<EventType>(initialData);
+
+    // if props change while editing (unlikely but possible), overwrite form state
+    // with the new values.  useForm only applies initialData on the first render,
+    // so we need this effect for later updates.
+    useEffect(() => {
+        if (method === "edit" && event_data) {
+            setData(initialData);
+        }
+    }, [method, event_data, initialData, setData]);
 
     const validate = () => {
         const result = eventSchema.safeParse(data);
-
         if (!result.success) {
             clearErrors();
 
@@ -55,6 +85,7 @@ export default function Form({ title }: EventFormProps) {
 
         return true;
     };
+
     // handle stepper state
     const nextStep = () => {
         if (!validate()) return;
@@ -65,29 +96,40 @@ export default function Form({ title }: EventFormProps) {
 
     const prevStep = () => setStep((prev) => prev - 1);
 
-     const submit = (e: React.FormEvent) => {
-            e.preventDefault();
+    const submit = (e: React.SubmitEvent) => {
+        e.preventDefault();
 
-            post("/admin/events/add", {
+        const url =
+            method === "edit" && event_data?.id
+                ? `/admin/events/edit/${event_data.id}`
+                : "/admin/events/add";
+        if (method === "edit") {
+            return router.put(url, data, {
                 showProgress: false,
-                // Triggered if the request is successful (Status 200-300)
-                onSuccess: () => {
-                    toast.success("Event created successfully!");
-                },
-                // Triggered if there are validation errors (Status 422)
-                onError: (errors) => {
-                    // Check if there are specific errors or just show a general message
-                    const errorCount = Object.keys(errors).length;
-                    toast.error(
-                        `Failed to upload: ${errorCount} fields require attention.`,
-                    );
-                },
-                // Optional: Triggered on any finish (success or error)
-                onFinish: () => {
-                    // Useful for stopping a loading spinner if you have one
-                },
+                onSuccess: () => toast.success("Event updated successfully!"),
+                onError: (errors) => toast.error("Failed up update event!"),
             });
-        };
+        }
+        post(url, {
+            showProgress: false,
+            // Triggered if the request is successful (Status 200-300)
+            onSuccess: () => {
+                toast.success("Event created successfully!");
+            },
+            // Triggered if there are validation errors (Status 422)
+            onError: (errors) => {
+                // Check if there are specific errors or just show a general message
+                const errorCount = Object.keys(errors).length;
+                toast.error(
+                    `Failed to upload: ${errorCount} fields require attention.`,
+                );
+            },
+            // Optional: Triggered on any finish (success or error)
+            onFinish: () => {
+                // Useful for stopping a loading spinner if you have one
+            },
+        });
+    };
     return (
         <>
             <div>
@@ -195,6 +237,7 @@ export default function Form({ title }: EventFormProps) {
                         {step === STEPS.first_step && (
                             <motion.div>
                                 <EventForm
+                                    method={method}
                                     data={data}
                                     setData={setData}
                                     errors={errors}

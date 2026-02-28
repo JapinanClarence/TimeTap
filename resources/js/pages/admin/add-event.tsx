@@ -5,12 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "@inertiajs/react";
 
-export default function Events() {
-    const [showForm, setShowForm] = useState<boolean>(false);
-
-    const handleShowForm = () => {
-        setShowForm(true);
-    };
+export default function AddEvent() {
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl md:min-h-min flex flex-col p-5">
