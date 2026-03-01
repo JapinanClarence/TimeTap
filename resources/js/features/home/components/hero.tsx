@@ -2,7 +2,7 @@ import React from "react";
 import {
     TypewriterEffectSmooth,
     TypewriterEffect,
-} from "../ui/typewriter-effect";
+} from "../../../components/ui/typewriter-effect";
 import Container from "@/components/ui/container";
 import GradientBg from "@/components/ui/gradient-bg";
 

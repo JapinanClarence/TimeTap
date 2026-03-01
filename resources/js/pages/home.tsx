@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Hero from "@/components/home/hero";
-import Feature from "@/components/home/feature";
+import Hero from "@/features/home/components/hero";
+import Feature from "@/features/home/components/feature";
 import Layout from "@/layouts/Layout";
-import CTA from "@/components/home/cta";
+import CTA from "@/features/home/components/cta";
 
 export default function Home() {
     return (
