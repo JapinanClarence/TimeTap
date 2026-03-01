@@ -1,30 +1,29 @@
 <?php
 
-use App\Http\Controllers\AppController;
+use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\QRController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\User\QRController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Auth\AuthController;
 
 
 
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("welcome");
-    Route::get("/login", [UserController::class, "login"])->name("login");
-    Route::post("/auth/login", [UserController::class, "authenticate"]);
-    Route::get("/register/organization", [UserController::class, "showOrgRegister"]);
-    Route::post("/register/organization", [UserController::class, "storeOrgRegister"]);
-    Route::get("/register", [UserController::class, "create"])->name("register");
-    Route::post("/auth/register", [UserController::class, "store"]);
+    Route::get("/login", [AuthController::class, "login"])->name("login");
+    Route::post("/auth/login", [AuthController::class, "authenticate"]);
+    Route::get("/register/organization", [AuthController::class, "showOrgRegister"]);
+    Route::post("/register/organization", [AuthController::class, "storeOrgRegister"]);
+    Route::get("/register", [AuthController::class, "create"])->name("register");
+    Route::post("/auth/register", [AuthController::class, "store"]);
 });
 
 // --- AUTHENTICATED SHARED ROUTES ---
 Route::middleware(['auth'])->group(function () {
-    Route::post("/logout", [UserController::class, "logout"])->name('logout');
+    Route::post("/logout", [AuthController::class, "logout"])->name('logout');
 
     // Redirect logic: A central route to send users to their respective home
     Route::get('/home', function () {

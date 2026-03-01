@@ -7,8 +7,14 @@ import { UserType } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import Sheet from "@/features/app/settings/Sheet";
 
+interface Paginated<T> {
+    data: T;
+    links: any[];
+    meta: any;
+}
+
 interface PageProps {
-    auth: { user: UserType };
+    auth: { user: Paginated<UserType> };
     [key: string]: unknown;
 }
 
@@ -20,6 +26,8 @@ export default function MobileHeader() {
     const handleLogout = () => {
         post("/logout");
     };
+
+    const user = auth.user.data;
 
     return (
         <header className="fixed top-0 z-50 w-full border-b bg-background ">
@@ -45,7 +53,7 @@ export default function MobileHeader() {
                             Good Morning,
                         </p>
                         <h2 className="font-semibold text-xl">
-                            {auth?.user.first_name} {auth?.user.last_name}
+                            {user.first_name} {user.last_name}
                         </h2>
                     </div>
                 </div>
