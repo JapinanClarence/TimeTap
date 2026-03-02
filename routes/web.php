@@ -4,12 +4,10 @@ use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\OrganizationController;
 use App\Http\Controllers\User\QRController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-
-
-
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("welcome");
@@ -37,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/", [AppController::class, "index"])->name("app.index");
     Route::get("/qr", [QRController::class, "index"])->name("qr");
+    Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
+    Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
 });
 
 // --- ADMIN ONLY ROUTES ---

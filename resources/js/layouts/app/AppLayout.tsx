@@ -12,7 +12,7 @@ export default function AppLayout({
     showHeader = true,
 }: AppLayoutProps) {
     return (
-        <div className="relative">
+        <div>
             {showHeader && <MobileHeader />}
             <main>{children}</main>
             <MobileNav />

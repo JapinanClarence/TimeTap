@@ -23,7 +23,9 @@ class Organization extends Model
 
     public function members()
     {
-        return $this->belongsToMany(User::class);
+       return $this->belongsToMany(Organization::class, 'user_organizations')
+            ->using(UserOrganization::class)
+            ->withTimestamps();
     }
     /**
      * The Events belonging to this organization.

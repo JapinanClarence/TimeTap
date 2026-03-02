@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AppLayout from "@/layouts/app/AppLayout";
 import Container from "@/components/ui/container";
-import { formatSimpleDate, formatWeekDayOnly } from "@/util/dateUtil";
+import {
+    formatSimpleDate,
+    formatTime12h,
+    formatWeekDayOnly,
+} from "@/util/dateUtil";
 import { cn } from "@/lib/utils";
 import EventCard from "@/features/app/home/event-card";
 import { ArrowRightLeft, Building2, History, Plus, User } from "lucide-react";
@@ -12,63 +16,81 @@ import { EventType } from "@/types/event";
 import { OrganizationType } from "@/types/organization";
 import { usePage } from "@inertiajs/react";
 import { NoContent } from "@/features/app/home/no-content";
-
-const upcomingEvent = [
-    {
-        month: "FEB",
-        day: 23,
-        title: "IT Week",
-        dayOfWeek: "Sunday",
-        time: "8:00 AM",
-        location: "Gymnasium • Main Hall",
-    },
-    {
-        month: "FEB",
-        day: 25,
-        title: "React Meetup",
-        dayOfWeek: "Wednesday",
-        time: "6:30 PM",
-        location: "Tech Hub • Room 3A",
-    },
-    {
-        month: "MAR",
-        day: 1,
-        title: "Cloud Summit",
-        dayOfWeek: "Sunday",
-        time: "9:00 AM",
-        location: "Convention Center • Lobby",
-    },
-    {
-        month: "MAR",
-        day: 8,
-        title: "Design Sprint",
-        dayOfWeek: "Sunday",
-        time: "10:00 AM",
-        location: "Creative Studio • Floor 2",
-    },
-];
-
-const currentEvent = {
-    month: "FEB",
-    day: 22,
-    title: "DevMeet 2026",
-    dayOfWeek: "Sunday",
-    time: "8:00 AM",
-    location: "IT Building • Main Hall",
-    status: "in-range" as const,
-};
+import JoinOrgSheet from "@/components/app/join-org-sheet";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
-    currentEvent: EventType | null;
-    upcomingEvents: EventType[];
+    currentEvent: { data: EventType } | null;
+    upcomingEvents: { data: EventType[] };
+    joinableOrganizations: OrganizationType[];
+    myOrganizations: OrganizationType[];
     [key: string]: unknown;
 }
+
+export interface ProcessedEvent extends EventType {
+    month: string;
+    day: number;
+    dayOfWeek: string;
+    time: string;
+}
+
+export const formatEventDisplay = (event: EventType): ProcessedEvent => {
+    if (!event)
+        return {
+            month: "",
+            day: 0,
+            title: "",
+            dayOfWeek: "",
+            time: "",
+            location: "",
+            start_time: "",
+            end_time: "",
+            start_date: "",
+            end_date: "",
+        };
+
+    const start = new Date(event.start_date);
+    const end = new Date(event.end_date);
+
+    return {
+        ...event,
+        month: start.toLocaleString("en-US", { month: "short" }).toUpperCase(),
+        day: start.getDate(),
+        dayOfWeek: `${formatWeekDayOnly(start)} - ${formatWeekDayOnly(end)}`,
+        // Ensure formatTime12h handles the logic, avoid .slice(0,5) here if it cuts off AM/PM
+        time: `${formatTime12h(event.start_time).slice(0,5)} - ${formatTime12h(event.end_time)}`,
+    };
+};
 
 export default function Index() {
     const { props } = usePage<AppHomeProps>();
     const [time, setTime] = useState(new Date());
-    // console.log(props);
+    const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
+
+    const currentOrg = props.currentOrg;
+    const currentEvent = props.currentEvent?.data;
+    const upcomingEvents = props.upcomingEvents?.data;
+
+    const processedEvent = useMemo(() => {
+        if (!currentEvent) {
+            return {
+                month: "",
+                day: 0,
+                title: "",
+                dayOfWeek: "",
+                time: "",
+                location: "",
+            };
+        }
+        return formatEventDisplay(currentEvent);
+    }, [currentEvent]);
+
+    const processedUpcomingEvents = useMemo(() => {
+        if (!upcomingEvents) return [];
+
+        return upcomingEvents.map(formatEventDisplay);
+    }, [upcomingEvents]);
+
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -78,15 +100,16 @@ export default function Index() {
     }, []);
 
     const isInRange = false;
+
     return (
         <AppLayout>
             <main className="pt-24">
                 <Container className="space-y-5">
-                    {props.currentOrg ? (
+                    {currentOrg ? (
                         <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
                             <p className="font-semibold">
                                 <Building2 className="inline text-primary mr-2" />{" "}
-                                ACES
+                                {currentOrg.name}
                             </p>
                             <Button variant={"link"}>
                                 Switch <ArrowRightLeft />
@@ -95,8 +118,11 @@ export default function Index() {
                     ) : (
                         <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
                             <p className="font-semibold">No Organization</p>
-                            <Button variant={"link"}>
-                                Joing Org <Plus />
+                            <Button
+                                variant={"link"}
+                                onClick={() => setShowJoinOrgSheet(true)}
+                            >
+                                Join Org <Plus />
                             </Button>
                         </div>
                     )}
@@ -108,9 +134,9 @@ export default function Index() {
                             {formatWeekDayOnly(time)},{formatSimpleDate(time)}
                         </p>
                         <div className="mt-5 ">
-                            {props.currentEvent ? (
+                            {currentEvent ? (
                                 <>
-                                    <EventCard {...currentEvent} />
+                                    <EventCard {...processedEvent} />
                                     {/* Geofence Status Indicator */}
                                     <GeofenceIndicator isInRange={isInRange} />
                                 </>
@@ -151,8 +177,8 @@ export default function Index() {
                         </div>
 
                         <div className="space-y-2">
-                            {props.upcomingEvents.length > 0 ? (
-                                upcomingEvent.map((e, i) => (
+                            {upcomingEvents.length > 0 ? (
+                                processedUpcomingEvents?.map((e, i) => (
                                     <UpcomingEventCard key={i} {...e} />
                                 ))
                             ) : (
@@ -165,6 +191,11 @@ export default function Index() {
                     </section>
                 </Container>
             </main>
+            <JoinOrgSheet
+                open={showJoinOrgSheet}
+                onClose={() => setShowJoinOrgSheet(false)}
+                organizations={props.joinableOrganizations}
+            />
         </AppLayout>
     );
 }

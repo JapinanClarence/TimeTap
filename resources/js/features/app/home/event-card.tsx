@@ -11,7 +11,7 @@ interface EventCardProps {
     dayOfWeek: string;
     time: string;
     location: string;
-    status: "in-range" | "upcoming" | "passed";
+    rangeStatus?: "in-range" | "upcoming" | "passed";
     showStatus?: boolean;
 }
 
@@ -36,10 +36,10 @@ export default function EventCard({
     dayOfWeek,
     time,
     location,
-    status,
+    rangeStatus,
     showStatus = true,
 }: EventCardProps) {
-    const s = statusConfig[status];
+    const s = statusConfig["in-range"];
     return (
         <div className="flex items-center gap-4 rounded-lg bg-card p-4 shadow-sm border border-border border-l-5 border-l-[#b6cbfb] transition-shadow hover:shadow-md">
             <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10">

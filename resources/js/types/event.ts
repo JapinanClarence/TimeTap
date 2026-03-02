@@ -11,5 +11,5 @@ export type EventType = {
         long: number;
         lat: number;
     }[];
-    id? :number;
+    id? :string;
 };

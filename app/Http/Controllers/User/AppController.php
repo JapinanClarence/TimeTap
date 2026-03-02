@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Organization;
-use Event;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -22,12 +22,20 @@ class AppController extends Controller
 
         $currentOrg = Organization::find($user->current_organization_id);
 
+        $joinableOrg = Organization::whereDoesntHave('members', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+            ->where('owner_id', '!=', $user->id)
+            ->get(['id', 'name']);
+
         //get current org 
         if (!$currentOrg) {
             return Inertia::render("app/index", [
                 'currentOrg' => null,
                 'currentEvent' => null,
-                'upcomingEvents' => []
+                'upcomingEvents' => [],
+                "myOrganizations" => [],
+                "joinableOrganizations" => $joinableOrg
             ]);
         }
 
@@ -38,16 +46,50 @@ class AppController extends Controller
             ->first();
 
         // Events starting after today, ordered by date
-        $upcomingEvents = Event::where('organization_id', $currentOrg->id)
+        $upcomingEvents = Event::select(
+            'id',
+            'title',
+            'description',
+            'location',
+            'start_date',
+            'end_date',
+            'start_time',
+            'end_time',
+        )->where('organization_id', $currentOrg->id)
             ->where('start_date', '>', $today)
             ->orderBy('start_date', 'asc')
             ->limit(5)
             ->get();
+            
 
         return Inertia::render("app/index", [
+            "joinableOrganizations" => $joinableOrg,
+            'myOrganizations' => $user->organizations,
             "currentOrg" => $currentOrg,
             "currentEvent" => $currentEvent ? new EventResource($currentEvent) : null,
             "upcomingEvents" => EventResource::collection($upcomingEvents),
         ]);
+    }
+    /**
+     * Switch the user's active organization view.
+     */
+    public function switchOrganization(Request $request)
+    {
+        $request->validate([
+            'organization_id' => 'required|exists:organizations,id'
+        ]);
+
+        $user = $request->user();
+
+        // Security check: Verify they actually belong to this org
+        if (!$user->organizations()->where('organization_id', $request->organization_id)->exists()) {
+            return back()->withErrors(['message' => 'Unauthorized switch.']);
+        }
+
+        $user->update([
+            'current_organization_id' => $request->organization_id
+        ]);
+
+        return back()->with('success', 'Switched organization.');
     }
 }

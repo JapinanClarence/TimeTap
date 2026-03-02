@@ -24,7 +24,6 @@ export default function Sheet({ open, onClose, onLogout }: SheetProps) {
             open={open}
             onOpenChange={onClose}
             direction="right"
-            modal={false}
         >
             <DrawerContent>
                 <DrawerHeader className="text-left">

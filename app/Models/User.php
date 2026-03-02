@@ -25,7 +25,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        "role"
+        "role",
+        "current_organization_id"
     ];
 
     /**
@@ -55,8 +56,11 @@ class User extends Authenticatable
         return $this->hasOne(Organization::class, 'owner_id');
     }
 
+    // In User.php AND Organization.php
     public function organizations()
     {
-        return $this->belongsToMany(Organization::class);
+        return $this->belongsToMany(Organization::class, 'user_organizations')
+            ->using(UserOrganization::class) 
+            ->withTimestamps();
     }
 }

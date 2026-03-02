@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class UserOrganization extends Model
+class UserOrganization extends Pivot
 {
     //
      use HasUlids;
 
-      protected $fillable = [
-        'user_id',
-    ];
+    protected $table = 'user_organizations';
+    public $incrementing = false;
 }
