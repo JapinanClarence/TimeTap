@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => fn() => $request->user()
                     ? new UserResource($request->user())
                     : null,
+                'current_org_id' => $request->user()?->current_organization_id,
             ],
         ];
     }

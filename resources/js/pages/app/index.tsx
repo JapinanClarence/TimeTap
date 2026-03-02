@@ -4,22 +4,14 @@ import Container from "@/components/ui/container";
 import { formatSimpleDate, formatWeekDayOnly } from "@/util/dateUtil";
 import { cn } from "@/lib/utils";
 import EventCard from "@/features/app/home/event-card";
-import {
-    ArrowRight,
-    ArrowRightLeft,
-    Building2,
-    ClipboardClock,
-    History,
-    MapPin,
-    Navigation,
-    Search,
-    Settings,
-    User,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ArrowRightLeft, Building2, History, Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UpcomingEventCard } from "@/features/app/home/upcoming-event-card";
-import {GeofenceIndicator} from "@/features/app/home/geofence-indicator";
+import { GeofenceIndicator } from "@/features/app/home/geofence-indicator";
+import { EventType } from "@/types/event";
+import { OrganizationType } from "@/types/organization";
+import { usePage } from "@inertiajs/react";
+import { NoContent } from "@/features/app/home/no-content";
 
 const upcomingEvent = [
     {
@@ -66,9 +58,17 @@ const currentEvent = {
     status: "in-range" as const,
 };
 
-export default function Index() {
-    const [time, setTime] = useState(new Date());
+interface AppHomeProps {
+    currentOrg: OrganizationType | null;
+    currentEvent: EventType | null;
+    upcomingEvents: EventType[];
+    [key: string]: unknown;
+}
 
+export default function Index() {
+    const { props } = usePage<AppHomeProps>();
+    const [time, setTime] = useState(new Date());
+    // console.log(props);
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -82,15 +82,25 @@ export default function Index() {
         <AppLayout>
             <main className="pt-24">
                 <Container className="space-y-5">
-                    <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
-                        <p className="font-semibold">
-                            <Building2 className="inline text-primary mr-2" />{" "}
-                            ACES
-                        </p>
-                        <Button variant={"link"}>
-                            Switch <ArrowRightLeft />
-                        </Button>
-                    </div>
+                    {props.currentOrg ? (
+                        <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                            <p className="font-semibold">
+                                <Building2 className="inline text-primary mr-2" />{" "}
+                                ACES
+                            </p>
+                            <Button variant={"link"}>
+                                Switch <ArrowRightLeft />
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                            <p className="font-semibold">No Organization</p>
+                            <Button variant={"link"}>
+                                Joing Org <Plus />
+                            </Button>
+                        </div>
+                    )}
+
                     <section>
                         <h2 className="font-semibold text-xl">Today's Event</h2>
 
@@ -98,10 +108,18 @@ export default function Index() {
                             {formatWeekDayOnly(time)},{formatSimpleDate(time)}
                         </p>
                         <div className="mt-5 ">
-                            
-                            <EventCard {...currentEvent} />
-                            {/* Geofence Status Indicator */}
-                           <GeofenceIndicator isInRange={isInRange}/>
+                            {props.currentEvent ? (
+                                <>
+                                    <EventCard {...currentEvent} />
+                                    {/* Geofence Status Indicator */}
+                                    <GeofenceIndicator isInRange={isInRange} />
+                                </>
+                            ) : (
+                                <NoContent
+                                    title="No Event"
+                                    description="No current event found"
+                                />
+                            )}
                         </div>
                     </section>
 
@@ -133,9 +151,16 @@ export default function Index() {
                         </div>
 
                         <div className="space-y-2">
-                            {upcomingEvent.map((e, i) => (
-                                <UpcomingEventCard key={i} {...e} />
-                            ))}
+                            {props.upcomingEvents.length > 0 ? (
+                                upcomingEvent.map((e, i) => (
+                                    <UpcomingEventCard key={i} {...e} />
+                                ))
+                            ) : (
+                                <NoContent
+                                    title="No Events"
+                                    description="No upcoming events"
+                                />
+                            )}
                         </div>
                     </section>
                 </Container>
