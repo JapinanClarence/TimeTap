@@ -23,7 +23,7 @@ class MemberController extends Controller
                 'users.id',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
                 'users.email',
-                'created_at'
+                'user_organizations.created_at'
             ])
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)

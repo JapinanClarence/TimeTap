@@ -38,11 +38,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/", [AppController::class, "index"])->name("app.index");
     Route::get("/notifications", [NotificationController::class, "index"]);
+    Route::post("/notifications/mark-all-read",[NotificationController::class, "markAllRead"]);
     Route::get("/profile", [ProfileController::class, "index"]);
     Route::get("/qr", [QRController::class, "index"])->name("qr");
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
     Route::patch("/organizations/switch", [OrganizationController::class, "switchOrganization"])->name("organizations.switch");
+    Route::post("/organizations/accept-invitation/{id}", [OrganizationController::class, "accept"]);
 });
 
 // --- ADMIN ONLY ROUTES ---

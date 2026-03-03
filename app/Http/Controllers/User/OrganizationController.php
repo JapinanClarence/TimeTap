@@ -74,14 +74,13 @@ class OrganizationController extends Controller
         return back()->with('success', 'Switched organization.');
     }
     public function accept($id)
-    {
+    { 
         // Find by ID instead of token if coming from the dashboard
         $invitation = Invitation::where('id', $id)
             ->where('status', 'pending')
             ->firstOrFail();
-
+      
         $user = auth()->user();
-
         // 1. Security check
         if ($user->email !== $invitation->email) {
             return back()->with('error', 'This invitation does not belong to your account.');

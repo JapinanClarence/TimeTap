@@ -23,7 +23,7 @@ export default function InviteEmailForm() {
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (["Enter", ","].includes(e.key)) {
             e.preventDefault();
-            const email = inputValue.trim().toLowerCase();
+            const email = inputValue.trim();
 
             // Validate email format and check for duplicates
             if (

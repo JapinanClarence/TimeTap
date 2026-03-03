@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, Calendar, Check, X } from "lucide-react";
 import SecondaryLayout from "@/layouts/app/secondary-layout";
 import Container from "@/components/ui/container";
+import { toast } from "sonner";
 
 interface Paginated<T> {
     data: T[];
@@ -20,7 +21,31 @@ interface NotificationPageProps {
 export default function Notifications() {
     const { props } = usePage<NotificationPageProps>();
     const handleAccept = (invitationId: string) => {
-        // router.post(route('invitations.accept', invitationId));
+         router.post(
+            `/app/organizations/accept-invitation/${invitationId}`,
+            {},
+            {
+                showProgress: false,
+                // Keeps the user on the same scroll position after the table updates
+                preserveScroll: true,
+                onSuccess: () => toast.success("Invitation accepted!"),
+                onError: (errors) => toast.error("Failed accept invitation!"),
+            },
+        );
+    };
+
+    const handleMarkAllRead = () => {
+        router.post(
+            "/app/notifications/mark-all-read",
+            {},
+            {
+                showProgress: false,
+                // Keeps the user on the same scroll position after the table updates
+                preserveScroll: true,
+                onSuccess: () => toast.success("All notifications marked as read!"),
+                onError: (errors) => toast.error("Failed mark as read!"),
+            },
+        );
     };
 
     const notifications = props?.notifications;
@@ -34,10 +59,7 @@ export default function Notifications() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
-                            console.log("Clicked");
-                            // router.post(route("notifications.mark-all-read"));
-                        }}
+                        onClick={handleMarkAllRead}
                     >
                         Mark all as read
                     </Button>
@@ -77,8 +99,9 @@ export default function Notifications() {
                                     {notification.type === "invitation" &&
                                         notification.subject?.status ===
                                             "pending" && (
-                                            <div className="mt-4 flex items-center gap-2">
+                                            <div className="mt-4 flex items-center justify-end gap-2">
                                                 <Button
+                                                    variant={"link"}
                                                     size="sm"
                                                     className="h-8 px-4"
                                                     onClick={() =>
@@ -91,9 +114,9 @@ export default function Notifications() {
                                                     Accept
                                                 </Button>
                                                 <Button
-                                                    variant="outline"
+                                                    variant="link"
                                                     size="sm"
-                                                    className="h-8 px-4"
+                                                    className="h-8 px-4 text-destructive"
                                                 >
                                                     <X className="w-3.5 h-3.5 mr-1.5" />
                                                     Decline
@@ -101,7 +124,7 @@ export default function Notifications() {
                                             </div>
                                         )}
 
-                                    <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-wider font-semibold">
+                                    <p className="text-[10px] text-end text-muted-foreground mt-2 uppercase font-semibold">
                                         {new Date(
                                             notification.created_at,
                                         ).toLocaleDateString()}{" "}

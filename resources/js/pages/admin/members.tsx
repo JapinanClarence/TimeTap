@@ -84,10 +84,10 @@ export default function Members() {
                             </Deferred>
                         </TabsContent>
                         <TabsContent value="male">
-                            <div className="border border-dashed rounded-lg h-[500px]"></div>
+                            <div className="border border-dashed rounded-lg h-125"></div>
                         </TabsContent>
                         <TabsContent value="female">
-                            <div className="border border-dashed rounded-lg h-[500px]"></div>
+                            <div className="border border-dashed rounded-lg h-125"></div>
                         </TabsContent>
                     </Tabs>
                 </div>
