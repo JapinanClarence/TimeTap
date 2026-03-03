@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invitation;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,7 +36,6 @@ class OrganizationController extends Controller
         ], [
             'invitation_code.exists' => 'The provided invitation code is invalid.',
         ]);
-        dd($request);
 
         $organization = Organization::where('invitation_code', $request->invitation_code)->firstOrFail();
         $user = $request->user();
@@ -72,5 +72,33 @@ class OrganizationController extends Controller
         ]);
 
         return back()->with('success', 'Switched organization.');
+    }
+    public function accept($id)
+    {
+        // Find by ID instead of token if coming from the dashboard
+        $invitation = Invitation::where('id', $id)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $user = auth()->user();
+
+        // 1. Security check
+        if ($user->email !== $invitation->email) {
+            return back()->with('error', 'This invitation does not belong to your account.');
+        }
+
+        // 2. Add user to organization
+        $user->organizations()->syncWithoutDetaching([$invitation->organization_id]);
+
+        // 3. Mark invitation as accepted
+        $invitation->update(['status' => 'accepted']);
+
+        // 4. Mark the specific notification as read so it disappears
+        $user->notifications()
+            ->where('subject_id', $invitation->id)
+            ->where('subject_type', Invitation::class)
+            ->update(['read_at' => now()]);
+
+        return back()->with('success', "You've successfully joined the organization!");
     }
 }
