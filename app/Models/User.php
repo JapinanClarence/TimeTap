@@ -60,7 +60,12 @@ class User extends Authenticatable
     public function organizations()
     {
         return $this->belongsToMany(Organization::class, 'user_organizations')
-            ->using(UserOrganization::class) 
+            ->using(UserOrganization::class)
             ->withTimestamps();
+    }
+    public function notifications()
+    {
+        // Point to your custom Notification model and your custom foreign key
+        return $this->hasMany(Notification::class, 'user_id');
     }
 }

@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\AppController;
+use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\OrganizationController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\QRController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
 // --- USER ONLY ROUTES ---
 Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/", [AppController::class, "index"])->name("app.index");
+    Route::get("/notifications", [NotificationController::class, "index"]);
+    Route::get("/profile", [ProfileController::class, "index"]);
     Route::get("/qr", [QRController::class, "index"])->name("qr");
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");

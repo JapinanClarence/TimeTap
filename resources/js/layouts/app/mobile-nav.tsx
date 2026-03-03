@@ -98,7 +98,9 @@ export default function MobileNav() {
                 </div>
                 <div className="flex items-center justify-center flex-col text-primary">
                     <UserOutline className="size-6 text-primary" />
-                    <span className="text-xs">Profile</span>
+                     <Link href={"/app/profile"} className="text-xs">
+                        Profile
+                    </Link>
                 </div>
             </Container>
         </nav>

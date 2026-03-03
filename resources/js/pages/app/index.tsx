@@ -59,7 +59,7 @@ export const formatEventDisplay = (event: EventType): ProcessedEvent => {
         day: start.getDate(),
         dayOfWeek: `${formatWeekDayOnly(start)} - ${formatWeekDayOnly(end)}`,
         // Ensure formatTime12h handles the logic, avoid .slice(0,5) here if it cuts off AM/PM
-        time: `${formatTime12h(event.start_time).slice(0,5)} - ${formatTime12h(event.end_time)}`,
+        time: `${formatTime12h(event.start_time).slice(0, 5)} - ${formatTime12h(event.end_time)}`,
     };
 };
 
@@ -67,7 +67,7 @@ export default function Index() {
     const { props } = usePage<AppHomeProps>();
     const [time, setTime] = useState(new Date());
     const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
-    const [ showSwitchDrawer, setShowSwitchDrawer] = useState(false);
+    const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
     const currentOrg = props.currentOrg;
     const currentEvent = props.currentEvent?.data;
     const upcomingEvents = props.upcomingEvents?.data;
@@ -112,7 +112,13 @@ export default function Index() {
                                 <Building2 className="inline text-primary mr-2" />{" "}
                                 {currentOrg.name}
                             </p>
-                            <Button variant={"link"} onClick={() => setShowSwitchDrawer(true)}>
+                            <Button
+                                variant={"link"}
+                                onClick={(e) => {
+                                    (e.currentTarget as HTMLButtonElement).blur();
+                                    setShowSwitchDrawer(true);
+                                }}
+                            >
                                 Switch <ArrowRightLeft />
                             </Button>
                         </div>
@@ -121,7 +127,12 @@ export default function Index() {
                             <p className="font-semibold">No Organization</p>
                             <Button
                                 variant={"link"}
-                                onClick={() => setShowJoinOrgSheet(true)}
+                                onClick={(e) => {
+                                    (
+                                        e.currentTarget as HTMLButtonElement
+                                    ).blur();
+                                    setShowJoinOrgSheet(true);
+                                }}
                             >
                                 Join Org <Plus />
                             </Button>
@@ -199,7 +210,7 @@ export default function Index() {
             />
             <SwitchOrgSheet
                 open={showSwitchDrawer}
-                onClose={()=>setShowSwitchDrawer(false)}
+                onClose={() => setShowSwitchDrawer(false)}
                 organizations={props.myOrganizations}
             />
         </AppLayout>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "../../components/ui/container";
 import { Link, useForm, usePage } from "@inertiajs/react";
-import { Settings, Timer } from "lucide-react";
+import { Bell, Settings, Timer } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserType } from "@/types/user";
 import { Button } from "@/components/ui/button";
@@ -58,16 +58,18 @@ export default function MobileHeader() {
                     </div>
                 </div>
                 <div>
-                    <Button
-                        variant={"ghost"}
-                        size={"icon-lg"}
-                        onClick={(e) => {
-                            (e.currentTarget as HTMLButtonElement).blur(); // Manually remove focus
-                            setOpenSheet(true);
-                        }}
-                    >
-                        <Settings />
-                    </Button>
+                    <Link href={"/app/notifications"}>
+                        <Button
+                            variant={"ghost"}
+                            size={"icon-lg"}
+                            // onClick={(e) => {
+                            //     (e.currentTarget as HTMLButtonElement).blur(); // Manually remove focus
+                            //     setOpenSheet(true);
+                            // }}
+                        >
+                            <Bell />
+                        </Button>
+                    </Link>
                 </div>
             </Container>
             <Sheet

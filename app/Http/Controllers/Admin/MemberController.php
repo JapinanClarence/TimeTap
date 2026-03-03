@@ -18,7 +18,7 @@ class MemberController extends Controller
         $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
         // fetch owned organization and its members
         $members = $organization->members()
-            ->select('users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.gender')
+            ->select('users.id', 'users.first_name', 'users.last_name', 'users.email')
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)
             ->withQueryString();

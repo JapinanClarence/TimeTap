@@ -43,7 +43,7 @@ function EventsTableContent({
 export default function Events() {
     const { props } = usePage<EventsPageProps>();
     const [processingId, setProcessingId] = useState<number | null>(null);
-    console.log(props);
+
     const handleStatusChange = async (id: number, status: string) => {
  
         router.patch(`/admin/events/${id}`,
