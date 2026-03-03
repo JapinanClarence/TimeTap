@@ -70,26 +70,5 @@ class AppController extends Controller
             "upcomingEvents" => EventResource::collection($upcomingEvents),
         ]);
     }
-    /**
-     * Switch the user's active organization view.
-     */
-    public function switchOrganization(Request $request)
-    {
-        $request->validate([
-            'organization_id' => 'required|exists:organizations,id'
-        ]);
-
-        $user = $request->user();
-
-        // Security check: Verify they actually belong to this org
-        if (!$user->organizations()->where('organization_id', $request->organization_id)->exists()) {
-            return back()->withErrors(['message' => 'Unauthorized switch.']);
-        }
-
-        $user->update([
-            'current_organization_id' => $request->organization_id
-        ]);
-
-        return back()->with('success', 'Switched organization.');
-    }
+    
 }

@@ -26,52 +26,81 @@ import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Plus } from "lucide-react";
 import { Link } from "@inertiajs/react";
-import { Skeleton } from "./skeleton";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    onStatusChange?: (id: number, status: string) => void;
+    processingId?: number | null;
+    handleInvite: ()=>void;
 }
 
-export function TableSkeleton<TData, TValue>({
+export function DataTable<TData, TValue>({
     columns,
     data,
+    onStatusChange,
+    processingId,
+    handleInvite,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({});
+    const [globalFilter, setGlobalFilter] = React.useState("");
+
+    const filterColumns = ["first_name", "last_name"];
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        meta: {
+            onStatusChange,
+            processingId,
+        },
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: (row, columnId, filterValue) => {
+            const searchableValue = String(filterValue).toLowerCase();
+
+            return filterColumns.some((id) => {
+                const cellValue = row.getValue(id);
+                return String(cellValue)
+                    .toLowerCase()
+                    .includes(searchableValue);
+            });
+        },
         state: {
             sorting,
             columnFilters,
             columnVisibility,
+            globalFilter,
         },
     });
 
     return (
         <>
             <div className="flex items-center justify-between gap-2 py-4">
-                <div className="h-9 w-full max-w-sm border rounded-lg"></div>
+                <Input
+                    placeholder="Filter members..."
+                    value={globalFilter}
+                    onChange={(event) => setGlobalFilter(event.target.value)}
+                    className="max-w-sm"
+                />
                 <div className="flex items-center gap-2 ">
                     {/* <Link href={"/admin/events/add"}> */}
-                        <Button className="w-20 justify-baseline" size={"sm"} disabled>
-                            <Plus />
-                            <span className="hidden md:flex"></span>
-                        </Button>
+                    <Button className="" size={"sm"} onClick={handleInvite}>
+                        <Plus />
+                        <span className="hidden md:flex">Invite Member</span>
+                    </Button>
                     {/* </Link> */}
-                       <DataTableViewOptions table={table} />
+                    <DataTableViewOptions table={table} />
                 </div>
             </div>
             <div className="overflow-hidden rounded-md border">
@@ -96,19 +125,40 @@ export function TableSkeleton<TData, TValue>({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {Array.from({ length: 5 }).map((_, rowIndex) => (
-                            <TableRow key={rowIndex}>
-                                {Array.from({
-                                    length: table.getAllColumns().length,
-                                }).map((_, cellIndex) => (
-                                    <TableCell key={cellIndex}>
-                                        <Skeleton className="h-5" />
-                                    </TableCell>
-                                ))}
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    className=""
+                                    key={row.id}
+                                    data-state={
+                                        row.getIsSelected() && "selected"
+                                    }
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    No results.
+                                </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
+            </div>
+            <div className=" py-4">
+                <DataTablePagination table={table} />
             </div>
         </>
     );

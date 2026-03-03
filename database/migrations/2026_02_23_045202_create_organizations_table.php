@@ -19,8 +19,9 @@ return new class extends Migration {
                 ->unique()
                 ->constrained('users')
                 ->cascadeOnDelete();
+            $table->string('invitation_code')->nullable()->unique();
+            $table->timestamp('invitation_expires_at')->nullable();
             $table->timestamps();
-            
         });
     }
 

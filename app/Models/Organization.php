@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,12 @@ class Organization extends Model
         'name',
         'description',
         'owner_id',
-        'org_profile'
+        'org_profile',
+        'invitation_code',
+        'invitation_expires_at'
+    ];
+    protected $casts = [
+        'invitation_expires_at' => 'datetime',
     ];
 
     public function owner()
@@ -23,9 +29,10 @@ class Organization extends Model
 
     public function members()
     {
-       return $this->belongsToMany(Organization::class, 'user_organizations')
+        return $this->belongsToMany(User::class, 'user_organizations')
             ->using(UserOrganization::class)
-            ->withTimestamps();
+            ->withTimestamps()
+            ->withPivot('created_at');
     }
     /**
      * The Events belonging to this organization.

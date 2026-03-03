@@ -17,6 +17,7 @@ import { OrganizationType } from "@/types/organization";
 import { usePage } from "@inertiajs/react";
 import { NoContent } from "@/features/app/home/no-content";
 import JoinOrgSheet from "@/components/app/join-org-sheet";
+import SwitchOrgSheet from "@/features/app/home/switch-org-sheet";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
@@ -66,7 +67,7 @@ export default function Index() {
     const { props } = usePage<AppHomeProps>();
     const [time, setTime] = useState(new Date());
     const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
-
+    const [ showSwitchDrawer, setShowSwitchDrawer] = useState(false);
     const currentOrg = props.currentOrg;
     const currentEvent = props.currentEvent?.data;
     const upcomingEvents = props.upcomingEvents?.data;
@@ -111,7 +112,7 @@ export default function Index() {
                                 <Building2 className="inline text-primary mr-2" />{" "}
                                 {currentOrg.name}
                             </p>
-                            <Button variant={"link"}>
+                            <Button variant={"link"} onClick={() => setShowSwitchDrawer(true)}>
                                 Switch <ArrowRightLeft />
                             </Button>
                         </div>
@@ -177,7 +178,7 @@ export default function Index() {
                         </div>
 
                         <div className="space-y-2">
-                            {upcomingEvents.length > 0 ? (
+                            {upcomingEvents?.length > 0 ? (
                                 processedUpcomingEvents?.map((e, i) => (
                                     <UpcomingEventCard key={i} {...e} />
                                 ))
@@ -195,6 +196,11 @@ export default function Index() {
                 open={showJoinOrgSheet}
                 onClose={() => setShowJoinOrgSheet(false)}
                 organizations={props.joinableOrganizations}
+            />
+            <SwitchOrgSheet
+                open={showSwitchDrawer}
+                onClose={()=>setShowSwitchDrawer(false)}
+                organizations={props.myOrganizations}
             />
         </AppLayout>
     );

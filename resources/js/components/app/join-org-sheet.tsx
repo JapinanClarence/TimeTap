@@ -8,21 +8,25 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { router, useForm } from "@inertiajs/react";
 import { OrganizationType } from "@/types/organization";
-import { route } from "ziggy-js";
 import { toast } from "sonner";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { joinOrgSchema } from "@/features/app/schema/join-organization.schema";
+
 
 interface JoinOrgSheetProps {
     open: boolean;
@@ -37,30 +41,40 @@ export default function JoinOrgSheet({
     onClose,
     organizations,
 }: JoinOrgSheetProps) {
-    const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
-    const [selectedOrgId, setSelectedOrgId] = useState("");
-    const [openCombo, setOpenCombo] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const { post, data, setData, processing, errors, clearErrors, setError } =
+        useForm({
+            invitation_code: "",
+        });
 
-    const handleJoin = () => {
-        if (!selectedOrgId) return;
+    const validate = () => {
+        const result = joinOrgSchema.safeParse(data);
+        if (!result.success) {
+            clearErrors();
+
+            result.error.issues.forEach((issue) => {
+                const field = issue.path[0];
+
+                if (typeof field === "string") {
+                   setError(field as keyof typeof data, issue.message);
+                }
+            });
+            return false;
+        }
+        clearErrors();
+
+        return true;
+    };
+
+    const submit = (e: React.SubmitEvent) => {
+        if(!validate()) return;
+        e.preventDefault();
 
         // Use Inertia to post the join request to your controller
-        router.post(
-            "/app/organizations/join",
-            {
-                organization_id: selectedOrgId,
-            },
-            {
-                showProgress:false,
-                onBefore: () => setLoading(true),
-                onFinish: () => setLoading(false), // Stop loading
-                onSuccess: () =>
-                    toast.success("Joined organization successfully!"),
-                onError: (errors) =>
-                    toast.error("Failed to join organization!"),
-            },
-        );
+        post("/app/organizations/join", {
+            showProgress: false,
+            onSuccess: () => toast.success("Joined organization successfully!"),
+            onError: (errors) => toast.error("Failed to join organization!"),
+        });
     };
 
     return (
@@ -72,70 +86,75 @@ export default function JoinOrgSheet({
             // setActiveSnapPoint={setSnap}
         >
             <DrawerContent className="bg-white max-h-[96%]">
-                <DrawerHeader>
-                    <DrawerTitle>Join Organization</DrawerTitle>
-                    <DrawerDescription>
-                        Search for an organization to become a member.
-                    </DrawerDescription>
-                </DrawerHeader>
+                <form onSubmit={submit}>
+                    <DrawerHeader>
+                        <DrawerTitle>Join Organization</DrawerTitle>
+                        <DrawerDescription>
+                            Enter invitation code to join organization.
+                        </DrawerDescription>
+                    </DrawerHeader>
 
-                <div className="px-4 flex-1 overflow-y-auto">
-                    <Command className="rounded-lg border shadow-md">
-                        <CommandInput placeholder="Search organizations..." />
-                        <CommandList>
-                            {organizations.length > 0 ? (
-                                organizations.map((org) => (
-                                    <CommandGroup heading="Organizations">
-                                        <CommandItem
-                                            key={org.id}
-                                            value={org.name}
-                                            onSelect={() => {
-                                                setSelectedOrgId(org.id || "");
-                                                // Drop back to middle snap point on selection
-                                                setSnap(snapPoints[1]);
-                                            }}
-                                        >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    selectedOrgId === org.id
-                                                        ? "opacity-100"
-                                                        : "opacity-0",
-                                                )}
-                                            />
-                                            {org.name}
-                                        </CommandItem>
-                                    </CommandGroup>
-                                ))
-                            ) : (
-                                <CommandEmpty>
-                                    No organization found.
-                                </CommandEmpty>
+                    <div className="px-4 py-1 flex-1 overflow-y-auto">
+                        <Field>
+                            <FieldLabel htmlFor="invitation-code">
+                                Code
+                            </FieldLabel>
+                            <Input
+                                id="invitation-code"
+                                type="text"
+                                placeholder="Enter invitation code"
+                                value={data.invitation_code}
+                                onChange={(e) =>
+                                    setData("invitation_code", e.target.value)
+                                }
+                                className={
+                                    errors.invitation_code
+                                        ? "border-destructive"
+                                        : ""
+                                }
+                            />
+                            {errors.invitation_code && (
+                                <FieldError className="text-xs">
+                                    {errors.invitation_code}
+                                </FieldError>
                             )}
-                        </CommandList>
-                    </Command>
-                </div>
+                        </Field>
+                    </div>
 
-                <DrawerFooter className="pt-4">
-                    <Button
-                        onClick={handleJoin}
-                        disabled={!selectedOrgId || loading}
-                        className="w-full"
-                    >
-                        {loading ? (
-                            <>
-                                <Spinner />
-                                Submitting...
-                            </>
-                        ) : (
-                            <> Join</>
-                        )}
-                    </Button>
-                    <Button variant="outline" onClick={onClose}>
-                        Cancel
-                    </Button>
-                </DrawerFooter>
+                    <DrawerFooter className="pt-4">
+                        <Button disabled={processing} className="w-full">
+                            {processing ? (
+                                <>
+                                    <Spinner />
+                                    Submitting...
+                                </>
+                            ) : (
+                                <> Join</>
+                            )}
+                        </Button>
+                        <Button variant="outline" onClick={onClose}>
+                            Cancel
+                        </Button>
+                    </DrawerFooter>
+                </form>
             </DrawerContent>
+            <AlertDialog>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your account from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Drawer>
     );
 }

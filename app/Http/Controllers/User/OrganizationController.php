@@ -31,20 +31,46 @@ class OrganizationController extends Controller
     public function join(Request $request)
     {
         $request->validate([
-            'organization_id' => 'required|exists:organizations,id',
+            'invitation_code' => 'required|string|exists:organizations,invitation_code',
+        ], [
+            'invitation_code.exists' => 'The provided invitation code is invalid.',
+        ]);
+        dd($request);
+
+        $organization = Organization::where('invitation_code', $request->invitation_code)->firstOrFail();
+        $user = $request->user();
+
+        // Attach user to the organization in user_organizations table
+        // We use syncWithoutDetaching to prevent duplicate rows
+        $user->organizations()->syncWithoutDetaching([$organization->id]);
+
+        // Automatically set this as their "Active" org so the home page updates
+        $user->update([
+            'current_organization_id' => $organization->id
+        ]);
+
+        return redirect()->back()->with('message', 'Joined successfully!');
+    }
+    /**
+     * Switch the user's active organization view.
+     */
+    public function switchOrganization(Request $request)
+    {
+        $request->validate([
+            'organization_id' => 'required|exists:organizations,id'
         ]);
 
         $user = $request->user();
-        
-        // Attach user to the organization in user_organizations table
-        // We use syncWithoutDetaching to prevent duplicate rows
-        $user->organizations()->syncWithoutDetaching([$request->organization_id]);
-        
-        // Automatically set this as their "Active" org so the home page updates
+
+        // Security check: Verify they actually belong to this org
+        if (!$user->organizations()->where('organization_id', $request->organization_id)->exists()) {
+            return back()->withErrors(['message' => 'Unauthorized switch.']);
+        }
+
         $user->update([
             'current_organization_id' => $request->organization_id
         ]);
 
-        return redirect()->back()->with('message', 'Joined successfully!');
+        return back()->with('success', 'Switched organization.');
     }
 }

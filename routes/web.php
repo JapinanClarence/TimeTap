@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\User\OrganizationController;
 use App\Http\Controllers\User\QRController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthController;
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("welcome");
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/qr", [QRController::class, "index"])->name("qr");
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
+    Route::patch("/organizations/switch", [OrganizationController::class, "switchOrganization"])->name("organizations.switch");
 });
 
 // --- ADMIN ONLY ROUTES ---
@@ -48,4 +50,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/events/edit/{event}", [EventController::class, "edit"]);
     Route::put("/events/edit/{event}", [EventController::class, 'update']);
     Route::patch("/events/{event}", [EventController::class, "updateStatus"])->name("event.updateStatus");
+    Route::get("/members", [MemberController::class, "index"])->name("admin.members");
+    Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
+    Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
 });

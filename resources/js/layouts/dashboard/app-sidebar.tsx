@@ -52,7 +52,7 @@ const data = {
         },
         {
             title: "Members",
-            url: "#",
+            url: "/admin/members",
             icon: IconUsers,
         },
         {

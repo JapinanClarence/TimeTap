@@ -20,7 +20,7 @@ createInertiaApp({
     setup({ el, App, props }) {
         createRoot(el).render(
             <TooltipProvider>
-                <Toaster position="top-right"/>
+                <Toaster position="top-right" richColors/>
                 <StrictMode>
                     <App {...props} />
                 </StrictMode>
