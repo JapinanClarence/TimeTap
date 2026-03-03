@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUlid('organization_id')->constrained()->cascadeOnDelete();
             $table->string('email');
             $table->string('token')->unique();
-            $table->enum('status', ['pending', 'accepted', 'expired'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'expired', 'declined'])->default('pending');
             $table->timestamps();
         });
     }

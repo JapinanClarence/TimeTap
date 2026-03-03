@@ -1,5 +1,5 @@
 import { NotificationType } from "@/types/notification";
-import React from "react";
+import React, { useEffect } from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,19 +16,27 @@ interface Paginated<T> {
 interface NotificationPageProps {
     [key: string]: unknown;
     notifications: Paginated<NotificationType>;
+    flash: {
+        success: string | null;
+        error: string | null;
+    };
 }
 
 export default function Notifications() {
     const { props } = usePage<NotificationPageProps>();
-    const handleAccept = (invitationId: string) => {
-         router.post(
-            `/app/organizations/accept-invitation/${invitationId}`,
-            {},
+    const handleInvitation = (
+        invitationId: string,
+        action: "accept" | "decline",
+    ) => {
+        router.post(
+            `/app/organizations/handle-invitation/${invitationId}`,
+            {
+                action: action,
+            },
             {
                 showProgress: false,
                 // Keeps the user on the same scroll position after the table updates
                 preserveScroll: true,
-                onSuccess: () => toast.success("Invitation accepted!"),
                 onError: (errors) => toast.error("Failed accept invitation!"),
             },
         );
@@ -42,11 +50,23 @@ export default function Notifications() {
                 showProgress: false,
                 // Keeps the user on the same scroll position after the table updates
                 preserveScroll: true,
-                onSuccess: () => toast.success("All notifications marked as read!"),
+                onSuccess: () =>
+                    toast.success("All notifications marked as read!"),
                 onError: (errors) => toast.error("Failed mark as read!"),
             },
         );
     };
+
+    useEffect(() => {
+        // Check if flash exists AND if success has a value
+        if (props.flash?.success) {
+            toast.success(props.flash.success);
+        }
+
+        if (props.flash?.error) {
+            toast.error(props.flash.error);
+        }
+    }, [props.flash]);
 
     const notifications = props?.notifications;
 
@@ -105,8 +125,9 @@ export default function Notifications() {
                                                     size="sm"
                                                     className="h-8 px-4"
                                                     onClick={() =>
-                                                        handleAccept(
+                                                        handleInvitation(
                                                             notification.subject_id,
+                                                            "accept",
                                                         )
                                                     }
                                                 >
@@ -117,6 +138,12 @@ export default function Notifications() {
                                                     variant="link"
                                                     size="sm"
                                                     className="h-8 px-4 text-destructive"
+                                                    onClick={() =>
+                                                        handleInvitation(
+                                                            notification.subject_id,
+                                                            "decline",
+                                                        )
+                                                    }
                                                 >
                                                     <X className="w-3.5 h-3.5 mr-1.5" />
                                                     Decline

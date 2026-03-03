@@ -44,7 +44,8 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
     Route::patch("/organizations/switch", [OrganizationController::class, "switchOrganization"])->name("organizations.switch");
-    Route::post("/organizations/accept-invitation/{id}", [OrganizationController::class, "accept"]);
+    Route::post("/organizations/handle-invitation/{id}", [OrganizationController::class, "handleInvitation"]);
+
 });
 
 // --- ADMIN ONLY ROUTES ---

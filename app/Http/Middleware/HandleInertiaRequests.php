@@ -45,6 +45,10 @@ class HandleInertiaRequests extends Middleware
                     : null,
                 'current_org_id' => $request->user()?->current_organization_id,
             ],
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+            ]
         ];
     }
 }
