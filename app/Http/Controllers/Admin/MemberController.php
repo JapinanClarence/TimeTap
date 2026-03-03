@@ -19,7 +19,12 @@ class MemberController extends Controller
         $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
         // fetch owned organization and its members
         $members = $organization->members()
-            ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"), 'users.email')
+            ->select([
+                'users.id',
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
+                'users.email',
+                'created_at'
+            ])
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)
             ->withQueryString();

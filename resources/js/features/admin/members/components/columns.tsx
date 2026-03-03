@@ -19,6 +19,7 @@ import {
     Minus,
     MoreHorizontal,
     Plus,
+    UserX,
 } from "lucide-react";
 import { DataTableColumnHeader } from "../../../../components/ui/data-table-column-header";
 import { MemberType } from "@/types/member";
@@ -32,7 +33,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Link } from "@inertiajs/react";
-
 
 export const columns: ColumnDef<MemberType>[] = [
     {
@@ -52,6 +52,18 @@ export const columns: ColumnDef<MemberType>[] = [
         ),
     },
     {
+        accessorKey: "created_at",
+        header: ({ column }) => (
+            <div className="ml-2">
+                <DataTableColumnHeader column={column} title="Date Joined" />
+            </div>
+        ),
+        cell: ({ row }) => {
+            const created_at = formatSimpleDate(row.getValue("created_at"));
+            return <div>{created_at}</div>;
+        },
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             return (
@@ -66,16 +78,8 @@ export const columns: ColumnDef<MemberType>[] = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <QrCode />
-                            Generate QR
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <FileText />
-                            Manage Attendance
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <UserPen />
-                            Manage Event Guest
+                            <UserX />
+                            Remove User
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
