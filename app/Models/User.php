@@ -63,6 +63,7 @@ class User extends Authenticatable
             ->using(UserOrganization::class)
             ->withTimestamps();
     }
+
     public function notifications()
     {
         // Point to your custom Notification model and your custom foreign key

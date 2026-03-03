@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -18,7 +19,7 @@ class MemberController extends Controller
         $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
         // fetch owned organization and its members
         $members = $organization->members()
-            ->select('users.id', 'users.first_name', 'users.last_name', 'users.email')
+            ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"), 'users.email')
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)
             ->withQueryString();
@@ -71,7 +72,7 @@ class MemberController extends Controller
 
             // 2. Check if the user exists in our system
             $invitedUser = User::where('email', $email)->first();
-            
+
             // 3. Only store in-app notification if the user actually has an account
             if ($invitedUser) {
                 Notification::create([
