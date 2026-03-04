@@ -85,12 +85,12 @@ class OrganizationController extends Controller
 
         $user = auth()->user();
 
-        // 1. Security check
+        // Security check
         if ($user->email !== $invitation->email) {
             return back()->with('error', 'This invitation does not belong to your account.');
         }
 
-        // 2. Handle Action Logic
+        // Handle Action Logic
         if ($request->action === 'accept') {
             // Add to organization and update current context
             $user->organizations()->syncWithoutDetaching([$invitation->organization_id]);
@@ -98,12 +98,11 @@ class OrganizationController extends Controller
             $invitation->update(['status' => 'accepted']);
             $message = "You've successfully joined the organization!";
         } else {
-            // Just decline
             $invitation->update(['status' => 'declined']);
             $message = "Invitation declined successfully!";
         }
 
-        // 3. Clean up the notification regardless of the choice
+        //  Clean up the notification
         $user->notifications()
             ->where('subject_id', $invitation->id)
             ->where('subject_type', Invitation::class)

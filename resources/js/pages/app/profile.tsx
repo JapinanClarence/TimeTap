@@ -27,7 +27,7 @@ export default function Profile() {
     };
     return (
         <AppLayout showHeader={false}>
-            <main className="pt-10">
+            <main>
                 <Container>
                     <div className="space-y-5">
                         <div className="flex justify-center items-center border-b p-4 ">

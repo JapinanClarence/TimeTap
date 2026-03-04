@@ -104,10 +104,10 @@ export default function Index() {
 
     return (
         <AppLayout>
-            <main className="pt-24">
+            <main >
                 <Container className="space-y-5">
                     {currentOrg ? (
-                        <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                        <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
                             <p className="font-semibold">
                                 <Building2 className="inline text-primary mr-2" />{" "}
                                 {currentOrg.name}
@@ -145,7 +145,7 @@ export default function Index() {
                         <p className="text-muted-foreground text-sm">
                             {formatWeekDayOnly(time)},{formatSimpleDate(time)}
                         </p>
-                        <div className="mt-5 ">
+                        <div className="mt-5 max-w-sm">
                             {currentEvent ? (
                                 <>
                                     <EventCard {...processedEvent} />
@@ -161,7 +161,7 @@ export default function Index() {
                         </div>
                     </section>
 
-                    <section className="sticky">
+                    <section className="sticky md:hidden">
                         <h2 className="font-semibold text-xl mb-5">
                             Quick Actions
                         </h2>
@@ -188,7 +188,7 @@ export default function Index() {
                             {/* <Button variant={"link"}>See More</Button> */}
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:grid grid-cols-2 lg:grid-cols-3 gap-2">
                             {upcomingEvents?.length > 0 ? (
                                 processedUpcomingEvents?.map((e, i) => (
                                     <UpcomingEventCard key={i} {...e} />
