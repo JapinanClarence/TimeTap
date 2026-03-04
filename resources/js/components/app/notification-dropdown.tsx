@@ -75,6 +75,7 @@ export default function NotificationDropdown() {
     }, [props.flash]);
 
     const notifications = props?.notifications;
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -48,7 +48,12 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
-            ]
+            ],
+            // Global Notifications for the Dropdown
+        'notifications' => $request->user() ? $request->user()->notifications()
+            ->with('subject')
+            ->latest()
+            ->paginate(15) : [],
         ];
     }
 }

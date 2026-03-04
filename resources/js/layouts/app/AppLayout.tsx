@@ -29,11 +29,11 @@ export default function AppLayout({
 
     return (
         <div>
-            {<DesktopHeader />}
+            {!isMobile && <DesktopHeader />}
             <main className={showHeader ? `py-20` : ""}>
                 {children}
             </main>
-            {isMobile && <MobileNav />}
+
         </div>
     );
 }

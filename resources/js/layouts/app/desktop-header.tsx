@@ -14,9 +14,23 @@ import Container from "@/components/ui/container";
 import DesktopNav from "./desktop-nav";
 import ProfileDropdown from "@/components/app/profile-dropdown";
 import NotificationDropdown from "@/components/app/notification-dropdown";
+import SwitchOrgSheet from "@/features/app/home/switch-org-sheet";
+import { EventType } from "@/types/event";
+import { OrganizationType } from "@/types/organization";
+import { usePage } from "@inertiajs/react";
+
+interface AppHomeProps {
+    currentOrg: OrganizationType | null;
+    currentEvent: { data: EventType } | null;
+    upcomingEvents: { data: EventType[] };
+    joinableOrganizations: OrganizationType[];
+    myOrganizations: OrganizationType[];
+    [key: string]: unknown;
+}
 
 export default function DesktopHeader() {
-    const [showProfile, setShowProfile] = useState(false);
+      const { props } = usePage<AppHomeProps>();
+    const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
     return (
         <header className="fixed top-0 z-50 w-full   border bg-background shadow-xs">
             <Container className="flex items-center justify-between ">
@@ -27,10 +41,10 @@ export default function DesktopHeader() {
                     </p>
                     <Button
                         variant={"link"}
-                        // onClick={(e) => {
-                        //     (e.currentTarget as HTMLButtonElement).blur();
-                        //     setShowSwitchDrawer(true);
-                        // }}
+                        onClick={(e) => {
+                            (e.currentTarget as HTMLButtonElement).blur();
+                            setShowSwitchDrawer(true);
+                        }}
                     >
                         Switch <ArrowRightLeft />
                     </Button>
@@ -44,6 +58,7 @@ export default function DesktopHeader() {
                     <ProfileDropdown />
                 </div>
             </Container>
+            {/* <SwitchOrgSheet open={showSwitchDrawer} onClose={()=>setShowSwitchDrawer(false)} organizations={props.myOrganizations}/> */}
         </header>
     );
 }
