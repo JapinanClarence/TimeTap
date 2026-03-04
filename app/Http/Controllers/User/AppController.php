@@ -60,7 +60,12 @@ class AppController extends Controller
             ->orderBy('start_date', 'asc')
             ->limit(5)
             ->get();
-            
+
+        $notifications = auth()->user()->notifications()
+            ->with('subject') // Eager load the polymorphic invitation/event
+            ->latest()
+            ->paginate(15);
+
 
         return Inertia::render("app/index", [
             "joinableOrganizations" => $joinableOrg,
@@ -68,7 +73,7 @@ class AppController extends Controller
             "currentOrg" => $currentOrg,
             "currentEvent" => $currentEvent ? new EventResource($currentEvent) : null,
             "upcomingEvents" => EventResource::collection($upcomingEvents),
+            "notifications" => $notifications
         ]);
     }
-    
 }

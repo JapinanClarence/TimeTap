@@ -13,7 +13,7 @@ import {
     IconLogout,
     IconUserCircle,
     IconId,
-    IconHistory
+    IconHistory,
 } from "@tabler/icons-react";
 import { useForm, usePage } from "@inertiajs/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,16 +36,15 @@ export default function ProfileDropdown() {
     const handleLogout = () => {
         post("/logout");
     };
-    console.log(user);
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
-                    className="rounded-full bg-[#b6cbfb] text-primary hover:bg-[#b6cbfb]/50"
-                    variant="default"
+                    className="rounded-full bg-gray-200 text-black hover:bg-gray-300 data-[state=open]:ring-0 data-[state=open]:bg-[#b6cbfb]/80 data-[state=open]:text-primary transition-all"
+                    variant="secondary"
                     size="icon-lg"
                 >
-                    <User />
+                    <User className="transition-transform  data-[state=open]:scale-110" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-56" sideOffset={4}>
