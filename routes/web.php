@@ -10,6 +10,7 @@ use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\OrganizationController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\QRController;
+use App\Http\Controllers\User\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(["guest"])->group(function () {
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
     Route::patch("/organizations/switch", [OrganizationController::class, "switchOrganization"])->name("organizations.switch");
     Route::post("/organizations/handle-invitation/{id}", [OrganizationController::class, "handleInvitation"]);
+    Route::get("/schedule", [ScheduleController::class, "index"]);
 
 });
 

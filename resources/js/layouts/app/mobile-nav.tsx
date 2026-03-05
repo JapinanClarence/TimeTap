@@ -77,7 +77,9 @@ export default function MobileNav() {
                 </div>
                 <div className="flex items-center justify-center flex-col text-primary">
                     <CalendarOutline className="size-6 text-primary" />
-                    <span className="text-xs">Schedule</span>
+                    <Link href={"/app/schedule"} className="text-xs">
+                        Schedule
+                    </Link>
                 </div>
                 <div className="flex relative items-center justify-center flex-col text-primary">
                     {/* Gradient Border Wrapper */}
@@ -98,7 +100,7 @@ export default function MobileNav() {
                 </div>
                 <div className="flex items-center justify-center flex-col text-primary">
                     <UserOutline className="size-6 text-primary" />
-                     <Link href={"/app/profile"} className="text-xs">
+                    <Link href={"/app/profile"} className="text-xs">
                         Profile
                     </Link>
                 </div>
