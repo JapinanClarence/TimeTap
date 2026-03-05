@@ -15,7 +15,7 @@ export default function SecondaryLayout({
     return (
         <div>
             {showHeader && <SecondaryHeader />}
-            <main className="mt-20">{children}</main>
+            <main className="mt-14">{children}</main>
             {/* <MobileNav /> */}
         </div>
     );

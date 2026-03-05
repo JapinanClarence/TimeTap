@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { EventType } from "@/types/event";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 interface GeofenceMapProps {
     data: EventType;
     // This specific signature matches Inertia's useForm hook exactly
@@ -38,44 +39,8 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
     ]);
     const [accuracy, setAccuracy] = useState<number>(0);
     const [isLocating, setIsLocating] = useState(false);
-    const watcherRef = useRef<number | null>(null);
-    const startTracking = useCallback(() => {
-        if (!navigator.geolocation) return;
 
-        // Clear any existing watcher
-        if (watcherRef.current !== null) {
-            navigator.geolocation.clearWatch(watcherRef.current);
-        }
-
-        watcherRef.current = navigator.geolocation.watchPosition(
-            (position) => {
-                const { longitude, latitude } = position.coords;
-                const newCoords: [number, number] = [longitude, latitude];
-
-                setCenter(newCoords);
-
-                // OPTIONAL: Only auto-pan map if user hasn't started drawing yet
-                // if (!data.coordinates || data.coordinates.length === 0) {
-                //    map.flyTo({ center: newCoords, speed: 0.8 });
-                // }
-            },
-            (error) => console.error("Tracking error:", error),
-            {
-                enableHighAccuracy: true,
-                maximumAge: 1000, // Don't use cached locations older than 1s
-                timeout: 5000,
-            },
-        );
-    }, [setData]);
-
-    useEffect(() => {
-        startTracking();
-        return () => {
-            if (watcherRef.current !== null) {
-                navigator.geolocation.clearWatch(watcherRef.current);
-            }
-        };
-    }, [startTracking]);
+   
 
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
@@ -98,7 +63,7 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
             (error) => {
                 setIsLocating(false);
                 console.error("Error getting location:", error);
-                alert(
+                toast.error(
                     "Unable to retrieve your location. Please check your browser permissions.",
                 );
             },
@@ -141,7 +106,7 @@ export const GeofenceMap = ({ data, setData, errors }: GeofenceMapProps) => {
                 </div>
             </div>
 
-            <Card className="relative h-[60vh] max:h-[70vh] p-0 overflow-hidden shadow-none">
+            <Card className="relative h-[60vh] max-h-[70vh] p-0 overflow-hidden shadow-none">
                 <ButtonGroup className="absolute top-5 right-5 z-5">
                     {/* <Button
                         variant="outline"

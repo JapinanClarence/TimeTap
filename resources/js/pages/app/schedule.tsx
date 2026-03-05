@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import AppLayout from "@/layouts/app/AppLayout";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { parseISO, isSameMonth, isWithinInterval, startOfDay } from "date-fns";
 import { EventType } from "@/types/event";
 import { formatTime12h } from "@/util/dateUtil";
@@ -145,11 +145,11 @@ export default function Schedule() {
             <h1 className="text-start px-8 text-2xl font-semibold my-10">
                 Event Calendar
             </h1>
-            <div className="flex flex-col items-center justify-center px-8 gap-6">
+            <div className="flex flex-col items-center justify-center  gap-6">
                 <Calendar
                     mode="multiple"
                     captionLayout="dropdown"
-                    className="rounded-lg border shadow-sm w-full max-w-md bg-background"
+                    className="rounded-lg  w-full px-8 max-w-md bg-background"
                     month={currentMonth}
                     onMonthChange={setCurrentMonth}
                     components={{
@@ -193,7 +193,7 @@ export default function Schedule() {
                 />
 
                 {/* Event Legend / List — current month only */}
-                <div className="w-full max-w-md space-y-2">
+                <div className="w-full max-w-md flex flex-col gap-2 px-8">
                     <h2 className="text-sm font-semibold px-1">
                         Events in{" "}
                         {currentMonth.toLocaleString("default", {
@@ -203,38 +203,43 @@ export default function Schedule() {
                     </h2>
 
                     {currentMonthEvents.length === 0 ? (
-                       <NoContent title="No data" description="No events found this month"/>
+                        <NoContent
+                            title="No data"
+                            description="No events found this month"
+                        />
                     ) : (
                         currentMonthEvents.map((event) => {
                             if (!event.id) return;
                             const ci = eventColorMap[event.id];
                             const color = EVENT_COLORS[ci];
                             return (
-                                <div
-                                    key={event.id}
-                                    className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <div>
-                                            <p
-                                                className={`font-medium ${color.text}`}
-                                            >
-                                                {event.title}
-                                            </p>
-                                            <p className="text-muted-foreground">
-                                                {event.location}
-                                            </p>
+                                <Link  key={event.id} href={`/app/schedule/${event.id}`}>
+                                    <div
+                                       
+                                        className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <div>
+                                                <p
+                                                    className={`font-medium ${color.text}`}
+                                                >
+                                                    {event.title}
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {event.location}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right text-[10px] text-muted-foreground">
+                                            <span className="text-[10px] opacity-60">
+                                                {formatTime12h(
+                                                    event.start_time,
+                                                ).slice(0, 5)}
+                                                -{formatTime12h(event.end_time)}
+                                            </span>
                                         </div>
                                     </div>
-                                    <div className="text-right text-[10px] text-muted-foreground">
-                                        <span className="text-[10px] opacity-60">
-                                            {formatTime12h(
-                                                event.start_time,
-                                            ).slice(0, 5)}
-                                            -{formatTime12h(event.end_time)}
-                                        </span>
-                                    </div>
-                                </div>
+                                </Link>
                             );
                         })
                     )}

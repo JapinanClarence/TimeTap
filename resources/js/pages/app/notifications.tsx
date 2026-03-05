@@ -74,7 +74,7 @@ export default function Notifications() {
         <SecondaryLayout>
             <Container>
                 <Head title="Notifications" />
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center py-6">
                     <h1 className="text-2xl font-bold">Notifications</h1>
                     <Button
                         variant="ghost"

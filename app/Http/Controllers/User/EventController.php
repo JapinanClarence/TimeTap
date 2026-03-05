@@ -3,65 +3,50 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EventResource;
 use App\Models\Event;
-use App\Http\Requests\StoreEventRequest;
-use App\Http\Requests\UpdateEventRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $user = auth()->user();
+
+        // 1. Get IDs of all organizations the user is a member of
+        $organizationIds = $user->organizations()->pluck('organizations.id');
+
+        // 2. Fetch events belonging to those organizations
+        $events = Event::whereIn('organization_id', $organizationIds)
+            ->select([
+                'id', // Always include ID for React keys
+                'title',
+                'description',
+                'location',
+                'start_date',
+                'end_date',
+                'start_time',
+                'end_time',
+                'organization_id'
+            ])
+            ->orderBy('start_date', 'asc')
+            ->get();
+
+        return Inertia::render("app/schedule", [
+            'events' => $events
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function show(Request $request, Event $event){
+        $event->area_geojson = DB::table('events')
+               ->where('id', $event->id)
+               ->selectRaw('ST_AsGeoJSON(area) as geojson')
+               ->value('geojson');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreEventRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Event $event)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Event $event)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateEventRequest $request, Event $event)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        //
+       return Inertia::render("app/event-detail", [
+               "event" => new EventResource($event)
+          ]);
     }
 }

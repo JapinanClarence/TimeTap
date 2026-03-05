@@ -14,7 +14,7 @@ import { UpcomingEventCard } from "@/features/app/home/upcoming-event-card";
 import { GeofenceIndicator } from "@/features/app/home/geofence-indicator";
 import { EventType } from "@/types/event";
 import { OrganizationType } from "@/types/organization";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { NoContent } from "@/features/app/home/no-content";
 import JoinOrgSheet from "@/components/app/join-org-sheet";
 import SwitchOrgSheet from "@/features/app/home/switch-org-sheet";
@@ -104,7 +104,7 @@ export default function Index() {
 
     return (
         <AppLayout>
-            <main >
+            <main>
                 <Container className="space-y-5">
                     {currentOrg ? (
                         <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
@@ -115,7 +115,9 @@ export default function Index() {
                             <Button
                                 variant={"link"}
                                 onClick={(e) => {
-                                    (e.currentTarget as HTMLButtonElement).blur();
+                                    (
+                                        e.currentTarget as HTMLButtonElement
+                                    ).blur();
                                     setShowSwitchDrawer(true);
                                 }}
                             >
@@ -188,10 +190,12 @@ export default function Index() {
                             {/* <Button variant={"link"}>See More</Button> */}
                         </div>
 
-                        <div className="space-y-2 md:grid grid-cols-2 lg:grid-cols-3 gap-2">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
                             {upcomingEvents?.length > 0 ? (
                                 processedUpcomingEvents?.map((e, i) => (
-                                    <UpcomingEventCard key={i} {...e} />
+                                    <Link key={i} href={`/app/schedule/${e.id}`}>
+                                        <UpcomingEventCard  {...e} />
+                                    </Link>
                                 ))
                             ) : (
                                 <NoContent
