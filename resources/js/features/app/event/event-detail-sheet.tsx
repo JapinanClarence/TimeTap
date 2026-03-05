@@ -85,7 +85,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                 transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)",
                 willChange: "transform",
             }}
-            className="absolute z-50 bottom-0 left-0 right-0 bg-background border border-border shadow-2xl rounded-tl-4xl rounded-tr-4xl select-none"
+            className="absolute z-50 bottom-0 left-0 right-0 bg-white border border-border shadow-2xl rounded-tl-4xl rounded-tr-4xl select-none"
         >
             {/* Drag handle + header — always visible */}
             <div
@@ -93,7 +93,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                 onMouseDown={handleMouseDown}
                 onTouchStart={handleTouchStart}
             >
-                <div className="w-10 h-1.5 bg-muted-foreground/30 rounded-full mx-auto mb-3" />
+                <div className="w-25 h-1.5 bg-muted rounded-full mx-auto mb-3" />
                 <div className="flex items-center justify-center">
                     <h1 className="text-lg font-semibold ">Event Details</h1>
                 </div>
@@ -117,7 +117,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                 <div className="space-y-3">
                     {data.location && (
                         <div className="flex items-start gap-3">
-                            <span className="mt-0.5 p-1.5 rounded-md bg-muted">
+                            <span className="mt-0.5 p-1.5 rounded-full bg-primary/10">
                                 <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
                             </span>
                             <div>
@@ -128,7 +128,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                     )}
 
                     <div className="flex items-start gap-3">
-                        <span className="mt-0.5 p-1.5 rounded-md bg-muted">
+                        <span className="mt-0.5 p-1.5 rounded-full bg-primary/10">
                             <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                         </span>
                         <div>
@@ -143,7 +143,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                     </div>
 
                     <div className="flex items-start gap-3">
-                        <span className="mt-0.5 p-1.5 rounded-md bg-muted">
+                        <span className="mt-0.5 p-1.5 rounded-full bg-primary/10">
                             <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                         </span>
                         <div>
