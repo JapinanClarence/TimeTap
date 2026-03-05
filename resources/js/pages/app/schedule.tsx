@@ -1,92 +1,243 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import AppLayout from "@/layouts/app/AppLayout";
 import { usePage } from "@inertiajs/react";
-import { parseISO } from "date-fns";
+import { parseISO, isSameMonth, isWithinInterval, startOfDay } from "date-fns";
 import { EventType } from "@/types/event";
+import { formatTime12h } from "@/util/dateUtil";
+import { Empty } from "@/components/ui/empty";
+import { NoContent } from "@/features/app/home/no-content";
+
+// A palette of distinct Tailwind-compatible colors assigned round-robin to events
+const EVENT_COLORS: {
+    bg: string;
+    dot: string;
+    text: string;
+    border: string;
+}[] = [
+    {
+        bg: "bg-blue-500",
+        dot: "bg-blue-500",
+        border: "border-l-blue-500",
+        text: "text-blue-600",
+    },
+    {
+        bg: "bg-rose-500",
+        dot: "bg-rose-500",
+        border: "border-l-rose-500",
+        text: "text-rose-600",
+    },
+    {
+        bg: "bg-emerald-500",
+        dot: "bg-emerald-500",
+        border: "border-l-emerald-500",
+        text: "text-emerald-600",
+    },
+    {
+        bg: "bg-amber-500",
+        dot: "bg-amber-500",
+        border: "border-l-amber-500",
+        text: "text-amber-600",
+    },
+    {
+        bg: "bg-violet-500",
+        dot: "bg-violet-500",
+        border: "border-l-violet-500",
+        text: "text-violet-600",
+    },
+    {
+        bg: "bg-pink-500",
+        dot: "bg-pink-500",
+        border: "border-l-pink-500",
+        text: "text-pink-600",
+    },
+    {
+        bg: "bg-cyan-500",
+        dot: "bg-cyan-500",
+        border: "border-l-cyan-500",
+        text: "text-cyan-600",
+    },
+    {
+        bg: "bg-orange-500",
+        dot: "bg-orange-500",
+        border: "border-l-orange-500",
+        text: "text-orange-600",
+    },
+];
+
 export default function Schedule() {
     const { events } = usePage<{ events: EventType[] }>().props;
 
-    // 1. Generate colors and modifiers based on events
-    const { modifiers, eventStyles, eventColors } = useMemo(() => {
-        const mods: Record<string, any> = {};
-        const colors: Record<string, string> = {};
-        let styles = "";
+    // Track which month the calendar is currently showing
+    const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
-        events.forEach((event, index) => {
+    // Assign a stable color index to each event by its id
+    const eventColorMap = useMemo(() => {
+        const map: Record<string | number, number> = {};
+        events.forEach((event, idx) => {
             if (!event.id) return;
-            // Generate a random-ish but pleasing HSL color
-            // Using the index or ID ensures the color stays consistent for that event
-            const hue = (index * 137.5) % 360; // Golden angle for even distribution
-            const bgColor = `hsla(${hue}, 70%, 80%, 1)`;
-            const textColor = `hsla(${hue}, 70%, 20%, 1)`;
-            const modifierKey = `event-${event.id}`;
+            map[event.id] = idx % EVENT_COLORS.length;
+        });
+        return map;
+    }, [events]);
 
-            mods[modifierKey] = {
-                from: parseISO(event.start_date),
-                to: parseISO(event.end_date),
-            };
+    // Build a map: dateString (YYYY-MM-DD) → list of color indices for dots
+    const dayColorMap = useMemo(() => {
+        const map: Record<string, number[]> = {};
 
-            colors[event.id] = bgColor;
+        events.forEach((event) => {
+            if (!event.id) return;
+            const start = startOfDay(parseISO(event.start_date));
+            const end = startOfDay(parseISO(event.end_date));
+            const colorIdx = eventColorMap[event.id];
 
-            // Create a custom CSS class for this specific event
-            styles += `
-                .rdp .rdp-day.${modifierKey} {
-                    background-color: ${bgColor} !important;
-                    color: ${textColor} !important;
-                    border-radius: 0;
-                    font-weight: bold;
-                }
-                .rdp .rdp-day.${modifierKey}.rdp-day_range_start {
-                    border-top-left-radius: 8px !important;
-                    border-bottom-left-radius: 8px !important;
-                }
-                .rdp .rdp-day.${modifierKey}.rdp-day_range_end {
-                    border-top-right-radius: 8px !important;
-                    border-bottom-right-radius: 8px !important;
-                }
-            `;
+            // Iterate every day in the event range
+            const cursor = new Date(start);
+            while (cursor <= end) {
+                const key = cursor.toISOString().slice(0, 10);
+                if (!map[key]) map[key] = [];
+                if (!map[key].includes(colorIdx)) map[key].push(colorIdx);
+                cursor.setDate(cursor.getDate() + 1);
+            }
         });
 
-        return { modifiers: mods, eventStyles: styles, eventColors: colors };
-    }, [events]);
+        return map;
+    }, [events, eventColorMap]);
+
+    // Events visible in the current calendar month
+    const currentMonthEvents = useMemo(() => {
+        return events.filter((event) => {
+            const start = parseISO(event.start_date);
+            const end = parseISO(event.end_date);
+            // Show if ANY part of the event falls in the current month
+            return (
+                isSameMonth(start, currentMonth) ||
+                isSameMonth(end, currentMonth) ||
+                isWithinInterval(currentMonth, { start, end })
+            );
+        });
+    }, [events, currentMonth]);
+
+    // Custom day renderer: renders the date number + colored dots for each event
+    const renderDay = (day: Date) => {
+        const key = day.toISOString().slice(0, 10);
+        const colorIndices = dayColorMap[key] ?? [];
+
+        return (
+            <div className="relative flex flex-col items-center justify-center w-full h-full gap-0.5">
+                <span>{day.getDate()}</span>
+                {colorIndices.length > 0 && (
+                    <div className="flex gap-0.5">
+                        {colorIndices.slice(0, 4).map((ci) => (
+                            <span
+                                key={ci}
+                                className={`w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     return (
         <AppLayout showHeader={false}>
-            <style dangerouslySetInnerHTML={{ __html: eventStyles }} />
-            <h1 className="text-start px-8 text-xl font-semibold mt-10">Schedules</h1>
-            <div className="flex flex-col items-center justify-center p-8 gap-6">
+            <h1 className="text-start px-8 text-2xl font-semibold my-10">
+                Event Calendar
+            </h1>
+            <div className="flex flex-col items-center justify-center px-8 gap-6">
                 <Calendar
                     mode="multiple"
-                    modifiers={modifiers}
                     captionLayout="dropdown"
-                    className="rounded-lg border shadow-sm w-full max-w-2xl bg-background"
+                    className="rounded-lg border shadow-sm w-full max-w-md bg-background"
+                    month={currentMonth}
+                    onMonthChange={setCurrentMonth}
+                    components={{
+                        Day: ({ day, ...props }) => {
+                            const date = day.date;
+                            const key = date.toISOString().slice(0, 10);
+                            const colorIndices = dayColorMap[key] ?? [];
+                            const isOutside =
+                                date.getMonth() !== day.displayMonth.getMonth();
+
+                            return (
+                                <td
+                                    {...props}
+                                    className={[
+                                        props.className,
+                                        "relative flex flex-col items-center justify-start pt-1 h-9 w-9",
+                                        isOutside ? "opacity-30" : "",
+                                    ]
+                                        .filter(Boolean)
+                                        .join(" ")}
+                                >
+                                    <span className="text-sm leading-none">
+                                        {date.getDate()}
+                                    </span>
+                                    {colorIndices.length > 0 && !isOutside && (
+                                        <span className="flex gap-0.5 mt-0.5">
+                                            {colorIndices
+                                                .slice(0, 4)
+                                                .map((ci) => (
+                                                    <span
+                                                        key={ci}
+                                                        className={`block w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
+                                                    />
+                                                ))}
+                                        </span>
+                                    )}
+                                </td>
+                            );
+                        },
+                    }}
                 />
 
-                {/* 3. Event Legend with matching colors */}
-                <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {events.map((event) => {
-                        if (!event.id) return;
-                        return (
-                            <div
-                                key={event.id}
-                                style={{
-                                    borderLeftColor: eventColors[event.id],
-                                }}
-                                className="text-xs p-3 border-l-4 border rounded-md bg-background shadow-sm flex flex-col gap-1"
-                            >
-                                <div className="flex justify-between font-bold text-foreground">
-                                    <span>{event.title}</span>
-                                    <span className="text-[10px] opacity-60">
-                                        {event.start_time.slice(0, 5)}
-                                    </span>
+                {/* Event Legend / List — current month only */}
+                <div className="w-full max-w-md space-y-2">
+                    <h2 className="text-sm font-semibold px-1">
+                        Events in{" "}
+                        {currentMonth.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        })}
+                    </h2>
+
+                    {currentMonthEvents.length === 0 ? (
+                       <NoContent title="No data" description="No events found this month"/>
+                    ) : (
+                        currentMonthEvents.map((event) => {
+                            if (!event.id) return;
+                            const ci = eventColorMap[event.id];
+                            const color = EVENT_COLORS[ci];
+                            return (
+                                <div
+                                    key={event.id}
+                                    className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            <p
+                                                className={`font-medium ${color.text}`}
+                                            >
+                                                {event.title}
+                                            </p>
+                                            <p className="text-muted-foreground">
+                                                {event.location}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right text-[10px] text-muted-foreground">
+                                        <span className="text-[10px] opacity-60">
+                                            {formatTime12h(
+                                                event.start_time,
+                                            ).slice(0, 5)}
+                                            -{formatTime12h(event.end_time)}
+                                        </span>
+                                    </div>
                                 </div>
-                                <p className="text-muted-foreground truncate">
-                                    {event.location}
-                                </p>
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </AppLayout>

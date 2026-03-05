@@ -8,8 +8,6 @@ import {
     EmptyTitle,
 } from "@/components/ui/empty";
 import { IconFolderCode } from "@tabler/icons-react";
-import { Icon } from "lucide-react";
-import React from "react";
 
 interface NoContentProps{
     title?:string;
