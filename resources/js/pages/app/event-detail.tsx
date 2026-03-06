@@ -14,6 +14,7 @@ import {
 import { PolygonLayer } from "@/util/mapUtil";
 import EventDetailSheet from "@/features/app/event/event-detail-sheet";
 import { toast } from "sonner";
+import EventDetailModal from "@/features/app/event/event-detail-modal";
 
 export default function EventDetail() {
     const { event } = usePage<{ event: { data: EventType } }>().props;
@@ -81,11 +82,11 @@ export default function EventDetail() {
                         showLocate
                         showCompass
                     />
-                    {/* <UserLocationMarker center={center} accuracy={accuracy} /> */}
                     {/* Visual Layer to show the geofence as the user clicks */}
                     <PolygonLayer coordinates={coordinates} />
                 </Map>
                 <EventDetailSheet data={event.data} />
+                <EventDetailModal data={event.data}/>
             </div>
         </SecondaryLayout>
     );

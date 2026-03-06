@@ -85,7 +85,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
                 transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)",
                 willChange: "transform",
             }}
-            className="absolute z-50 bottom-0 left-0 right-0 bg-white border border-border shadow-2xl rounded-tl-4xl rounded-tr-4xl select-none"
+            className="absolute md:hidden  z-50 bottom-0 left-0 right-0 bg-white border border-border shadow-2xl rounded-tl-4xl rounded-tr-4xl select-none"
         >
             {/* Drag handle + header — always visible */}
             <div
