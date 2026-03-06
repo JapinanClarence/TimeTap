@@ -1,4 +1,3 @@
-import SecondaryLayout from "@/layouts/app/secondary-layout";
 import { EventType } from "@/types/event";
 import { usePage } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
@@ -15,6 +14,8 @@ import { PolygonLayer } from "@/util/mapUtil";
 import EventDetailSheet from "@/features/app/event/event-detail-sheet";
 import { toast } from "sonner";
 import EventDetailModal from "@/features/app/event/event-detail-modal";
+import AppLayout from "@/layouts/app/app-layout";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function EventDetail() {
     const { event } = usePage<{ event: { data: EventType } }>().props;
@@ -59,10 +60,11 @@ export default function EventDetail() {
         handleGetLocation();
     }, []);
 
-    console.log(coordinates)
+    const isMobile = useIsMobile();
+
     return (
-        <SecondaryLayout>
-            <div className="h-[94vh] relative">
+        <AppLayout secondaryHeader={true}>
+            <div className="h-[89vh] relative">
                 <Map center={center} zoom={15} theme="light">
                     {/* User location marker */}
                     {center && (
@@ -81,6 +83,7 @@ export default function EventDetail() {
                         showZoom={false}
                         showLocate
                         showCompass
+                        showFullscreen={!isMobile}
                     />
                     {/* Visual Layer to show the geofence as the user clicks */}
                     <PolygonLayer coordinates={coordinates} />
@@ -88,6 +91,6 @@ export default function EventDetail() {
                 <EventDetailSheet data={event.data} />
                 <EventDetailModal data={event.data}/>
             </div>
-        </SecondaryLayout>
+        </AppLayout>
     );
 }

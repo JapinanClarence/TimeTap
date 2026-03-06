@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import AppLayout from "@/layouts/app/AppLayout";
+import AppLayout from "@/layouts/app/app-layout";
 import Container from "@/components/ui/container";
 import {
     formatSimpleDate,
@@ -23,7 +23,6 @@ interface AppHomeProps {
     currentOrg: OrganizationType | null;
     currentEvent: { data: EventType } | null;
     upcomingEvents: { data: EventType[] };
-    joinableOrganizations: OrganizationType[];
     myOrganizations: OrganizationType[];
     [key: string]: unknown;
 }
@@ -210,7 +209,6 @@ export default function Index() {
             <JoinOrgSheet
                 open={showJoinOrgSheet}
                 onClose={() => setShowJoinOrgSheet(false)}
-                organizations={props.joinableOrganizations}
             />
             <SwitchOrgSheet
                 open={showSwitchDrawer}

@@ -4,9 +4,9 @@ import { Head, router, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Calendar, Check, X } from "lucide-react";
-import SecondaryLayout from "@/layouts/app/secondary-layout";
 import Container from "@/components/ui/container";
 import { toast } from "sonner";
+import AppLayout from "@/layouts/app/app-layout";
 
 interface Paginated<T> {
     data: T[];
@@ -71,7 +71,7 @@ export default function Notifications() {
     const notifications = props?.notifications;
 
     return (
-        <SecondaryLayout>
+        <AppLayout secondaryHeader={true}>
             <Container>
                 <Head title="Notifications" />
                 <div className="flex justify-between items-center py-6">
@@ -181,6 +181,6 @@ export default function Notifications() {
                 </div>
             )} */}
             </Container>
-        </SecondaryLayout>
+        </AppLayout>
     );
 }

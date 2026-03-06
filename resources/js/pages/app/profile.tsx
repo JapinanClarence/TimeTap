@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import AppLayout from "@/layouts/app/AppLayout";
+import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
 import { useForm, usePage } from "@inertiajs/react";
 import { ChevronRight, LogOut } from "lucide-react";

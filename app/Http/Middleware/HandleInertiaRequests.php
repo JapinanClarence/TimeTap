@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Resources\UserResource;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -34,26 +35,40 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-    public function share(Request $request): array
-    {
-        return [
-            ...parent::share($request),
-            //
-            'auth' => [
-                'user' => fn() => $request->user()
-                    ? new UserResource($request->user())
-                    : null,
-                'current_org_id' => $request->user()?->current_organization_id,
-            ],
-            'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
-            ],
-            // Global Notifications for the Dropdown
-        'notifications' => $request->user() ? $request->user()->notifications()
+   public function share(Request $request): array
+{
+    $user = $request->user();
+
+    return [
+        ...parent::share($request),
+        
+        'auth' => [
+            'user' => $user ? new UserResource($user) : null,
+            'current_org_id' => $user?->current_organization_id,
+        ],
+        
+        'flash' => [
+            'success' => fn() => $request->session()->get('success'),
+            'error' => fn() => $request->session()->get('error'),
+        ],
+
+        'notifications' => $user ? $user->notifications()
             ->with('subject')
             ->latest()
             ->paginate(15) : [],
-        ];
-    }
+
+        // Load organizations only if user is logged in
+        "myOrganizations" => $user ? $user->organizations : [],
+
+        // Logic for currentOrg
+        "currentOrg" => function () use ($user) {
+            if (!$user || !$user->current_organization_id) {
+                return null;
+            }
+            
+            // Using find() returns the model or null automatically
+            return Organization::find($user->current_organization_id);
+        },
+    ];
+}
 }

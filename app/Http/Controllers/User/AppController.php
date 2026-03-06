@@ -22,11 +22,6 @@ class AppController extends Controller
 
         $currentOrg = Organization::find($user->current_organization_id);
 
-        $joinableOrg = Organization::whereDoesntHave('members', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })
-            ->where('owner_id', '!=', $user->id)
-            ->get(['id', 'name']);
 
         //get current org 
         if (!$currentOrg) {
@@ -35,7 +30,6 @@ class AppController extends Controller
                 'currentEvent' => null,
                 'upcomingEvents' => [],
                 "myOrganizations" => [],
-                "joinableOrganizations" => $joinableOrg
             ]);
         }
 
@@ -61,19 +55,11 @@ class AppController extends Controller
             ->limit(5)
             ->get();
 
-        $notifications = auth()->user()->notifications()
-            ->with('subject') // Eager load the polymorphic invitation/event
-            ->latest()
-            ->paginate(15);
-
-
         return Inertia::render("app/index", [
-            "joinableOrganizations" => $joinableOrg,
             'myOrganizations' => $user->organizations,
             "currentOrg" => $currentOrg,
             "currentEvent" => $currentEvent ? new EventResource($currentEvent) : null,
             "upcomingEvents" => EventResource::collection($upcomingEvents),
-            "notifications" => $notifications
         ]);
     }
 }

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import AppLayout from "@/layouts/app/AppLayout";
+import AppLayout from "@/layouts/app/app-layout";
 import { Link, usePage } from "@inertiajs/react";
 import { parseISO, isSameMonth, isWithinInterval, startOfDay } from "date-fns";
 import { EventType } from "@/types/event";

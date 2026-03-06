@@ -31,7 +31,6 @@ import { joinOrgSchema } from "@/features/app/schema/join-organization.schema";
 interface JoinOrgSheetProps {
     open: boolean;
     onClose: () => void;
-    organizations: OrganizationType[]; // Pass your orgs from Laravel
 }
 
 const snapPoints = ["148px", "355px", 1];
@@ -39,7 +38,6 @@ const snapPoints = ["148px", "355px", 1];
 export default function JoinOrgSheet({
     open,
     onClose,
-    organizations,
 }: JoinOrgSheetProps) {
     const { post, data, setData, processing, errors, clearErrors, setError } =
         useForm({

@@ -18,8 +18,6 @@ import {
     IconSettings,
     IconUsers,
 } from "@tabler/icons-react";
-
-import { NavDocuments } from "@/layouts/dashboard/nav-documents";
 import { NavMain } from "@/layouts/dashboard/nav-main";
 import { NavSecondary } from "@/layouts/dashboard/nav-secondary";
 import { NavUser } from "@/layouts/dashboard/nav-user";

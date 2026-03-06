@@ -1,6 +1,6 @@
 import {QRScanner} from "@/features/app/QR/QRScanner";
 import { Button } from "@/components/ui/button";
-import AppLayout from "@/layouts/app/AppLayout";
+import AppLayout from "@/layouts/app/app-layout";
 import { ScanQrCode, Upload } from "lucide-react";
 
 export default function QR() {
