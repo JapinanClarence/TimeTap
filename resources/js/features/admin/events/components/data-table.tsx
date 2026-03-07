@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
     data: TData[];
     onStatusChange: (id: number, status: string) => void;
     processingId: number | null;
+    onGenerateQR: (data: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
     data,
     onStatusChange,
     processingId,
+    onGenerateQR,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -56,6 +58,7 @@ export function DataTable<TData, TValue>({
         meta: {
             onStatusChange,
             processingId,
+            onGenerateQR,
         },
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,

@@ -69,6 +69,7 @@
     --color-timetap-border: oklch(0.92 0.01 260);
     --color-text-primary: oklch(0.24 0.03 260);
     --color-text-secondary: oklch(0.46 0.04 260);
+    --color-tertiary: oklch(0.8427 0.0712 266.39);
 }
 
 :root {

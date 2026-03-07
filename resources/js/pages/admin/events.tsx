@@ -9,6 +9,8 @@ import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 import { route } from "ziggy-js";
 import { useState } from "react";
+import { OrganizationType } from "@/types/organization";
+import { QRGenerator } from "@/features/admin/events/components/qr-generator";
 
 interface Paginated<T> {
     data: T[];
@@ -19,16 +21,19 @@ interface Paginated<T> {
 interface EventsPageProps {
     [key: string]: unknown;
     events: Paginated<EventType>;
+    owned_org: OrganizationType;
 }
 
 function EventsTableContent({
     events,
     onStatusChange,
     processingId,
+    onGenerateQR,
 }: {
     events: Paginated<EventType>;
     onStatusChange: (id: number, status: string) => void;
-    processingId: number |null;
+    processingId: number | null;
+    onGenerateQR: (data: EventType) => void;
 }) {
     return (
         <DataTable
@@ -36,17 +41,20 @@ function EventsTableContent({
             data={events.data}
             onStatusChange={onStatusChange}
             processingId={processingId}
+            onGenerateQR={onGenerateQR}
         />
     );
 }
 
 export default function Events() {
     const { props } = usePage<EventsPageProps>();
-    const [processingId, setProcessingId] = useState<number | null>(null);
 
+    const [processingId, setProcessingId] = useState<number | null>(null);
+    const [showCard, setShowCard] = useState(false);
+    const [currentEvent, setCurrentEvent] = useState({});
     const handleStatusChange = async (id: number, status: string) => {
- 
-        router.patch(`/admin/events/${id}`,
+        router.patch(
+            `/admin/events/${id}`,
             {
                 status: status,
             },
@@ -62,6 +70,20 @@ export default function Events() {
         );
     };
 
+    const handleShowQRCard = (data: EventType) => {
+        setShowCard(true);
+        setCurrentEvent({
+            id: data.id,
+            title:data.title,
+            location: data.location,
+            start_date: data.start_date,
+            end_date: data.end_date,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            org_id: props.owned_org.id
+        })
+    };
+
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl md:min-h-min flex flex-col p-5">
@@ -75,10 +97,16 @@ export default function Events() {
                             events={props.events}
                             onStatusChange={handleStatusChange}
                             processingId={processingId}
+                            onGenerateQR={handleShowQRCard}
                         />
                     </Deferred>
                 </div>
             </div>
+            <QRGenerator
+                open={showCard}
+                onClose={() => setShowCard(false)}
+                data={currentEvent}
+            />
         </AdminLayout>
     );
 }

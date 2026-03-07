@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\AppController;
@@ -39,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/", [AppController::class, "index"])->name("app.index");
     Route::get("/notifications", [NotificationController::class, "index"]);
-    Route::post("/notifications/mark-all-read",[NotificationController::class, "markAllRead"]);
+    Route::post("/notifications/mark-all-read", [NotificationController::class, "markAllRead"]);
     Route::get("/profile", [ProfileController::class, "index"]);
     Route::get("/qr", [QRController::class, "index"])->name("qr");
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
@@ -62,4 +63,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/members", [MemberController::class, "index"])->name("admin.members");
     Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
+});
+
+Route::middleware(['auth'])->prefix("attendance")->group(function () {
+    Route::post("/record", [AttendanceController::class, "recordAttendance"]);
 });

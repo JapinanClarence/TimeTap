@@ -35,39 +35,39 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-   public function share(Request $request): array
-{
-    $user = $request->user();
+    public function share(Request $request): array
+    {
+        $user = $request->user();
 
-    return [
-        ...parent::share($request),
-        
-        'auth' => [
-            'user' => $user ? new UserResource($user) : null,
-            'current_org_id' => $user?->current_organization_id,
-        ],
-        
-        'flash' => [
-            'success' => fn() => $request->session()->get('success'),
-            'error' => fn() => $request->session()->get('error'),
-        ],
+        return [
+            ...parent::share($request),
 
-        'notifications' => $user ? $user->notifications()->select("id", "name")
-            ->with('subject')
-            ->latest():[],
+            'auth' => [
+                'user' => $user ? new UserResource($user) : null,
+                'current_org_id' => $user?->current_organization_id
+            ],
+            'owned_org' => $user->ownedOrganization()->select('id', 'name')->first(),
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+            ],
 
-        // Load organizations only if user is logged in
-        "myOrganizations" => $user ? $user->organizations->select("id", "name") : [],
+            'notifications' => $user ? $user->notifications()->select("id", "name")
+                ->with('subject')
+                ->latest() : [],
 
-        // Logic for currentOrg
-        "currentOrg" => function () use ($user) {
-            if (!$user || !$user->current_organization_id) {
-                return null;
-            }
-            
-            // Using find() returns the model or null automatically
-            return Organization::select("id", "name")->find($user->current_organization_id);
-        },
-    ];
-}
+            // Load organizations only if user is logged in
+            "myOrganizations" => $user ? $user->organizations->select("id", "name") : [],
+
+            // Logic for currentOrg
+            "currentOrg" => function () use ($user) {
+                if (!$user || !$user->current_organization_id) {
+                    return null;
+                }
+
+                // Using find() returns the model or null automatically
+                return Organization::select("id", "name")->find($user->current_organization_id);
+            },
+        ];
+    }
 }

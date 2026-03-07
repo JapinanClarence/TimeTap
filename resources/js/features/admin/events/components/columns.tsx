@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/select";
 import { Link } from "@inertiajs/react";
 
-
 export const columns: ColumnDef<EventType>[] = [
     {
         accessorKey: "title",
@@ -139,7 +138,8 @@ export const columns: ColumnDef<EventType>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
+            const meta = table.options.meta as any;
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -152,12 +152,20 @@ export const columns: ColumnDef<EventType>[] = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link href={`/admin/events/edit/${row.original.id}`}>
+                            <Link
+                                href={`/admin/events/edit/${row.original.id}`}
+                            >
                                 <Edit />
                                 Edit Event
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                if (meta?.onGenerateQR) {
+                                    meta.onGenerateQR(row.original);
+                                }
+                            }}
+                        >
                             <QrCode />
                             Generate QR
                         </DropdownMenuItem>
