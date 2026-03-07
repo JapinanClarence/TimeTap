@@ -7,6 +7,7 @@ import { EventType } from "@/types/event";
 import { formatTime12h } from "@/util/dateUtil";
 import { Empty } from "@/components/ui/empty";
 import { NoContent } from "@/features/app/home/no-content";
+import Container from "@/components/ui/container";
 
 // A palette of distinct Tailwind-compatible colors assigned round-robin to events
 const EVENT_COLORS: {
@@ -142,109 +143,118 @@ export default function Schedule() {
 
     return (
         <AppLayout showHeader={false}>
-            <h1 className="text-start px-8 text-2xl font-semibold my-10">
-                Event Calendar
-            </h1>
-            <div className="flex flex-col items-center justify-center  gap-6">
-                <Calendar
-                    mode="multiple"
-                    captionLayout="dropdown"
-                    className="rounded-lg  w-full px-8 max-w-md bg-background"
-                    month={currentMonth}
-                    onMonthChange={setCurrentMonth}
-                    components={{
-                        Day: ({ day, ...props }) => {
-                            const date = day.date;
-                            const key = date.toISOString().slice(0, 10);
-                            const colorIndices = dayColorMap[key] ?? [];
-                            const isOutside =
-                                date.getMonth() !== day.displayMonth.getMonth();
+            <Container className="xl:px-8">
+                <h1 className="text-start text-2xl font-semibold my-10">
+                    Event Calendar
+                </h1>
+                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-6">
+                    <Calendar
+                        mode="multiple"
+                        captionLayout="dropdown"
+                        className="rounded-lg  w-full px-8 max-w-md bg-transparent border shadow-xs "
+                        month={currentMonth}
+                        onMonthChange={setCurrentMonth}
+                        components={{
+                            Day: ({ day, ...props }) => {
+                                const date = day.date;
+                                const key = date.toISOString().slice(0, 10);
+                                const colorIndices = dayColorMap[key] ?? [];
+                                const isOutside =
+                                    date.getMonth() !==
+                                    day.displayMonth.getMonth();
 
-                            return (
-                                <td
-                                    {...props}
-                                    className={[
-                                        props.className,
-                                        "relative flex flex-col items-center justify-start pt-1 h-9 w-9",
-                                        isOutside ? "opacity-30" : "",
-                                    ]
-                                        .filter(Boolean)
-                                        .join(" ")}
-                                >
-                                    <span className="text-sm leading-none">
-                                        {date.getDate()}
-                                    </span>
-                                    {colorIndices.length > 0 && !isOutside && (
-                                        <span className="flex gap-0.5 mt-0.5">
-                                            {colorIndices
-                                                .slice(0, 4)
-                                                .map((ci) => (
-                                                    <span
-                                                        key={ci}
-                                                        className={`block w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
-                                                    />
-                                                ))}
-                                        </span>
-                                    )}
-                                </td>
-                            );
-                        },
-                    }}
-                />
-
-                {/* Event Legend / List — current month only */}
-                <div className="w-full max-w-md flex flex-col gap-2 px-8">
-                    <h2 className="text-sm font-semibold px-1">
-                        Events in{" "}
-                        {currentMonth.toLocaleString("default", {
-                            month: "long",
-                            year: "numeric",
-                        })}
-                    </h2>
-
-                    {currentMonthEvents.length === 0 ? (
-                        <NoContent
-                            title="No data"
-                            description="No events found this month"
-                        />
-                    ) : (
-                        currentMonthEvents.map((event) => {
-                            if (!event.id) return;
-                            const ci = eventColorMap[event.id];
-                            const color = EVENT_COLORS[ci];
-                            return (
-                                <Link  key={event.id} href={`/app/schedule/${event.id}`}>
-                                    <div
-                                       
-                                        className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
+                                return (
+                                    <td
+                                        {...props}
+                                        className={[
+                                            props.className,
+                                            "relative flex flex-col items-center justify-start pt-1 h-9 w-9",
+                                            isOutside ? "opacity-30" : "",
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")}
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <div>
-                                                <p
-                                                    className={`font-medium ${color.text}`}
-                                                >
-                                                    {event.title}
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {event.location}
-                                                </p>
+                                        <span className="text-sm leading-none">
+                                            {date.getDate()}
+                                        </span>
+                                        {colorIndices.length > 0 &&
+                                            !isOutside && (
+                                                <span className="flex gap-0.5 mt-0.5">
+                                                    {colorIndices
+                                                        .slice(0, 4)
+                                                        .map((ci) => (
+                                                            <span
+                                                                key={ci}
+                                                                className={`block w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
+                                                            />
+                                                        ))}
+                                                </span>
+                                            )}
+                                    </td>
+                                );
+                            },
+                        }}
+                    />
+
+                    {/* Event Legend / List — current month only */}
+                    <div className="w-full max-w-md md:max-w-lg flex md: flex-col gap-2">
+                        <h2 className="md:hidden text-sm font-semibold px-1">
+                            Events in{" "}
+                            {currentMonth.toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                            })}
+                        </h2>
+
+                        {currentMonthEvents.length === 0 ? (
+                            <NoContent
+                                title="No data"
+                                description="No events found this month"
+                            />
+                        ) : (
+                            currentMonthEvents.map((event) => {
+                                if (!event.id) return;
+                                const ci = eventColorMap[event.id];
+                                const color = EVENT_COLORS[ci];
+                                return (
+                                    <Link
+                                        key={event.id}
+                                        href={`/app/schedule/${event.id}`}
+                                    >
+                                        <div
+                                            className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <div>
+                                                    <p
+                                                        className={`font-medium ${color.text}`}
+                                                    >
+                                                        {event.title}
+                                                    </p>
+                                                    <p className="text-muted-foreground">
+                                                        {event.location}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right text-[10px] text-muted-foreground">
+                                                <span className="text-[10px] opacity-60">
+                                                    {formatTime12h(
+                                                        event.start_time,
+                                                    ).slice(0, 5)}
+                                                    -
+                                                    {formatTime12h(
+                                                        event.end_time,
+                                                    )}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div className="text-right text-[10px] text-muted-foreground">
-                                            <span className="text-[10px] opacity-60">
-                                                {formatTime12h(
-                                                    event.start_time,
-                                                ).slice(0, 5)}
-                                                -{formatTime12h(event.end_time)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </Link>
-                            );
-                        })
-                    )}
+                                    </Link>
+                                );
+                            })
+                        )}
+                    </div>
                 </div>
-            </div>
+            </Container>
         </AppLayout>
     );
 }

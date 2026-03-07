@@ -63,9 +63,11 @@ export default function EventDetail() {
     const isMobile = useIsMobile();
 
     return (
-        <AppLayout secondaryHeader={true}>
-            <div className="h-[89vh] relative">
-                <Map center={center} zoom={15} theme="light">
+        <AppLayout secondaryHeader={true} showNav={false}>
+            <div className="h-[100vh] relative">
+                <Map center={center} zoom={15}  styles={{
+                        light: "https://tiles.openfreemap.org/styles/bright",
+                    }}  theme="light">
                     {/* User location marker */}
                     {center && (
                         <MapMarker longitude={center[0]} latitude={center[1]}>
@@ -80,6 +82,7 @@ export default function EventDetail() {
                         </MapMarker>
                     )}
                     <MapControls
+                        position="top-right"
                         showZoom={false}
                         showLocate
                         showCompass

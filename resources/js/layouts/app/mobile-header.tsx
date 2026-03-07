@@ -31,7 +31,7 @@ export default function MobileHeader() {
 
     return (
         <header className="fixed top-0 z-50 w-full border-b bg-background ">
-            <Container className="mx-auto flex items-center justify-between py-3 ">
+            <Container className="mx-auto flex items-center justify-between h-16">
                 {/* <Link href={"/"}>
                     <div className="flex items-end rounded-full h-10 w-10">
                         <h2 className="text-2xl font-extrabold text-transparent inline-block bg-linear-to-r from-primary to-timetap-accent  bg-clip-text">

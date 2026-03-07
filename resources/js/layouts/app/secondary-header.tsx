@@ -11,7 +11,7 @@ export default function SecondaryHeader() {
     };
     return (
         <header className="fixed top-0 z-50 w-full border-b bg-background ">
-            <Container className="mx-auto flex items-center justify-between py-3 ">
+            <Container className="mx-auto flex items-center justify-between h-16 ">
                 <div className="flex gap-3">
                     <Button variant={"ghost"} onClick={handleBack}>
                         <ArrowLeft />

@@ -71,8 +71,8 @@ export default function Notifications() {
     const notifications = props?.notifications;
 
     return (
-        <AppLayout secondaryHeader={true}>
-            <Container>
+        <AppLayout secondaryHeader={true} showNav={false}>
+            <Container className="xl:px-8">
                 <Head title="Notifications" />
                 <div className="flex justify-between items-center py-6">
                     <h1 className="text-2xl font-bold">Notifications</h1>

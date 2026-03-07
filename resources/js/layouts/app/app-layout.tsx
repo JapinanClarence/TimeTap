@@ -32,7 +32,7 @@ export default function AppLayout({
             <div>
                 {showHeader && !secondaryHeader && <MobileHeader />}
                 {secondaryHeader && <SecondaryHeader />}
-                <main className={showHeader ? `py-24` : ""}>{children}</main>
+                <main className={showHeader ? `py-16` : ""}>{children}</main>
                 {showNav && <MobileNav />}
             </div>
         );

@@ -52,13 +52,12 @@ class HandleInertiaRequests extends Middleware
             'error' => fn() => $request->session()->get('error'),
         ],
 
-        'notifications' => $user ? $user->notifications()
+        'notifications' => $user ? $user->notifications()->select("id", "name")
             ->with('subject')
-            ->latest()
-            ->paginate(15) : [],
+            ->latest():[],
 
         // Load organizations only if user is logged in
-        "myOrganizations" => $user ? $user->organizations : [],
+        "myOrganizations" => $user ? $user->organizations->select("id", "name") : [],
 
         // Logic for currentOrg
         "currentOrg" => function () use ($user) {
@@ -67,7 +66,7 @@ class HandleInertiaRequests extends Middleware
             }
             
             // Using find() returns the model or null automatically
-            return Organization::find($user->current_organization_id);
+            return Organization::select("id", "name")->find($user->current_organization_id);
         },
     ];
 }

@@ -104,7 +104,7 @@ export default function Index() {
     return (
         <AppLayout>
             <main>
-                <Container className="space-y-5">
+                <Container className="space-y-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
                     {currentOrg ? (
                         <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
                             <p className="font-semibold">
@@ -141,7 +141,7 @@ export default function Index() {
                     )}
 
                     <section>
-                        <h2 className="font-semibold text-xl">Today's Event</h2>
+                        <h2 className=" font-semibold text-xl">Today's Event</h2>
 
                         <p className="text-muted-foreground text-sm">
                             {formatWeekDayOnly(time)},{formatSimpleDate(time)}
