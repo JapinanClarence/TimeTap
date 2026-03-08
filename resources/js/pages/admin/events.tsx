@@ -71,7 +71,9 @@ export default function Events() {
     };
 
     const handleShowQRCard = (data: EventType) => {
+        if(!data) return;
         setShowCard(true);
+
         setCurrentEvent({
             id: data.id,
             title:data.title,
@@ -80,7 +82,8 @@ export default function Events() {
             end_date: data.end_date,
             start_time: data.start_time,
             end_time: data.end_time,
-            org_id: props.owned_org.id
+            org_id: props.owned_org.id,
+            type: "event"
         })
     };
 

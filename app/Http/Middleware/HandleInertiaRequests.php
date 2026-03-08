@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user ? new UserResource($user) : null,
                 'current_org_id' => $user?->current_organization_id
             ],
-            'owned_org' => $user->ownedOrganization()->select('id', 'name')->first(),
+            'owned_org' => $user?->ownedOrganization()->select('id', 'name')->first(),
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
