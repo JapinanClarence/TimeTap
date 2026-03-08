@@ -64,7 +64,7 @@ export default function EventDetail() {
 
     return (
         <AppLayout secondaryHeader={true} showNav={false}>
-            <div className="h-[100vh] relative">
+            <div className="md:h-[89vh] relative">
                 <Map center={center} zoom={15}  styles={{
                         light: "https://tiles.openfreemap.org/styles/bright",
                     }}  theme="light">
@@ -82,7 +82,7 @@ export default function EventDetail() {
                         </MapMarker>
                     )}
                     <MapControls
-                        position="top-right"
+                        position={isMobile ? "top-right" : "bottom-right"}
                         showZoom={false}
                         showLocate
                         showCompass
