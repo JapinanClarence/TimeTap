@@ -51,7 +51,7 @@ export default function MobileNav() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-    // * If you want a non transparent bg use bg-[#b6cbfb]
+    // * If you want a non transparent bg use bg-tertiary
 
     return (
         <nav
@@ -81,10 +81,8 @@ export default function MobileNav() {
                         Schedule
                     </Link>
                 </div>
-                <div className="flex relative items-center justify-center flex-col text-primary">
-                    {/* Gradient Border Wrapper */}
+                {/* <div className="flex relative items-center justify-center flex-col text-primary">
                     <div className="absolute  -top-10 rounded-full bg-linear-to-r from-timetap-primary via-timetap-accent to-timetap-secondary p-1 shadow-lg">
-                        {/* Inner White Container */}
                         <div className="rounded-full bg-white p-3 flex items-center justify-center">
                             <Link href="/app/qr">
                                 <ScanQrCode className="text-primary" />
@@ -93,10 +91,12 @@ export default function MobileNav() {
                     </div>
 
                     <span className="text-xs absolute bottom-0">QR</span>
-                </div>
+                </div> */}
                 <div className="flex items-center justify-center flex-col text-primary">
                     <BuildingOffice2Icon className="size-6 text-primary" />
-                    <span className="text-xs">Teams</span>
+                    <Link href={"/app/organizations"} className="text-xs">
+                        Teams
+                    </Link>
                 </div>
                 <div className="flex items-center justify-center flex-col text-primary">
                     <UserOutline className="size-6 text-primary" />

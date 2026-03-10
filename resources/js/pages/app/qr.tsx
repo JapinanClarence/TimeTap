@@ -61,7 +61,7 @@ export default function QR() {
                     onScan={handleScan}
                     device={selectedDevice}
                 />
-                <div className="absolute top-[70%] w-full flex justify-evenly">
+                {/* <div className="absolute top-[70%] w-full flex justify-evenly">
                     <Button
                         size={"lg"}
                         onClick={() => console.log("Upload QR")}
@@ -69,26 +69,7 @@ export default function QR() {
                         <Upload /> Upload QR
                     </Button>
 
-                    <Select>
-                        <SelectTrigger className=" max-w-48 h-10 bg-white">
-                            <SelectValue placeholder="Select camera" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Camera</SelectLabel>
-                                {devices.map((device) => (
-                                    <SelectItem
-                                        key={device.deviceId}
-                                        value={device.deviceId}
-                                    >
-                                        {device.label ||
-                                            `Camera ${device.deviceId}`}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                </div>
+                </div> */}
             </div>
         </AppLayout>
     );

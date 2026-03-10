@@ -15,15 +15,10 @@ class OrganizationController extends Controller
         $user = $request->user();
 
         // 1. Get Orgs where the user is NOT already in the user_organizations table
-        $organizations = Organization::whereDoesntHave('members', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-            // 2. Also exclude Orgs the user actually OWNS (if they shouldn't join their own)
-            ->where('owner_id', '!=', $user->id)
-            ->get(['id', 'name', 'description']);
-
-        return Inertia::render('app/index', [
-            'availableOrganizations' => $organizations
+        $organizations = $user->organizations->select("id", "name", "description", "image");
+        
+        return Inertia::render('app/organizations', [
+            'organizations' => $organizations
         ]);
     }
     /**

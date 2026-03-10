@@ -143,15 +143,15 @@ export default function Schedule() {
 
     return (
         <AppLayout showHeader={false}>
-            <Container className="xl:px-8">
-                <h1 className="text-start text-2xl font-semibold my-10">
+            <Container className="xl:px-8 mt-16 space-y-5">
+                <h1 className="text-start text-2xl font-semibold ">
                     Event Calendar
                 </h1>
-                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-6">
+                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-5">
                     <Calendar
                         mode="multiple"
                         captionLayout="dropdown"
-                        className="rounded-lg  w-full px-8 max-w-md bg-transparent border shadow-xs "
+                        className="rounded-lg   w-full px-8 max-w-md md:bg-transparent border shadow-xs "
                         month={currentMonth}
                         onMonthChange={setCurrentMonth}
                         components={{
