@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import AppLayout from "@/layouts/app/app-layout";
 import { Plus, Search, X } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import {
     InputGroup,
     InputGroupAddon,
@@ -12,6 +12,7 @@ import OrganizationCard from "@/features/app/organizations/organization-card";
 import { usePage } from "@inertiajs/react";
 import { OrganizationType } from "@/types/organization";
 import { NoContent } from "@/features/app/home/no-content";
+import JoinOrgSheet from "@/components/app/join-org-sheet";
 
 interface OrganizationProps {
     [key: string]: unknown;
@@ -21,7 +22,12 @@ interface OrganizationProps {
 export default function organizations() {
     const { props } = usePage<OrganizationProps>();
     const organizations = props.organizations;
+    const [showJoinSheet, setShowJoinSheet] = useState(false);
 
+    const handleJoinOrg = (e: any) => {
+        (e.currentTarget as HTMLButtonElement).blur();
+        setShowJoinSheet(true);
+    };
     return (
         <AppLayout showHeader={false}>
             <Container className="xl:px-8 mt-5 space-y-5 ">
@@ -40,7 +46,12 @@ export default function organizations() {
                 </div> */}
                 <div>
                     {organizations.length > 0 ? (
-                        organizations.map((organization) => <OrganizationCard key={organization.id} name={organization.name}/>)
+                        organizations.map((organization) => (
+                            <OrganizationCard
+                                key={organization.id}
+                                name={organization.name}
+                            />
+                        ))
                     ) : (
                         <NoContent
                             title="No organizations"
@@ -49,12 +60,20 @@ export default function organizations() {
                     )}
                 </div>
                 <div className="absolute bottom-20 w-full flex items-center left-0 right-0 px-6">
-                    <Button className="rounded-full w-full " size={"lg"}>
+                    <Button
+                        className="rounded-full w-full "
+                        size={"lg"}
+                        onClick={handleJoinOrg}
+                    >
                         <Plus strokeWidth={4} />
                         Join Org
                     </Button>
                 </div>
             </Container>
+            <JoinOrgSheet
+                open={showJoinSheet}
+                onClose={() => setShowJoinSheet(false)}
+            />
         </AppLayout>
     );
 }
