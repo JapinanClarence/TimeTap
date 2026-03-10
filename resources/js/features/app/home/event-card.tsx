@@ -39,7 +39,7 @@ export default function EventCard({
     rangeStatus,
     showStatus = true,
 }: EventCardProps) {
-    const s = statusConfig["in-range"];
+    // const s = statusConfig["in-range"];
     return (
         <div className="flex items-center gap-4 rounded-lg bg-card p-4 shadow-sm border border-border border-l-5 border-l-[#b6cbfb] transition-shadow hover:shadow-md">
             <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10">
@@ -55,11 +55,11 @@ export default function EventCard({
                     <h3 className="truncate text-sm font-semibold text-card-foreground">
                         {title}
                     </h3>
-                    <span
+                    {/* <span
                         className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${s.className}`}
                     >
                         {s.label}
-                    </span>
+                    </span> */}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">

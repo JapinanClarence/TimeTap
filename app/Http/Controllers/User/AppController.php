@@ -4,12 +4,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
-use App\Models\Organization;
 use App\Models\Event;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Organization;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class AppController extends Controller
 {
@@ -37,6 +38,8 @@ class AppController extends Controller
         $currentEvent = Event::where('organization_id', $currentOrg->id)
             ->where('start_date', '<=', $today)
             ->where('end_date', '>=', $today)
+            ->select('*') // Select all standard columns
+            ->selectRaw('ST_AsGeoJSON(area) as area_geojson') // Convert PostGIS 'area' to JSON
             ->first();
 
         // Events starting after today, ordered by date

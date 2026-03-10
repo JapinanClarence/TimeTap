@@ -18,6 +18,8 @@ import { Link, usePage } from "@inertiajs/react";
 import { NoContent } from "@/features/app/home/no-content";
 import JoinOrgSheet from "@/components/app/join-org-sheet";
 import SwitchOrgSheet from "@/features/app/home/switch-org-sheet";
+import { router } from "@inertiajs/react";
+import * as turf from "@turf/turf";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
@@ -67,6 +69,12 @@ export default function Index() {
     const [time, setTime] = useState(new Date());
     const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
     const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
+    const [userLocation, setUserLocation] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+    const [isInRange, setIsInRange] = useState(false);
+    const [distance, setDistance] = useState<string | null>(null);
     const currentOrg = props.currentOrg;
     const currentEvent = props.currentEvent?.data;
     const upcomingEvents = props.upcomingEvents?.data;
@@ -98,8 +106,69 @@ export default function Index() {
 
         return () => clearInterval(interval);
     }, []);
+    useEffect(() => {
+        if (!currentEvent?.coordinates) return;
 
-    const isInRange = false;
+        const watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                setUserLocation({ lat: latitude, lng: longitude });
+
+                try {
+                    if (!currentEvent?.coordinates) return;
+                    // 1. Convert [{long, lat}] to [[long, lat]]
+                    const formattedCoords = currentEvent.coordinates.map(
+                        (coord) => [coord.long, coord.lat],
+                    );
+
+                    // 2. Turf Polygon needs coordinates wrapped in an extra array (the "ring")
+                    const eventPolygon = turf.polygon([formattedCoords]);
+                    const userPoint = turf.point([longitude, latitude]);
+
+                    // 3. Perform the check
+                    const inside = turf.booleanPointInPolygon(
+                        userPoint,
+                        eventPolygon,
+                    );
+                    setIsInRange(inside);
+
+                    if (!inside) {
+                        // Calculate distance to the center or boundary
+                        const center = turf.center(eventPolygon);
+                        const d = turf.distance(userPoint, center, {
+                            units: "meters",
+                        });
+                        setDistance(`${Math.round(d)}m from destination`);
+                    }
+                } catch (error) {
+                    console.error("Geofence calculation error:", error);
+                }
+            },
+            (err) => {
+                /* Error logic */
+                console.error(err);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+            },
+        );
+
+        return () => navigator.geolocation.clearWatch(watchId);
+    }, [currentEvent]);
+
+    const handleCheckIn = () => {
+        console.log("checkin");
+        // Redirect to your QR Scanner page
+        // router.visit(route("qr.scanner", { event_id: currentEvent.id }));
+    };
+
+    const handleViewMap = () => {
+        console.log("view map");
+        // Redirect to map view or open a Modal
+        // router.visit(route("events.map", { event_id: currentEvent.id }));
+    };
 
     return (
         <AppLayout>
@@ -141,17 +210,25 @@ export default function Index() {
                     )}
 
                     <section>
-                        <h2 className=" font-semibold text-xl">Today's Event</h2>
+                        <h2 className=" font-semibold text-xl">
+                            Today's Event
+                        </h2>
 
                         <p className="text-muted-foreground text-sm">
                             {formatWeekDayOnly(time)},{formatSimpleDate(time)}
                         </p>
-                        <div className="mt-5 max-w-sm">
+                        <div className="mt-5 max-w-sm space-y-2">
                             {currentEvent ? (
                                 <>
                                     <EventCard {...processedEvent} />
                                     {/* Geofence Status Indicator */}
-                                    <GeofenceIndicator isInRange={isInRange} />
+                                    <GeofenceIndicator
+                                        isInRange={isInRange}
+                                        distanceText={distance}
+                                        onViewMap={handleViewMap}
+                                        onCheckIn={handleCheckIn}
+                                        locationName={currentEvent.location}
+                                    />
                                 </>
                             ) : (
                                 <NoContent
@@ -192,8 +269,11 @@ export default function Index() {
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
                             {upcomingEvents?.length > 0 ? (
                                 processedUpcomingEvents?.map((e, i) => (
-                                    <Link key={i} href={`/app/schedule/${e.id}`}>
-                                        <UpcomingEventCard  {...e} />
+                                    <Link
+                                        key={i}
+                                        href={`/app/schedule/${e.id}`}
+                                    >
+                                        <UpcomingEventCard {...e} />
                                     </Link>
                                 ))
                             ) : (
