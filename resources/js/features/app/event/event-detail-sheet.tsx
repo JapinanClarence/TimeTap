@@ -108,7 +108,7 @@ export default function EventDetailSheet({ data }: EventDetailProps) {
             >
                 {/* Expand button — only visible when collapsed */}
                 {isCollapsed && (
-                    <div className="animate-slide-fade-up  absolute -top-20 w-full flex justify-center pointer-events-none">
+                    <div className="animate-slide-fade-up  absolute -top-10 w-full flex justify-center pointer-events-none">
                         <button
                             className="pointer-events-auto flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-lg"
                             onMouseDown={(e) => e.stopPropagation()}

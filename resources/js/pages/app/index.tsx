@@ -159,15 +159,12 @@ export default function Index() {
     }, [currentEvent]);
 
     const handleCheckIn = () => {
-        console.log("checkin");
-        // Redirect to your QR Scanner page
-        // router.visit(route("qr.scanner", { event_id: currentEvent.id }));
+         router.get(`/app/qr/`)
     };
 
     const handleViewMap = () => {
-        console.log("view map");
-        // Redirect to map view or open a Modal
-        // router.visit(route("events.map", { event_id: currentEvent.id }));
+    
+        router.get(`/app/schedule/${currentEvent?.id}`)
     };
 
     return (

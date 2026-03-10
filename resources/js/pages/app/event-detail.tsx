@@ -10,64 +10,66 @@ import {
     MarkerLabel,
     useMap,
 } from "@/components/ui/map";
-import { PolygonLayer } from "@/util/mapUtil";
+import { PolygonLayer } from "@/features/admin/events/components/polygon-layer";
 import EventDetailSheet from "@/features/app/event/event-detail-sheet";
 import { toast } from "sonner";
 import EventDetailModal from "@/features/app/event/event-detail-modal";
 import AppLayout from "@/layouts/app/app-layout";
 import { useIsMobile } from "@/hooks/use-mobile";
+import * as turf from "@turf/turf";
 
 export default function EventDetail() {
     const { event } = usePage<{ event: { data: EventType } }>().props;
     const coordinates = event.data.coordinates;
+    // Default center or first coordinate of the event
+    if (!coordinates) return;
     const [center, setCenter] = useState<[number, number]>([
-        126.02398199999999, 6.907349,
+        coordinates[0]?.long || 126.023981,
+        coordinates[0]?.lat || 6.907349,
     ]);
-    const [accuracy, setAccuracy] = useState<number>(0);
-    const [isLocating, setIsLocating] = useState(false);
 
-    const handleGetLocation = () => {
-        if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser");
-            return;
-        }
-
-        setIsLocating(true);
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                if (!position.coords) return;
-                setCenter([
-                    position.coords.longitude,
-                    position.coords.latitude,
-                ]);
-                setAccuracy(position.coords.accuracy);
-                setIsLocating(false);
-            },
-            (error) => {
-                setIsLocating(false);
-                console.error("Error getting location:", error);
-                toast.error(
-                    "Unable to retrieve your location. Please check your browser permissions.",
-                );
-            },
-            { enableHighAccuracy: true },
-        );
-    };
-
-    // Optional: Auto-request on mount
-    useEffect(() => {
-        handleGetLocation();
-    }, []);
-
+    const [isInRange, setIsInRange] = useState(false);
     const isMobile = useIsMobile();
+
+    useEffect(() => {
+        if (!navigator.geolocation) return;
+
+        const watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                const { longitude, latitude } = position.coords;
+                const userLoc: [number, number] = [longitude, latitude];
+
+                setCenter(userLoc);
+
+                // 1. Format coordinates for Turf: [[long, lat], [long, lat]]
+                const formatted = coordinates.map((c: any) => [c.long, c.lat]);
+
+                // 2. Create Turf objects
+                const userPoint = turf.point(userLoc);
+                const eventPolygon = turf.polygon([formatted]);
+
+                // 3. Check if inside
+                const inside = turf.booleanPointInPolygon(
+                    userPoint,
+                    eventPolygon,
+                );
+                setIsInRange(inside);
+            },
+            (error) => toast.error("Position tracking failed."),
+            { enableHighAccuracy: true, maximumAge: 0 },
+        );
+
+        return () => navigator.geolocation.clearWatch(watchId);
+    }, [coordinates]);
 
     return (
         <AppLayout secondaryHeader={true} showNav={false}>
-            <div className="md:h-[89vh] relative">
-                <Map center={center} zoom={15}  styles={{
-                        light: "https://tiles.openfreemap.org/styles/bright",
-                    }}  theme="light">
+            <div className="md:h-[89vh]">
+                <Map
+                    center={center}
+                    zoom={15}
+                    theme="light"
+                >
                     {/* User location marker */}
                     {center && (
                         <MapMarker longitude={center[0]} latitude={center[1]}>
@@ -89,11 +91,15 @@ export default function EventDetail() {
                         showFullscreen={!isMobile}
                     />
                     {/* Visual Layer to show the geofence as the user clicks */}
-                    <PolygonLayer coordinates={coordinates} />
+                    <PolygonLayer
+                        coordinates={coordinates}
+                        color={isInRange ? "#22c55e" : "#ef4444"} // green-500 : red-500
+                    />
                 </Map>
-                <EventDetailSheet data={event.data} />
-                <EventDetailModal data={event.data}/>
+
+                <EventDetailModal data={event.data} />
             </div>
+            <EventDetailSheet data={event.data} />
         </AppLayout>
     );
 }
