@@ -92,7 +92,7 @@ export default function Notifications() {
                                 key={notification.id}
                                 className={`p-4 rounded-xl border transition-all flex gap-4 ${
                                     notification.read_at
-                                        ? "bg-background opacity-75"
+                                        ? "bg-white opacity-75"
                                         : "bg-muted/40 border-primary/20 shadow-sm"
                                 }`}
                             >

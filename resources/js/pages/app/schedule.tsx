@@ -5,9 +5,10 @@ import { Link, usePage } from "@inertiajs/react";
 import { parseISO, isSameMonth, isWithinInterval, startOfDay } from "date-fns";
 import { EventType } from "@/types/event";
 import { formatTime12h } from "@/util/dateUtil";
-import { Empty } from "@/components/ui/empty";
 import { NoContent } from "@/features/app/home/no-content";
 import Container from "@/components/ui/container";
+import { Badge } from "@/components/ui/badge";
+import { ScheduleCard } from "@/features/app/event/schedule-card";
 
 // A palette of distinct Tailwind-compatible colors assigned round-robin to events
 const EVENT_COLORS: {
@@ -119,41 +120,16 @@ export default function Schedule() {
         });
     }, [events, currentMonth]);
 
-    // Custom day renderer: renders the date number + colored dots for each event
-    const renderDay = (day: Date) => {
-        const key = day.toISOString().slice(0, 10);
-        const colorIndices = dayColorMap[key] ?? [];
-
-        return (
-            <div className="relative flex flex-col items-center justify-center w-full h-full gap-0.5">
-                <span>{day.getDate()}</span>
-                {colorIndices.length > 0 && (
-                    <div className="flex gap-0.5">
-                        {colorIndices.slice(0, 4).map((ci) => (
-                            <span
-                                key={ci}
-                                className={`w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
-        );
-    };
-
     return (
-        <AppLayout showHeader={false}>
-            <Container className="xl:px-8 mt-16 space-y-5">
-                <h1 className="text-start text-2xl font-semibold ">
-                    Event Calendar
-                </h1>
+        <AppLayout secondaryHeader={true} title="Event Calendar">
+            <Container className="xl:px-8 mt-5 space-y-5">
                 <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-5">
                     <Calendar
                         mode="multiple"
-                        captionLayout="dropdown"
-                        className="rounded-lg   w-full px-8 max-w-md md:bg-transparent border shadow-xs "
+                        className="rounded-xl  w-full  max-w-md bg-white md:bg-transparent border shadow-xs "
                         month={currentMonth}
                         onMonthChange={setCurrentMonth}
+                        animate
                         components={{
                             Day: ({ day, ...props }) => {
                                 const date = day.date;
@@ -199,7 +175,6 @@ export default function Schedule() {
                     {/* Event Legend / List — current month only */}
                     <div className="w-full max-w-md md:max-w-lg flex md: flex-col gap-2">
                         <h2 className="md:hidden text-sm font-semibold px-1">
-                            Events in{" "}
                             {currentMonth.toLocaleString("default", {
                                 month: "long",
                                 year: "numeric",
@@ -217,38 +192,7 @@ export default function Schedule() {
                                 const ci = eventColorMap[event.id];
                                 const color = EVENT_COLORS[ci];
                                 return (
-                                    <Link
-                                        key={event.id}
-                                        href={`/app/schedule/${event.id}`}
-                                    >
-                                        <div
-                                            className={` text-xs p-3 border border-l-4  ${color.border} rounded-md flex justify-between shadow-sm items-center bg-muted/30`}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <div>
-                                                    <p
-                                                        className={`font-medium ${color.text}`}
-                                                    >
-                                                        {event.title}
-                                                    </p>
-                                                    <p className="text-muted-foreground">
-                                                        {event.location}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="text-right text-[10px] text-muted-foreground">
-                                                <span className="text-[10px] opacity-60">
-                                                    {formatTime12h(
-                                                        event.start_time,
-                                                    ).slice(0, 5)}
-                                                    -
-                                                    {formatTime12h(
-                                                        event.end_time,
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Link>
+                                    <ScheduleCard key={event.id} color={color} event={event}/>
                                 );
                             })
                         )}

@@ -159,130 +159,117 @@ export default function Index() {
     }, [currentEvent]);
 
     const handleCheckIn = () => {
-         router.get(`/app/qr/`)
+        router.get(`/app/qr/`);
     };
 
     const handleViewMap = () => {
-    
-        router.get(`/app/schedule/${currentEvent?.id}`)
+        router.get(`/app/schedule/${currentEvent?.id}`);
     };
 
     return (
         <AppLayout>
-            <main>
-                <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
-                    {currentOrg ? (
-                        <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl  px-4 py-1">
-                            <p className="font-semibold">
-                                <Building2 className="inline text-primary mr-2" />{" "}
-                                {currentOrg.name}
-                            </p>
-                            <Button
-                                variant={"link"}
-                                onClick={(e) => {
-                                    (
-                                        e.currentTarget as HTMLButtonElement
-                                    ).blur();
-                                    setShowSwitchDrawer(true);
-                                }}
-                            >
-                                Switch <ArrowRightLeft />
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
-                            <p className="font-semibold">No Organization</p>
-                            <Button
-                                variant={"link"}
-                                onClick={(e) => {
-                                    (
-                                        e.currentTarget as HTMLButtonElement
-                                    ).blur();
-                                    setShowJoinOrgSheet(true);
-                                }}
-                            >
-                                Join Org <Plus />
-                            </Button>
-                        </div>
-                    )}
-
-                    <section>
-                        <h2 className=" font-semibold text-xl">
-                            Today's Event
-                        </h2>
-
-                        <p className="text-muted-foreground text-sm">
-                            {formatWeekDayOnly(time)},{formatSimpleDate(time)}
+            <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
+                {currentOrg ? (
+                    <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl  px-4 py-1">
+                        <p className="font-semibold">
+                            <Building2 className="inline text-primary mr-2" />{" "}
+                            {currentOrg.name}
                         </p>
-                        <div className="mt-5 max-w-sm space-y-2">
-                            {currentEvent ? (
-                                <>
-                                    <EventCard {...processedEvent} />
-                                    {/* Geofence Status Indicator */}
-                                    <GeofenceIndicator
-                                        isInRange={isInRange}
-                                        distanceText={distance}
-                                        onViewMap={handleViewMap}
-                                        onCheckIn={handleCheckIn}
-                                        locationName={currentEvent.location}
-                                    />
-                                </>
-                            ) : (
-                                <NoContent
-                                    title="No Event"
-                                    description="No current event found"
-                                />
-                            )}
-                        </div>
-                    </section>
+                        <Button
+                            variant={"link"}
+                            onClick={(e) => {
+                                (e.currentTarget as HTMLButtonElement).blur();
+                                setShowSwitchDrawer(true);
+                            }}
+                        >
+                            Switch <ArrowRightLeft />
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                        <p className="font-semibold">No Organization</p>
+                        <Button
+                            variant={"link"}
+                            onClick={(e) => {
+                                (e.currentTarget as HTMLButtonElement).blur();
+                                setShowJoinOrgSheet(true);
+                            }}
+                        >
+                            Join Org <Plus />
+                        </Button>
+                    </div>
+                )}
 
-                    <section className="sticky md:hidden">
-                        <h2 className="font-semibold text-xl mb-5">
-                            Quick Actions
+                <section>
+                    <h2 className=" font-semibold text-xl">Today's Event</h2>
+
+                    <p className="text-muted-foreground text-sm">
+                        {formatWeekDayOnly(time)},{formatSimpleDate(time)}
+                    </p>
+                    <div className="mt-5 max-w-sm space-y-2">
+                        {currentEvent ? (
+                            <>
+                                <EventCard {...processedEvent} />
+                                {/* Geofence Status Indicator */}
+                                <GeofenceIndicator
+                                    isInRange={isInRange}
+                                    distanceText={distance}
+                                    onViewMap={handleViewMap}
+                                    onCheckIn={handleCheckIn}
+                                    locationName={currentEvent.location}
+                                />
+                            </>
+                        ) : (
+                            <NoContent
+                                title="No Event"
+                                description="No current event found"
+                            />
+                        )}
+                    </div>
+                </section>
+
+                <section className="sticky md:hidden">
+                    <h2 className="font-semibold text-xl mb-5">
+                        Quick Actions
+                    </h2>
+                    <div className="flex flex-row gap-5">
+                        <div className="border  bg-white rounded-lg w-40  py-2 px-3 flex flex-col items-center justify-center">
+                            <History className="text-primary mb-2" />
+                            <span className="text-xs font-semibold">
+                                View History
+                            </span>
+                        </div>
+                        <div className="border  bg-white rounded-lg w-40 py-2 px-3 flex flex-col items-center justify-center-safe">
+                            <User className="text-primary mb-2" />
+                            <span className="text-xs font-semibold">My ID</span>
+                        </div>
+                    </div>
+                </section>
+                <section className=" pb-10">
+                    <div className="flex justify-between items-center mb-5">
+                        <h2 className="font-semibold text-xl">
+                            Upcoming Schedule
                         </h2>
-                        <div className="flex flex-row gap-5">
-                            <div className="border  bg-white rounded-lg w-40  py-2 px-3 flex flex-col items-center justify-center">
-                                <History className="text-primary mb-2" />
-                                <span className="text-xs font-semibold">
-                                    View History
-                                </span>
-                            </div>
-                            <div className="border  bg-white rounded-lg w-40 py-2 px-3 flex flex-col items-center justify-center-safe">
-                                <User className="text-primary mb-2" />
-                                <span className="text-xs font-semibold">
-                                    My ID
-                                </span>
-                            </div>
-                        </div>
-                    </section>
-                    <section className=" pb-10">
-                        <div className="flex justify-between items-center mb-5">
-                            <h2 className="font-semibold text-xl">
-                                Upcoming Schedule
-                            </h2>
-                            {/* <Button variant={"link"}>See More</Button> */}
-                        </div>
+                        {/* <Button variant={"link"}>See More</Button> */}
+                    </div>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {upcomingEvents?.length > 0 ? (
-                                processedUpcomingEvents?.map((e, i) => (
-                                    <Link
-                                        key={i}
-                                        href={`/app/schedule/${e.id}`}
-                                    >
-                                        <UpcomingEventCard {...e} />
-                                    </Link>
-                                ))
-                            ) : (
-                                <NoContent
-                                    title="No Events"
-                                    description="No upcoming events"
-                                />
-                            )}
-                        </div>
-                    </section>
-                </Container>
-            </main>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {upcomingEvents?.length > 0 ? (
+                            processedUpcomingEvents?.map((e, i) => (
+                                <Link key={i} href={`/app/schedule/${e.id}`}>
+                                    <UpcomingEventCard {...e} />
+                                </Link>
+                            ))
+                        ) : (
+                            <NoContent
+                                title="No Events"
+                                description="No upcoming events"
+                            />
+                        )}
+                    </div>
+                </section>
+            </Container>
+
             <JoinOrgSheet
                 open={showJoinOrgSheet}
                 onClose={() => setShowJoinOrgSheet(false)}
