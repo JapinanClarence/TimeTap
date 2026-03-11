@@ -41,7 +41,7 @@ export default function EventCard({
 }: EventCardProps) {
     // const s = statusConfig["in-range"];
     return (
-        <div className="flex items-center gap-4 rounded-lg bg-card p-4 shadow-sm border border-border border-l-5 border-l-[#b6cbfb] transition-shadow hover:shadow-md">
+        <div className="flex items-center gap-4 rounded-lg bg-card p-4 border border-border border-l-5 border-l-[#b6cbfb] transition-shadow hover:shadow-md">
             <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10">
                 <span className="text-[11px] font-semibold uppercase leading-none tracking-wide text-primary">
                     {month}

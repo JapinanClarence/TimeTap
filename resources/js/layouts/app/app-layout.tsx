@@ -17,6 +17,7 @@ interface AppLayoutProps {
     showHeader?: boolean;
     secondaryHeader?: boolean;
     showNav?: boolean;
+    title?:string;
 }
 
 export default function AppLayout({
@@ -24,6 +25,7 @@ export default function AppLayout({
     showHeader = true,
     showNav = true,
     secondaryHeader = false,
+    title,
 }: AppLayoutProps) {
     const isMobile = useIsMobile();
 
@@ -31,7 +33,7 @@ export default function AppLayout({
         return (
             <div>
                 {showHeader && !secondaryHeader && <MobileHeader />}
-                {secondaryHeader && <SecondaryHeader />}
+                {secondaryHeader && <SecondaryHeader title={title}/>}
                 <main className={showHeader ? `py-16` : ""}>{children}</main>
                 {showNav && <MobileNav />}
             </div>

@@ -18,7 +18,7 @@ export function UpcomingEventCard({
     location,
 }: EventCardProps) {
     return (
-        <div className="flex items-center gap-4 rounded-lg bg-card p-4 shadow-sm border border-border transition-shadow hover:shadow-md">
+        <div className="flex items-center gap-4 rounded-lg bg-card p-4  border border-border transition-shadow hover:shadow-md">
             <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10">
                 <span className="text-[11px] font-semibold uppercase leading-none tracking-wide text-primary">
                     {month}

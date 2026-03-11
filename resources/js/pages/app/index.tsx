@@ -170,9 +170,9 @@ export default function Index() {
     return (
         <AppLayout>
             <main>
-                <Container className="space-y-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
+                <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
                     {currentOrg ? (
-                        <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                        <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl  px-4 py-1">
                             <p className="font-semibold">
                                 <Building2 className="inline text-primary mr-2" />{" "}
                                 {currentOrg.name}
@@ -241,13 +241,13 @@ export default function Index() {
                             Quick Actions
                         </h2>
                         <div className="flex flex-row gap-5">
-                            <div className="border shadow-sm bg-white rounded-lg w-40  py-2 px-3 flex flex-col items-center justify-center">
+                            <div className="border  bg-white rounded-lg w-40  py-2 px-3 flex flex-col items-center justify-center">
                                 <History className="text-primary mb-2" />
                                 <span className="text-xs font-semibold">
                                     View History
                                 </span>
                             </div>
-                            <div className="border shadow-sm bg-white rounded-lg w-40 py-2 px-3 flex flex-col items-center justify-center-safe">
+                            <div className="border  bg-white rounded-lg w-40 py-2 px-3 flex flex-col items-center justify-center-safe">
                                 <User className="text-primary mb-2" />
                                 <span className="text-xs font-semibold">
                                     My ID
