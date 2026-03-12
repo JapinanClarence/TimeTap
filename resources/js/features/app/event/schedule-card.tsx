@@ -21,8 +21,8 @@ export const ScheduleCard = ({event, color} : ScheduleCardProps) => {
                 className={`text-xs p-3 border  rounded-xl flex justify-between shadow-xs items-center bg-white`}
             >
                 <div className="flex items-center gap-2">
-                    <div className={` p-2 `}>
-                        <div className={`${color.dot} size-2 rounded-full`} />
+                    <div className={`w-1 mr-2`}>
+                        <div className={`${color.dot} size-2 md:h-10 md:w-full rounded-full`} />
                     </div>
                     <div>
                         <p className={`font-bold text-base`}>{event.title}</p>

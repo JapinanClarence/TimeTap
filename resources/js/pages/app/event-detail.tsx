@@ -1,5 +1,5 @@
 import { EventType } from "@/types/event";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 import {
     Map,
@@ -64,6 +64,7 @@ export default function EventDetail() {
 
     return (
         <AppLayout secondaryHeader={true} showNav={false}>
+                 <Head title="Event" />
             <div className="md:h-[89vh]">
                 <Map
                     center={center}

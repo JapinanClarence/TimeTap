@@ -74,7 +74,7 @@ export default function Notifications() {
         <AppLayout secondaryHeader={true} title="Notifications" showNav={false}>
             <Container className="xl:px-8">
                 <Head title="Notifications" />
-                <div className="flex justify-between items-center py-6">
+                <div className="flex justify-between items-center py-6 animate-fade-up">
                     <h1 className="text-2xl font-bold"></h1>
                     <Button
                         variant="ghost"
@@ -85,7 +85,7 @@ export default function Notifications() {
                     </Button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 animate-fade-up-1">
                     {notifications.data.length > 0 ? (
                         notifications.data.map((notification) => (
                             <div

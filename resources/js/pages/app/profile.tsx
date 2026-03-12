@@ -6,7 +6,7 @@ import Container from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { Building2, ChevronRight, LockIcon, LogOut, User2 } from "lucide-react";
 import React from "react";
 
@@ -30,11 +30,12 @@ export default function Profile() {
     };
     return (
         <AppLayout secondaryHeader={true} title="My Profile">
+            <Head title="Profile" />
             <Container>
                 <div className="space-y-5 mt-5">
                     <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative animate-fade-up">
                         {/* Background decoration */}
-                        <BubbleBgDecoration/>
+                        <BubbleBgDecoration />
                         <Avatar className="size-20 rounded-xl">
                             <AvatarImage
                                 src="https://github.com/shadcn.png"
@@ -84,7 +85,7 @@ export default function Profile() {
                             </div>
                             <ChevronRight className="text-muted-foreground" />
                         </button>
-                        <Separator/>
+                        <Separator />
                         <button
                             className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
                             onClick={handleLogout}

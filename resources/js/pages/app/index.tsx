@@ -170,7 +170,7 @@ export default function Index() {
         <AppLayout>
             <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
                 {currentOrg ? (
-                    <div className="md:hidden flex justify-between items-center bg-primary/5 border border-primary rounded-xl  px-3 py-1.5">
+                    <div className="md:hidden flex justify-between items-center bg-primary/5 border border-primary rounded-xl  px-3 py-1.5 animate-fade-up">
                         <p className="font-semibold">
                             <Building2 className="inline text-primary mr-2" />{" "}
                             {currentOrg.name}
@@ -187,7 +187,7 @@ export default function Index() {
                         </Button>
                     </div>
                 ) : (
-                    <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1">
+                    <div className="flex justify-between items-center bg-primary/10 rounded-xl shadow-lg px-4 py-1 animate-fade-up">
                         <p className="font-semibold">No Organization</p>
                         <Button
                             variant={"link"}
@@ -201,7 +201,7 @@ export default function Index() {
                     </div>
                 )}
 
-                <section>
+                <section className="animate-fade-up-1">
                     <h2 className=" font-semibold text-xl">Today's Event</h2>
 
                     <p className="text-muted-foreground text-sm">
@@ -229,7 +229,7 @@ export default function Index() {
                     </div>
                 </section>
 
-                <section className="sticky md:hidden">
+                <section className="sticky md:hidden animate-fade-up-2">
                     <h2 className="font-semibold text-xl mb-5">
                         Quick Actions
                     </h2>
@@ -246,7 +246,7 @@ export default function Index() {
                         </div>
                     </div>
                 </section>
-                <section className=" pb-10">
+                <section className=" pb-10 animate-fade-up-2">
                     <div className="flex justify-between items-center mb-5">
                         <h2 className="font-semibold text-xl">
                             Upcoming Schedule

@@ -9,7 +9,7 @@ import {
     InputGroupInput,
 } from "@/components/ui/input-group";
 import OrganizationCard from "@/features/app/organizations/organization-card";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { OrganizationType } from "@/types/organization";
 import { NoContent } from "@/features/app/home/no-content";
 import JoinOrgSheet from "@/components/app/join-org-sheet";
@@ -37,6 +37,7 @@ export default function organizations() {
     };
     return (
         <AppLayout secondaryHeader={true} title={"Organizations"}>
+                 <Head title="Organizations" />
             <Container className="xl:px-8 mt-5 space-y-5 ">
                 {currentOrg && (
                     <CurrentOrgCard

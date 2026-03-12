@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import AppLayout from "@/layouts/app/app-layout";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { parseISO, isSameMonth, isWithinInterval, startOfDay } from "date-fns";
 import { EventType } from "@/types/event";
 import { formatTime12h } from "@/util/dateUtil";
@@ -123,10 +123,11 @@ export default function Schedule() {
     return (
         <AppLayout secondaryHeader={true} title="Event Calendar">
             <Container className="xl:px-8 mt-5 space-y-5">
+                     <Head title="Schedule" />
                 <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-5">
                     <Calendar
                         mode="multiple"
-                        className="rounded-xl  w-full  max-w-md bg-white md:bg-transparent border shadow-xs "
+                        className="rounded-xl  w-full  max-w-md bg-white md:bg-transparent border shadow-xs animate-fade-up"
                         month={currentMonth}
                         onMonthChange={setCurrentMonth}
                         animate
@@ -173,7 +174,7 @@ export default function Schedule() {
                     />
 
                     {/* Event Legend / List — current month only */}
-                    <div className="w-full max-w-md md:max-w-lg flex md: flex-col gap-2">
+                    <div className="w-full max-w-md md:max-w-lg flex md: flex-col gap-2 animate-fade-up-1">
                         <h2 className="md:hidden text-sm font-semibold px-1">
                             {currentMonth.toLocaleString("default", {
                                 month: "long",
