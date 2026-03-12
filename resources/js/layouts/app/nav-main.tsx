@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import {
     SidebarGroup,
     SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
-import NotificationSheet from "@/components/app/notification-sheet";
-import NotificationDropdown from "@/components/app/notification-dropdown";
 
 export function NavMain({
     items,
@@ -28,11 +27,12 @@ export function NavMain({
 
     return (
         <SidebarGroup>
+            <SidebarGroupLabel>Main</SidebarGroupLabel>
             <SidebarGroupContent className="flex flex-col gap-2">
                 <SidebarMenu>
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton tooltip={item.title} asChild>
+                            <SidebarMenuButton tooltip={item.title} asChild className="text-muted-foreground hover:bg-primary/5 hover:text-primary">
                                 <Link href={item.url}>
                                     {item.icon && <item.icon />}
                                     <span>{item.title}</span>

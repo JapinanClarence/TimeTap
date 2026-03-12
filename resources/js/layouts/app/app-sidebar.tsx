@@ -48,13 +48,8 @@ const data = {
             icon: IconCalendar,
         },
         {
-            title: "QR",
-            url: "/app/qr",
-            icon: IconQrcode,
-        },
-        {
             title: "Teams",
-            url: "#",
+            url: "/app/organizations",
             icon: IconUsersGroup,
         },
         {

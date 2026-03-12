@@ -13,7 +13,7 @@ export default function OrganizationCard({
     description,
 }: OrganizationCardProps) {
     return (
-        <div className="flex gap-2 items-center justify-between border border-primary/50 p-3 bg-primary/5 rounded-xl shadow-xs">
+        <div className="flex gap-2 items-center justify-between border p-3.5 bg-white rounded-xl shadow-xs animate-fade-up cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
             <div className="flex gap-2 items-center">
                 <Avatar className="h-12 w-12 rounded-lg border border-primary/50">
                     <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold">
@@ -35,7 +35,7 @@ export default function OrganizationCard({
             </div>
 
             <div>
-                <ChevronRight className="text-muted-foreground" />
+                <ChevronRight className="text-muted-foreground shrink-0 transition-all duration-150" />
             </div>
         </div>
     );

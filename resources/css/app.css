@@ -207,6 +207,9 @@
     /* Expand button animation */
     --animate-slide-fade-up: slide-fade-up 0.25s cubic-bezier(0.32, 0.72, 0, 1)
         both;
+    --animate-fade-up: cardFadeUp 0.4s ease both;
+    --animate-fade-up-1: cardFadeUp 0.4s 0.08s ease both;
+    --animate-fade-up-2: cardFadeUp 0.4s 0.15s ease both;
 
     @keyframes moveHorizontal {
         0% {
@@ -248,6 +251,17 @@
         from {
             opacity: 0;
             transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes cardFadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
         }
         to {
             opacity: 1;

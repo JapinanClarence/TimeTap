@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { BubbleBgDecoration } from "@/components/ui/bubble-bg-decoration";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
@@ -33,28 +34,7 @@ export default function Profile() {
                 <div className="space-y-5 mt-5">
                     <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative">
                         {/* Background decoration */}
-                        <div
-                            style={{
-                                position: "absolute",
-                                top: -30,
-                                right: -30,
-                                width: 120,
-                                height: 120,
-                                borderRadius: "50%",
-                                background: "rgba(255,255,255,0.07)",
-                            }}
-                        />
-                        <div
-                            style={{
-                                position: "absolute",
-                                bottom: -20,
-                                right: 40,
-                                width: 80,
-                                height: 80,
-                                borderRadius: "50%",
-                                background: "rgba(255,255,255,0.05)",
-                            }}
-                        />
+                        <BubbleBgDecoration/>
                         <Avatar className="size-20 rounded-xl">
                             <AvatarImage
                                 src="https://github.com/shadcn.png"

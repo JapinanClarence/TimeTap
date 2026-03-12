@@ -170,12 +170,13 @@ export default function Index() {
         <AppLayout>
             <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
                 {currentOrg ? (
-                    <div className="md:hidden flex justify-between items-center bg-primary/10 rounded-xl  px-4 py-1">
+                    <div className="md:hidden flex justify-between items-center bg-primary/5 border border-primary rounded-xl  px-3 py-1.5">
                         <p className="font-semibold">
                             <Building2 className="inline text-primary mr-2" />{" "}
                             {currentOrg.name}
                         </p>
                         <Button
+                        className="text-muted-foreground px-0"
                             variant={"link"}
                             onClick={(e) => {
                                 (e.currentTarget as HTMLButtonElement).blur();
