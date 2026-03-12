@@ -1,4 +1,4 @@
-import { Clock, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 
 interface EventCardProps {
     month: string;
@@ -18,8 +18,8 @@ export function UpcomingEventCard({
     location,
 }: EventCardProps) {
     return (
-        <div className="flex items-center gap-4 rounded-lg bg-card p-4  border border-border transition-shadow hover:shadow-md">
-            <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10">
+        <div className="flex items-center gap-4 rounded-xl bg-card p-4  border border-border hover-card md:bg-primary/5">
+            <div className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10">
                 <span className="text-[11px] font-semibold uppercase leading-none tracking-wide text-primary">
                     {month}
                 </span>
@@ -33,12 +33,14 @@ export function UpcomingEventCard({
                         {title}
                     </h3>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {dayOfWeek} • {time}
-                    </span>
-                </div>
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar className="h-3 w-3" />
+                    {dayOfWeek}
+                </span>
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {time}
+                </span>
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3" />
                     {location}

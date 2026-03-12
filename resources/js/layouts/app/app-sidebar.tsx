@@ -59,16 +59,16 @@ const data = {
         },
     ],
     navSecondary: [
-        {
-            title: "History",
-            url: "#",
-            icon: IconHistory,
-        },
-        {
-            title: "My ID",
-            url: "#",
-            icon: IconUser,
-        },
+        // {
+        //     title: "History",
+        //     url: "#",
+        //     icon: IconHistory,
+        // },
+        // {
+        //     title: "My ID",
+        //     url: "#",
+        //     icon: IconUser,
+        // },
     ],
 };
 

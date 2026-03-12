@@ -42,7 +42,7 @@ export function NavUser({ user }: { user: UserType }) {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-primary/5 data-[state=open]:text-sidebar-accent-foreground hover:bg-primary/5"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
@@ -96,14 +96,6 @@ export function NavUser({ user }: { user: UserType }) {
                             <DropdownMenuItem>
                                 <BadgeCheck />
                                 Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Bell />
-                                Notifications
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

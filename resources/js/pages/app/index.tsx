@@ -8,7 +8,16 @@ import {
 } from "@/util/dateUtil";
 import { cn } from "@/lib/utils";
 import EventCard from "@/features/app/home/event-card";
-import { ArrowRightLeft, Building2, History, Plus, User } from "lucide-react";
+import {
+    ArrowRight,
+    ArrowRightLeft,
+    Building2,
+    Clock,
+    History,
+    MapPin,
+    Plus,
+    User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UpcomingEventCard } from "@/features/app/home/upcoming-event-card";
 import { GeofenceIndicator } from "@/features/app/home/geofence-indicator";
@@ -20,6 +29,8 @@ import JoinOrgSheet from "@/components/app/join-org-sheet";
 import SwitchOrgSheet from "@/features/app/home/switch-org-sheet";
 import { router } from "@inertiajs/react";
 import * as turf from "@turf/turf";
+import { Badge } from "@/components/ui/badge";
+import QuickActions from "@/features/app/home/quick-actions";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
@@ -176,7 +187,7 @@ export default function Index() {
                             {currentOrg.name}
                         </p>
                         <Button
-                        className="text-muted-foreground px-0"
+                            className="text-muted-foreground px-0"
                             variant={"link"}
                             onClick={(e) => {
                                 (e.currentTarget as HTMLButtonElement).blur();
@@ -202,12 +213,14 @@ export default function Index() {
                 )}
 
                 <section className="animate-fade-up-1">
-                    <h2 className=" font-semibold text-xl">Today's Event</h2>
+                    <h2 className="md:hidden font-semibold text-xl">
+                        Today's Event
+                    </h2>
 
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground text-sm font-medium mb-5">
                         {formatWeekDayOnly(time)},{formatSimpleDate(time)}
                     </p>
-                    <div className="mt-5 max-w-sm space-y-2">
+                    <div className=" max-w-sm space-y-2 md:hidden">
                         {currentEvent ? (
                             <>
                                 <EventCard {...processedEvent} />
@@ -226,6 +239,34 @@ export default function Index() {
                                 description="No current event found"
                             />
                         )}
+                    </div>
+                    <div className="hidden md:grid grid-cols-3 gap-5 animate-fade-up-2">
+                        {currentEvent ? (
+                            <>
+                                <div className="col-span-1">
+                                    <EventCard {...processedEvent} />
+                                </div>
+                                <div className="col-span-1">
+                                    <GeofenceIndicator
+                                        isInRange={isInRange}
+                                        distanceText={distance}
+                                        onViewMap={handleViewMap}
+                                        onCheckIn={handleCheckIn}
+                                        locationName={currentEvent.location}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="col-span-2">
+                                <NoContent
+                                    title="No Event"
+                                    description="No current event found"
+                                />
+                            </div>
+                        )}
+                        <div className="col-span-1">
+                            <QuickActions />
+                        </div>
                     </div>
                 </section>
 
@@ -246,15 +287,25 @@ export default function Index() {
                         </div>
                     </div>
                 </section>
-                <section className=" pb-10 animate-fade-up-2">
-                    <div className="flex justify-between items-center mb-5">
-                        <h2 className="font-semibold text-xl">
-                            Upcoming Schedule
-                        </h2>
-                        {/* <Button variant={"link"}>See More</Button> */}
+                <section className=" pb-10 animate-fade-up-2 bg">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 className="font-display font-bold text-base">
+                                Upcoming Schedule
+                            </h2>
+                            <p className="hidden md:flex text-xs text-muted-foreground ">
+                                Next events on your calendar
+                            </p>
+                        </div>
+                        <Link
+                            href="/app/schedules"
+                            className="text-sm font-semibold text-primary hover:underline"
+                        >
+                            View all <ArrowRight className="inline size-3"/>
+                        </Link>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:border md:p-5 rounded-xl">
                         {upcomingEvents?.length > 0 ? (
                             processedUpcomingEvents?.map((e, i) => (
                                 <Link key={i} href={`/app/schedule/${e.id}`}>

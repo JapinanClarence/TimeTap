@@ -18,7 +18,7 @@ export const ScheduleCard = ({event, color} : ScheduleCardProps) => {
     return (
         <Link key={event.id} href={`/app/schedule/${event.id}`}>
             <div
-                className={`text-xs p-3 border  rounded-xl flex justify-between shadow-xs items-center bg-white`}
+                className={`text-xs p-3 border  rounded-xl flex justify-between shadow-xs items-center bg-white hover-card`}
             >
                 <div className="flex items-center gap-2">
                     <div className={`w-1 mr-2`}>
