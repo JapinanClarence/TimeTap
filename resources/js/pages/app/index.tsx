@@ -240,7 +240,7 @@ export default function Index() {
                             />
                         )}
                     </div>
-                    <div className="hidden md:grid grid-cols-3 gap-5 animate-fade-up-2">
+                    <div className="hidden md:grid grid-cols-3 gap-5 animate-fade-up">
                         {currentEvent ? (
                             <>
                                 <div className="col-span-1">
@@ -298,7 +298,7 @@ export default function Index() {
                             </p>
                         </div>
                         <Link
-                            href="/app/schedules"
+                            href="/app/schedule"
                             className="text-sm font-semibold text-primary hover:underline"
                         >
                             View all <ArrowRight className="inline size-3"/>

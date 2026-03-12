@@ -26,7 +26,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { UserType } from "@/types/user";
-import { useForm, usePage } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 
 export function NavUser({ user }: { user: UserType }) {
     const { isMobile } = useSidebar();
