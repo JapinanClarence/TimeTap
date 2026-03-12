@@ -32,7 +32,7 @@ export default function Profile() {
         <AppLayout secondaryHeader={true} title="My Profile">
             <Container>
                 <div className="space-y-5 mt-5">
-                    <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative">
+                    <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative animate-fade-up">
                         {/* Background decoration */}
                         <BubbleBgDecoration/>
                         <Avatar className="size-20 rounded-xl">
@@ -55,7 +55,7 @@ export default function Profile() {
                             </Badge>
                         </div>
                     </div>
-                    <div className="space-y-5">
+                    <div className="space-y-5 animate-fade-up-1">
                         <h2 className="font-bold text-muted-foreground">
                             Account
                         </h2>
