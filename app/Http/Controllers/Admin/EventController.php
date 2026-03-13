@@ -154,17 +154,53 @@ class EventController extends Controller
 
      public function viewAttendance(Request $request, Event $event)
      {
-          $attendances = $event->attendances()
-               ->where('method', 'admin_scan')
-               ->with(['user' => function ($query) {
-                    $query->select('id', 'first_name', 'last_name', 'email');
-               }])
-               ->latest()
-               ->paginate(10) // 10 items per page
-               ->withQueryString(); // Keeps filters if you have search/sorting
 
-          return Inertia::render("admin/event-attendance", [
-               "attendees" => Inertia::defer(fn() => $attendances )
-          ]);
+          $totalMembers = $event->organization->members->count();
+
+          $attendances = $event->attendances()
+               ->with(['user:id,first_name,last_name,email'])
+               ->latest('checked_in_at')
+               ->get();
+
+          $activityLog = $attendances->flatMap(function ($a) {
+               $logs = [];
+               if ($a->checked_in_at) {
+                    $logs[] = [
+                         'id' => $a->id . '_in',
+                         'name' => "{$a->user->first_name} {$a->user->last_name}",
+                         'email' => $a->user->email,
+                         'time' => $a->checked_in_at->format('g:i A'),
+                         'type' => 'check-in'
+                    ];
+               }
+               if ($a->checked_out_at) {
+                    $logs[] = [
+                         'id' => $a->id . '_out',
+                         'name' => "{$a->user->first_name} {$a->user->last_name}",
+                         'email' => $a->user->email,
+                         'time' => $a->checked_out_at->format('g:i A'),
+                         'type' => 'check-out'
+                    ];
+               }
+               return $logs;
+          })->sortByDesc('time')->values();
+
+          $presentCount = $attendances->whereNotNull('checked_in_at')->count();
+          $absentCount = $totalMembers - $presentCount;
+          $percentage = $totalMembers > 0 ? ($presentCount / $totalMembers) * 100 : 0;
+
+          return Inertia::render(
+               "admin/event-attendance",
+               [
+                    "stats" => [
+                         "total" => $totalMembers,
+                         "present" => $presentCount,
+                         "absent" => $absentCount,
+                         "percentage" => round($percentage, 1),
+                    ],
+                    "event" => $event->only("id", "title", "start_date", "end_date", "start_time", "end_time", "location"),
+                    "attendees" => $activityLog
+               ]
+          );
      }
 }

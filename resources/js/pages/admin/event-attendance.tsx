@@ -10,21 +10,34 @@ import {
     InputGroupInput,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
+import { EventType } from "@/types/event";
+import { formatTime12h, formatWeekDayOnly } from "@/util/dateUtil";
+import { NoContent } from "@/features/app/home/no-content";
 
-interface Paginated<T> {
-    data: T[];
-    links: any[];
-    meta: any;
-}
+
 
 interface EventAttendanceProps {
     [key: string]: unknown;
-    attendees: Paginated<AttendanceType>;
+    attendees: AttendanceType[];
+    event: EventType;
+    stats: {
+        total: number;
+        present: number;
+        absent: number;
+        percentage: string;
+    };
 }
 
 export default function EventAttendance() {
     const { props } = usePage<EventAttendanceProps>();
-    console.log(props);
+
+    const stats = props.stats;
+    const attendees = props.attendees;
+    console.log(attendees)
+    const event = props.event;
+
+    const start = new Date(event.start_date);
+    const end = new Date(event.end_date);
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl p-5 flex flex-col md:min-h-min">
@@ -38,11 +51,16 @@ export default function EventAttendance() {
 
                 {/* Event Info Card */}
                 <div className="p-4 bg-white border rounded-xl mb-6 shadow-xs animate-fade-up">
-                    <h3 className="font-bold text-lg">Sample Event</h3>
+                    <h3 className="font-bold text-lg">{props.event.title}</h3>
                     <div className="flex flex-wrap text-sm gap-x-4 gap-y-1 mt-1 text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                             <Clock className="size-3.5 text-primary" />
-                            <span>Monday-Thursday &bull; 10:00-12:00 PM</span>
+                            <span>
+                                {formatWeekDayOnly(start)} -{" "}
+                                {formatWeekDayOnly(end)} &bull;{" "}
+                                {formatTime12h(event.start_time).slice(0, 5)} -{" "}
+                                {formatTime12h(event.end_time)}
+                            </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <MapPin className="size-3.5 text-primary" />
@@ -51,13 +69,13 @@ export default function EventAttendance() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                         <Badge variant="outline" className="font-medium">
-                            3 checked in
+                            {stats.present} checked in
                         </Badge>
                         <Badge variant="outline" className="font-medium">
-                            1 absent
+                            {stats.absent} absent
                         </Badge>
                         <Badge className="bg-emerald-100 text-emerald-700 border-none hover:bg-emerald-100">
-                            60% present
+                            {stats.percentage}% present
                         </Badge>
                     </div>
                 </div>
@@ -92,7 +110,7 @@ export default function EventAttendance() {
                             <h4 className="font-bold text-slate-900 flex items-center gap-2">
                                 Attendees
                                 <span className="bg-slate-100 px-2 py-0.5 rounded-full font-normal text-xs text-muted-foreground">
-                                    4
+                                    {stats.present}
                                 </span>
                             </h4>
                         </div>
@@ -124,19 +142,16 @@ export default function EventAttendance() {
                             <Separator />
 
                             {/* List with auto-height or scroll if parent is constrained */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 h-52 overflow-y-auto pr-1">
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
-                                <AttendanceCard />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 max-h-52 overflow-y-auto pr-1">
+                                {
+                                    attendees.length > 0 ? (
+                                        attendees.map((attendance) => (
+                                            <AttendanceCard key={attendance.id} data={attendance}/>
+                                        ))
+                                    ) : (
+                                        <NoContent/>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
