@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Download, MapPin } from "lucide-react";
 import { VisuallyHidden } from "radix-ui";
 import { toPng } from "html-to-image";
+import { Separator } from "@/components/ui/separator";
 
 interface QRGeneratorProps {
     data: any;
@@ -20,20 +21,22 @@ interface QRGeneratorProps {
 }
 
 export function QRGenerator({ open, onClose, data }: QRGeneratorProps) {
+    if(!data || !data.title) return;
     const downloadRef = useRef<HTMLDivElement>(null);
 
+    const title = data?.title.replaceAll(" ", "_");
     const handleDownload = useCallback(() => {
         if (downloadRef.current === null) {
             return;
         }
-
+       
         toPng(downloadRef.current, {
             cacheBust: true,
             filter: (node) => !node.classList?.contains("download-button-hide"),
         })
             .then((dataUrl) => {
                 const link = document.createElement("a");
-                link.download = `${data.title}.png`;
+                link.download = `${title}_QR.png`;
                 link.href = dataUrl;
                 link.click();
             })
@@ -53,11 +56,11 @@ export function QRGenerator({ open, onClose, data }: QRGeneratorProps) {
 
                 {/* This is the area we capture */}
                 <div
-                    ref={downloadRef}
-                    id="qr-download-area"
+                    // ref={downloadRef}
+                    // id="qr-download-area"
                     className="flex flex-row gap-4 p-2 bg-white"
                 >
-                    <div className="w-60  shrink-0 rounded-lg  border p-2">
+                    <div   ref={downloadRef} id="qr-download-area" className="w-60  shrink-0 rounded-lg  border bg-white p-2">
                         <QRCode
                             size={150}
                             style={{
@@ -72,7 +75,7 @@ export function QRGenerator({ open, onClose, data }: QRGeneratorProps) {
                             viewBox={`0 0 256 256`}
                         />
                     </div>
-
+                    <Separator orientation="vertical"/>
                     <div className="flex flex-col flex-1 relative">
                         <div className="mb-4">
                             <h2 className="text-xl font-bold">{data.title}</h2>

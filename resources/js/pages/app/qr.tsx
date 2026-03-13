@@ -30,12 +30,9 @@ export default function QR() {
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
     const handleScan = (data: any) => {
         // console.log(data[0].rawValue)
-        router.post(
-            "/attendance/record",
-            {
-                qr_data: data[0].rawValue,
-            },
-        );
+        router.post("/attendance/record", {
+            qr_data: data[0].rawValue,
+        });
     };
 
     const handleError = (error: any) => {
@@ -54,22 +51,15 @@ export default function QR() {
     }, [props.flash]);
     return (
         <AppLayout showHeader={false}>
-            <div className="relative">
-                <QRScanner
-                    open={true}
-                    onError={handleError}
-                    onScan={handleScan}
-                    device={selectedDevice}
-                />
-                {/* <div className="absolute top-[70%] w-full flex justify-evenly">
-                    <Button
-                        size={"lg"}
-                        onClick={() => console.log("Upload QR")}
-                    >
-                        <Upload /> Upload QR
-                    </Button>
-
-                </div> */}
+            <div className="md:h-[89vh] md:flex items-center justify-center">
+                <div className="relative md:size-96 ">
+                    <QRScanner
+                        open={true}
+                        onError={handleError}
+                        onScan={handleScan}
+                        device={selectedDevice}
+                    />
+                </div>
             </div>
         </AppLayout>
     );

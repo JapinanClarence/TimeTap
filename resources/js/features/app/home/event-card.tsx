@@ -4,6 +4,7 @@ import { Button } from "../../../components/ui/button";
 import { Progress } from "../../../components/ui/progress";
 import { Badge } from "../../../components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Link } from "@inertiajs/react";
 
 interface EventCardProps {
     month: string;
@@ -81,40 +82,46 @@ export default function EventCard({
                 <h2 className="font-display font-bold text-sm text-muted-foreground">
                     Today's Event
                 </h2>
-                <Badge className="text-xs font-semibold text-primary bg-primary/10 rounded-full px-2.5 py-0.5">
+                {/* <Badge className="text-xs font-semibold text-primary bg-primary/10 rounded-full px-2.5 py-0.5">
                     1 event
-                </Badge>
+                </Badge> */}
             </div>
             {/* <!-- Event row --> */}
-            <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-3">
-                <div className="flex flex-col items-center justify-center w-11 h-11 rounded-xl bg-primary/10 shrink-0">
-                    <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
-                        MAR
+            <div className="flex items-center gap-3 bg-primary/5 rounded-xl p-3">
+                <div className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10">
+                    <span className="text-[11px] font-semibold uppercase leading-none tracking-wide text-primary">
+                        {month}
                     </span>
-                    <span className="font-display font-bold text-lg text-primary leading-none">
-                        9
+                    <span className="text-xl font-bold leading-tight text-primary">
+                        {day}
                     </span>
                 </div>
-                <div className="min-w-0">
-                    <p className="text-sm font-semibold text-muted-foreground truncate">
-                        Sample Event
-                    </p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                        <Clock className="size-3" />
-                        Mon – Thu · 10:00–12:00 PM
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <div className="flex justify-between items-center gap-2">
+                        <h3 className="truncate text-sm font-semibold text-card-foreground">
+                            {title}
+                        </h3>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                        <MapPin className="size-3" />
-                        Gymnasium
-                    </div>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        {dayOfWeek}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {time}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {location}
+                    </span>
                 </div>
             </div>
-            <a
-                href="#"
+            {/* <Link
+                href={`/app/schedule`}
                 className="text-xs font-semibold text-primary hover:underline mt-auto"
             >
                 View full schedule →
-            </a>
+            </Link> */}
         </div>
     );
 }
