@@ -69,4 +69,8 @@ class User extends Authenticatable
         // Point to your custom Notification model and your custom foreign key
         return $this->hasMany(Notification::class, 'user_id');
     }
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

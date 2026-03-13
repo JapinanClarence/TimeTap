@@ -87,7 +87,7 @@ class EventController extends Controller
           return redirect()->route("admin.events")->with('success', 'Event created successfully with geofence!');
      }
      public function edit(Request $request, Event $event)
-     {// Add the GeoJSON string as a temporary attribute for the resource to use
+     { // Add the GeoJSON string as a temporary attribute for the resource to use
           $event->area_geojson = DB::table('events')
                ->where('id', $event->id)
                ->selectRaw('ST_AsGeoJSON(area) as geojson')
@@ -96,7 +96,6 @@ class EventController extends Controller
           return Inertia::render("admin/edit-event", [
                "event" => new EventResource($event)
           ]);
-
      }
      public function update(Request $request, Event $event)
      {
@@ -151,5 +150,21 @@ class EventController extends Controller
 
           // 3. Redirect back (Inertia will refresh the props automatically)
           return back()->with('message', 'Status updated successfully!');
+     }
+
+     public function viewAttendance(Request $request, Event $event)
+     {
+          $attendances = $event->attendances()
+               ->where('method', 'admin_scan')
+               ->with(['user' => function ($query) {
+                    $query->select('id', 'first_name', 'last_name', 'email');
+               }])
+               ->latest()
+               ->paginate(10) // 10 items per page
+               ->withQueryString(); // Keeps filters if you have search/sorting
+
+          return Inertia::render("admin/event-attendance", [
+               "attendees" => Inertia::defer(fn() => $attendances )
+          ]);
      }
 }

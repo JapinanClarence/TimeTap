@@ -169,9 +169,11 @@ export const columns: ColumnDef<EventType>[] = [
                             <QrCode />
                             Generate QR
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <FileText />
-                            Manage Attendance
+                        <DropdownMenuItem asChild>
+                            <Link href={`/admin/events/attendance/${row.original.id}`}>
+                                <FileText />
+                                Manage Attendance
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <UserPen />

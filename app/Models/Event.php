@@ -35,4 +35,14 @@ class Event extends Model
     {
         return $this->belongsTo(Organization::class, "organization_id");
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+    public function attendees()
+    {
+        // Allows you to get all users who attended this event directly
+        return $this->belongsToMany(User::class, 'attendances');
+    }
 }

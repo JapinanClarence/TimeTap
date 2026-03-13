@@ -11,28 +11,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    ArrowUpDown,
-    Check,
-    Cross,
-    Edit,
-    Loader2,
-    Minus,
     MoreHorizontal,
-    Plus,
     UserX,
 } from "lucide-react";
 import { DataTableColumnHeader } from "../../../../components/ui/data-table-column-header";
 import { MemberType } from "@/types/member";
-import { formatSimpleDate, formatTime12h } from "@/util/dateUtil";
-import { QrCode, FileText, UserPen } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Link } from "@inertiajs/react";
+import { formatSimpleDate} from "@/util/dateUtil";
 
 export const columns: ColumnDef<MemberType>[] = [
     {

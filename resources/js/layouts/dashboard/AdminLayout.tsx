@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     } as React.CSSProperties
                 }
             >
-                <AppSidebar variant="inset" />
+                <AppSidebar collapsible="icon" variant="inset" />
                 <SidebarInset>
                     <SiteHeader />
                     {children}

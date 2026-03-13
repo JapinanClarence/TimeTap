@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/events/edit/{event}", [EventController::class, "edit"]);
     Route::put("/events/edit/{event}", [EventController::class, 'update']);
     Route::patch("/events/{event}", [EventController::class, "updateStatus"])->name("event.updateStatus");
+    Route::get("/events/attendance/{event}", [EventController::class, 'viewAttendance']);
     Route::get("/members", [MemberController::class, "index"])->name("admin.members");
     Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
