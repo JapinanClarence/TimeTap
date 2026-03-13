@@ -10,14 +10,25 @@ export default function AttendanceCard({ data }: AttendanceCardProps) {
     return (
         <div className="border rounded-lg p-2 px-3.5 flex items-stretch h-full gap-3 hover-card shadow-xs">
             {/* indicator */}
-            <div className="self-stretch w-1 rounded-full bg-green-500 my-1" />
+            <div
+                className={`self-stretch w-1 rounded-full 
+                    ${data.type === "check-in" ? "bg-green-500" : "bg-red-500"} 
+                    `}
+            />
 
             {/* Main Content Group */}
             <div className="flex grow items-center justify-between">
                 <div className="flex items-center gap-3">
                     <Avatar>
-                        <AvatarImage src={""} alt={"John Marston"} />
-                        <AvatarFallback className="rounded-lg bg-green-100 text-green-600 font-bold">
+                        <AvatarImage
+                            src={""}
+                            alt={`${data.first_name} ${data.last_name}`}
+                        />
+                        <AvatarFallback
+                            className={`rounded-lg font-bold 
+                        ${data.type === "check-in" ? "bg-green-100 text-green-600" 
+                            : "bg-red-100 text-red-600"}`}
+                        >
                             JM
                         </AvatarFallback>
                     </Avatar>

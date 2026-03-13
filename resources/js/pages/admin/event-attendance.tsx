@@ -33,7 +33,7 @@ export default function EventAttendance() {
 
     const stats = props.stats;
     const attendees = props.attendees;
-    console.log(attendees)
+
     const event = props.event;
 
     const start = new Date(event.start_date);
