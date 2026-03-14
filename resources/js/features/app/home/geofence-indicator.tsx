@@ -69,7 +69,7 @@ export function GeofenceIndicator({
                 {isInRange && (
                     <button
                         onClick={onCheckIn}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-200 transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2 rounded-xl shadow-lg shadow-green-200 transition-all flex items-center justify-center gap-2"
                     >
                         Proceed to Check-in
                     </button>

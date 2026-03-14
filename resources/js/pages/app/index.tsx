@@ -275,16 +275,16 @@ export default function Index() {
                         Quick Actions
                     </h2>
                     <div className="flex flex-row gap-5">
-                        <div className="border  bg-white rounded-lg w-40  py-2 px-3 flex flex-col items-center justify-center">
+                        <div className="border flex-1 bg-white rounded-xl w-40  py-2 px-3 flex flex-col items-center justify-center hover-card">
                             <History className="text-primary mb-2" />
                             <span className="text-xs font-semibold">
                                 View History
                             </span>
                         </div>
-                        <div className="border  bg-white rounded-lg w-40 py-2 px-3 flex flex-col items-center justify-center-safe">
+                        <Link href={"/app/my-id"} className="border flex-1 bg-white rounded-xl w-40 py-2 px-3 flex flex-col items-center justify-center-safe hover-card">
                             <User className="text-primary mb-2" />
                             <span className="text-xs font-semibold">My ID</span>
-                        </div>
+                        </Link>
                     </div>
                 </section>
                 <section className=" pb-10 animate-fade-up-2 bg">

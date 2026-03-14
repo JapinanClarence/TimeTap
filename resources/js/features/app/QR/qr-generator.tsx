@@ -1,8 +1,8 @@
 import React from "react";
 import QRCode from "react-qr-code";
-export  function QRGenerator() {
+export function QRGenerator({ data }: { data: any }) {
     return (
-        <div>
+        <div className="p-2 bg-white rounded-lg border">
             <QRCode
                 className=""
                 size={150}
@@ -12,7 +12,10 @@ export  function QRGenerator() {
                     width: "100%",
                     margin: "0px auto",
                 }}
-                value={"Test"}
+                value={JSON.stringify({
+                    type: "user",
+                    id: data.id,
+                })}
                 viewBox={`0 0 256 256`}
             />
         </div>

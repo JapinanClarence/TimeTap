@@ -49,6 +49,7 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::post("/organizations/handle-invitation/{id}", [OrganizationController::class, "handleInvitation"]);
     Route::get("/schedule", [UserEventController::class, "index"]);
     Route::get("/schedule/{event}", [UserEventController::class, "show"]);
+    Route::get("/my-id", [ProfileController::class, "viewUserId"]);
 });
 
 // --- ADMIN ONLY ROUTES ---
