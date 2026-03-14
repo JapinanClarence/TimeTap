@@ -231,7 +231,7 @@ export default function EventAttendance() {
                             </InputGroup>
 
                             <Tabs
-                                defaultValue={filters.filter || "All"}
+                                defaultValue={ "All"}
                                 onValueChange={(tab) =>
                                     handleQuery(search, tab)
                                 }

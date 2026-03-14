@@ -11,6 +11,7 @@ import {
 import { AppSidebar } from "./app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import SecondaryHeader from "./secondary-header";
+import { AppBreadcrumb } from "@/components/ui/app-breadcrumb";
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -52,22 +53,7 @@ export default function AppLayout({
                                 orientation="vertical"
                                 className="mr-2 data-[orientation=vertical]:h-4"
                             />
-                            <h1 className="text-base font-medium">Documents</h1>
-                            {/* <Breadcrumb>
-                                <BreadcrumbList>
-                                    <BreadcrumbItem className="hidden md:block">
-                                        <BreadcrumbLink href="#">
-                                            Build Your Application
-                                        </BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                    <BreadcrumbSeparator className="hidden md:block" />
-                                    <BreadcrumbItem>
-                                        <BreadcrumbPage>
-                                            Data Fetching
-                                        </BreadcrumbPage>
-                                    </BreadcrumbItem>
-                                </BreadcrumbList>
-                            </Breadcrumb> */}
+                           <AppBreadcrumb/>
                         </div>
                     </header>
                     <main>

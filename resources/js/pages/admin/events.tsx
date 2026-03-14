@@ -90,7 +90,7 @@ export default function Events() {
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl md:min-h-min flex flex-col p-5">
-                <Header>Events</Header>
+                {/* <Header>Events</Header> */}
                 <div className="bg-white p-5 border rounded-lg">
                     <Deferred
                         data={"events"}
