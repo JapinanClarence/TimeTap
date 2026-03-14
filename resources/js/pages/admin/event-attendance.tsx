@@ -24,15 +24,16 @@ import {
     formatMonthDayOnly,
     formatSimpleDate,
     formatTime12h,
-    formatWeekDayOnly,
 } from "@/util/dateUtil";
 import { NoContent } from "@/features/app/home/no-content";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QRScanner } from "@/components/ui/qr-scanner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Spinner } from "@/components/ui/spinner";
 
 interface EventAttendanceProps {
     [key: string]: unknown;
-    attendees: AttendanceType[];
+    activityLog: AttendanceType[];
     event: EventType;
     stats: {
         total: number;
@@ -40,20 +41,23 @@ interface EventAttendanceProps {
         absent: number;
         percentage: number;
     };
+    filters: {
+        search: string | null;
+        filter: "All" | "Check In" | "Check Out" | null;
+    };
 }
 
 export default function EventAttendance() {
     const { props } = usePage<EventAttendanceProps>();
     const [showScanner, setShowScanner] = useState(false);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
-    const stats = props.stats;
-    const attendees = props.attendees;
-
-    const event = props.event;
+    const { activityLog, event, stats, filters } = props;
+    const [search, setSearch] = useState(filters.search || "");
+    const [processingSearch, setProcessingSearch] = useState(false);
 
     const start = new Date(event.start_date);
     const end = new Date(event.end_date);
- const handleScan = (data: any) => {
+    const handleScan = (data: any) => {
         // console.log(data[0].rawValue)
         router.post("/attendance/record", {
             qr_data: data[0].rawValue,
@@ -61,6 +65,31 @@ export default function EventAttendance() {
     };
     const handleError = () => {
         console.log("error");
+    };
+
+    // Handle Debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (search !== (filters.search || "")) {
+                handleQuery(search, filters.filter || "All");
+            }
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    const handleQuery = (searchStr: string, tab: string) => {
+        router.get(
+            `/admin/events/attendance/${event.id}`,
+            { search: searchStr, filter: tab === "All" ? null : tab },
+            {
+                showProgress: false,
+                preserveState: true,
+                replace: true,
+                preserveScroll: true,
+                onStart: () => setProcessingSearch(true),
+                onFinish: () => setProcessingSearch(false),
+            },
+        );
     };
 
     return (
@@ -186,44 +215,71 @@ export default function EventAttendance() {
                         </div>
 
                         <div className="space-y-4">
-                            <div className="flex flex-row md:flex-col gap-3">
-                                <InputGroup className="flex-1">
-                                    <InputGroupAddon>
+                            <InputGroup className="flex-1">
+                                <InputGroupAddon>
+                                    {processingSearch ? (
+                                        <Spinner />
+                                    ) : (
                                         <Search />
-                                    </InputGroupAddon>
-                                    <InputGroupInput placeholder="Search attendees..." />
-                                </InputGroup>
-                                <div className="flex gap-1 bg-slate-100 p-1 rounded-lg self-start">
+                                    )}
+                                </InputGroupAddon>
+                                <InputGroupInput
+                                    placeholder="Search attendees..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </InputGroup>
+
+                            <Tabs
+                                defaultValue={filters.filter || "All"}
+                                onValueChange={(tab) =>
+                                    handleQuery(search, tab)
+                                }
+                            >
+                                <TabsList className="bg-slate-100">
                                     {["All", "Check In", "Check Out"].map(
                                         (tab) => (
-                                            <Button
+                                            <TabsTrigger
                                                 key={tab}
-                                                size="sm"
-                                                variant="ghost"
-                                                className="h-8 text-xs font-medium px-3 hover:bg-white hover:shadow-sm"
+                                                value={tab}
+                                                className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
                                             >
                                                 {tab}
-                                            </Button>
+                                            </TabsTrigger>
                                         ),
                                     )}
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* List with auto-height or scroll if parent is constrained */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 max-h-92 overflow-y-auto pr-1">
-                                {attendees.length > 0 ? (
-                                    attendees.map((attendance) => (
-                                        <AttendanceCard
-                                            key={attendance.id}
-                                            data={attendance}
-                                        />
-                                    ))
-                                ) : (
-                                    <NoContent className="col-span-2" />
+                                </TabsList>
+                                <Separator />
+                                {/* Render content based on active tab */}
+                                {["All", "Check In", "Check Out"].map(
+                                    (tabValue) => (
+                                        <TabsContent
+                                            key={tabValue}
+                                            value={tabValue}
+                                            className="mt-0"
+                                        >
+                                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 max-h-92 overflow-y-auto">
+                                                {activityLog.length > 0 ? (
+                                                    activityLog.map(
+                                                        (attendance) => (
+                                                            <AttendanceCard
+                                                                key={
+                                                                    attendance.id
+                                                                }
+                                                                data={
+                                                                    attendance
+                                                                }
+                                                            />
+                                                        ),
+                                                    )
+                                                ) : (
+                                                    <NoContent className="col-span-2" />
+                                                )}
+                                            </div>
+                                        </TabsContent>
+                                    ),
                                 )}
-                            </div>
+                            </Tabs>
                         </div>
                     </div>
                 </div>
