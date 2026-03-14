@@ -5,6 +5,7 @@ import {
     Bell,
     ChevronsUpDown,
     CreditCard,
+    EllipsisVertical,
     LogOut,
     Sparkles,
 } from "lucide-react";
@@ -61,7 +62,7 @@ export function NavUser({ user }: { user: UserType }) {
                                     {user.email}
                                 </span>
                             </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
+                             <EllipsisVertical className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -94,13 +95,13 @@ export function NavUser({ user }: { user: UserType }) {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <BadgeCheck />
+                                <BadgeCheck className="text-primary"/>
                                 Account
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout}>
-                            <LogOut />
+                            <LogOut className="text-destructive"/>
                             Logout
                         </DropdownMenuItem>
                     </DropdownMenuContent>

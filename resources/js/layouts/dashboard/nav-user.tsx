@@ -25,15 +25,12 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { useForm } from "@inertiajs/react";
+import { UserType } from "@/types/user";
 
 export function NavUser({
     user,
 }: {
-    user: {
-        name: string;
-        email: string;
-        avatar: string;
-    };
+    user: UserType;
 }) {
     const { isMobile } = useSidebar();
 
@@ -50,10 +47,10 @@ export function NavUser({
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg grayscale">
+                            <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
-                                    src={user.avatar}
-                                    alt={user.name}
+                                    src="https://github.com/shadcn.png"
+                                    alt={user.first_name}
                                 />
                                 <AvatarFallback className="rounded-lg">
                                     CN
@@ -61,7 +58,7 @@ export function NavUser({
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {user.name}
+                                     {user.first_name} {user.last_name}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
                                     {user.email}
@@ -80,8 +77,8 @@ export function NavUser({
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src={user.avatar}
-                                        alt={user.name}
+                                       src="https://github.com/shadcn.png"
+                                        alt={user.first_name}
                                     />
                                     <AvatarFallback className="rounded-lg">
                                         CN
@@ -89,7 +86,7 @@ export function NavUser({
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        {user.name}
+                                         {user.first_name} {user.last_name}
                                     </span>
                                     <span className="text-muted-foreground truncate text-xs">
                                         {user.email}
@@ -100,21 +97,13 @@ export function NavUser({
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <IconUserCircle />
+                                <IconUserCircle className="text-primary"/>
                                 Account
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconCreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconNotification />
-                                Notifications
-                            </DropdownMenuItem>
                         </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
+                        {/* <DropdownMenuSeparator /> */}
                         <DropdownMenuItem onClick={handleLogout}>
-                            <IconLogout />
+                            <IconLogout className="text-destructive"/>
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>

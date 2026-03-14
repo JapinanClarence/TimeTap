@@ -4,6 +4,7 @@ import * as React from "react";
 import {
     IconCamera,
     IconChartBar,
+    IconClock,
     IconDashboard,
     IconDatabase,
     IconFileAi,
@@ -30,6 +31,9 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { UserType } from "@/types/user";
+import { usePage } from "@inertiajs/react";
 
 const data = {
     user: {
@@ -53,105 +57,29 @@ const data = {
             url: "/admin/members",
             icon: IconUsers,
         },
-        {
-            title: "Analytics",
-            url: "#",
-            icon: IconChartBar,
-        },
-        {
-            title: "Projects",
-            url: "#",
-            icon: IconFolder,
-        },
+        // {
+        //     title: "Analytics",
+        //     url: "#",
+        //     icon: IconChartBar,
+        // },
+        // {
+        //     title: "Projects",
+        //     url: "#",
+        //     icon: IconFolder,
+        // },
     ],
-    navClouds: [
-        {
-            title: "Capture",
-            icon: IconCamera,
-            isActive: true,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Proposal",
-            icon: IconFileDescription,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Prompts",
-            icon: IconFileAi,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-    ],
-    navSecondary: [
-        {
-            title: "Settings",
-            url: "#",
-            icon: IconSettings,
-        },
-        {
-            title: "Get Help",
-            url: "#",
-            icon: IconHelp,
-        },
-        {
-            title: "Search",
-            url: "#",
-            icon: IconSearch,
-        },
-    ],
-    documents: [
-        {
-            name: "Data Library",
-            url: "#",
-            icon: IconDatabase,
-        },
-        {
-            name: "Reports",
-            url: "#",
-            icon: IconReport,
-        },
-        {
-            name: "Word Assistant",
-            url: "#",
-            icon: IconFileWord,
-        },
-    ],
+    navSecondary: [],
 };
+interface AppSidebar {
+    auth: { user: { data: UserType } };
+    [key: string]: unknown;
+}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const {auth} = usePage<AppSidebar>().props;
     return (
         <Sidebar collapsible="offcanvas" {...props}>
-            <SidebarHeader >
+            <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
@@ -159,7 +87,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             className="data-[slot=sidebar-menu-button]:p-1.5!"
                         >
                             <a href="#">
-                                <IconInnerShadowTop className="size-5!" />
+                                <Button size={"icon-sm"} className="rounded-full">
+                                    <IconClock className="size-5!" />
+                                </Button>
                                 <span className="text-base font-semibold">
                                     TimeTap
                                 </span>
@@ -171,10 +101,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarContent>
                 <NavMain items={data.navMain} />
                 {/* <NavDocuments items={data.documents} /> */}
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
+                {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={auth.user.data} />
             </SidebarFooter>
         </Sidebar>
     );
