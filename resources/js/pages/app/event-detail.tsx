@@ -63,7 +63,7 @@ export default function EventDetail() {
     }, [coordinates]);
 
     return (
-        <AppLayout secondaryHeader={true} showNav={false}>
+        <AppLayout secondaryHeader={true} showNav={false} title="Event Details">
                  <Head title="Event" />
             <div className="md:h-[89vh]">
                 <Map

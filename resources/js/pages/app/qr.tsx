@@ -50,7 +50,7 @@ export default function QR() {
         }
     }, [props.flash]);
     return (
-        <AppLayout showHeader={false}>
+        <AppLayout secondaryHeader={true} showNav={false} title="QR Scanner">
             <div className="md:h-[89vh] md:flex items-center justify-center">
                 <div className="relative md:size-96 ">
                     <QRScanner
