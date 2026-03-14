@@ -12,11 +12,12 @@ import { IconFolderCode } from "@tabler/icons-react";
 interface NoContentProps{
     title?:string;
     description?:string;
+    className?: string;
 }
 
-export const NoContent = ({title="No data", description="No data found"}: NoContentProps) => {
+export const NoContent = ({className, title="No data", description="No data found"}: NoContentProps) => {
     return (
-        <Empty className="border-2">
+        <Empty className={`border-2 ${className}`}>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
                     <IconFolderCode/>

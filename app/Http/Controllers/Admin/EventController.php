@@ -185,9 +185,15 @@ class EventController extends Controller
                return $logs;
           })->sortByDesc('time')->values();
 
-          $presentCount = $attendances->whereNotNull('checked_in_at')->count();
-          $absentCount = $totalMembers - $presentCount;
-          $percentage = $totalMembers > 0 ? ($presentCount / $totalMembers) * 100 : 0;
+          // validate event start using current date
+          $eventStarted = now()->gte(\Carbon\Carbon::parse($event->start_date));
+          // calculate stats
+          $presentCount = $eventStarted ? $attendances->whereNotNull('checked_in_at')->count() : null;
+          $absentCount   = $eventStarted ? $totalMembers - $presentCount : null;
+          $percentage    = $eventStarted && $totalMembers > 0
+               ? round(($presentCount / $totalMembers) * 100, 1)
+               : null;
+
 
           return Inertia::render(
                "admin/event-attendance",
@@ -196,7 +202,7 @@ class EventController extends Controller
                          "total" => $totalMembers,
                          "present" => $presentCount,
                          "absent" => $absentCount,
-                         "percentage" => round($percentage, 1),
+                         "percentage" => $percentage,
                     ],
                     "event" => $event->only("id", "title", "start_date", "end_date", "start_time", "end_time", "location"),
                     "attendees" => $activityLog

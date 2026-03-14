@@ -24,7 +24,7 @@ export const formatWeekDayOnly = (dateString: any) => {
 export const formatTime12h = (timeStr: string) => {
     // Parse the 24h string into a date object (using a dummy date)
     const date = parse(timeStr, "HH:mm:ss", new Date());
-    
+
     // Format to 12-hour with AM/PM
     return format(date, "h:mm a");
 };
@@ -56,6 +56,15 @@ export const formatSimpleDate = (dateString: any) => {
     const date = new Date(dateString); // Parse the date string into a Date object
     return date.toLocaleString("en-PH", {
         year: "numeric", // Full year
+        month: "long", // full month
+        day: "2-digit", // Day of the month with leading zero (DD)
+        timeZone: "Asia/Manila",
+    });
+};
+export const formatMonthDayOnly = (dateString: any) => {
+    const date = new Date(dateString);
+
+    return date.toLocaleString("en-PH", {
         month: "long", // full month
         day: "2-digit", // Day of the month with leading zero (DD)
         timeZone: "Asia/Manila",

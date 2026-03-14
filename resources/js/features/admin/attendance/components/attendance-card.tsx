@@ -7,12 +7,13 @@ interface AttendanceCardProps {
 }
 
 export default function AttendanceCard({ data }: AttendanceCardProps) {
+    const isCheckIn = data.type === "check-in";
     return (
         <div className="border rounded-lg p-2 px-3.5 flex items-stretch h-full gap-3 hover-card shadow-xs">
             {/* indicator */}
             <div
                 className={`self-stretch w-1 rounded-full 
-                    ${data.type === "check-in" ? "bg-green-500" : "bg-red-500"} 
+                    ${isCheckIn ? "bg-green-500" : "bg-red-500"} 
                     `}
             />
 
@@ -26,8 +27,11 @@ export default function AttendanceCard({ data }: AttendanceCardProps) {
                         />
                         <AvatarFallback
                             className={`rounded-lg font-bold 
-                        ${data.type === "check-in" ? "bg-green-100 text-green-600" 
-                            : "bg-red-100 text-red-600"}`}
+                        ${
+                            isCheckIn
+                                ? "bg-green-100 text-green-600"
+                                : "bg-red-100 text-red-600"
+                        }`}
                         >
                             JM
                         </AvatarFallback>
@@ -44,10 +48,10 @@ export default function AttendanceCard({ data }: AttendanceCardProps) {
                         <div className="flex md:hidden items-center gap-2 mt-2">
                             <Badge
                                 className={`border-none h-5 px-2 text-[10px]
-                                    ${data.type === "check-in" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
+                                    ${isCheckIn ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
                                     `}
                             >
-                                {data.type === "check-in"
+                                {isCheckIn
                                     ? "Checked in"
                                     : "Checked out"}
                             </Badge>
@@ -62,10 +66,10 @@ export default function AttendanceCard({ data }: AttendanceCardProps) {
                 <div className="hidden md:flex items-center gap-1">
                     <Badge
                         className={`border-none h-5 px-2 
-                                    ${data.type === "check-in" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
+                                    ${isCheckIn ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
                                     `}
                     >
-                        {data.type === "check-in"
+                        {isCheckIn
                             ? "Checked in"
                             : "Checked out"}
                     </Badge>
