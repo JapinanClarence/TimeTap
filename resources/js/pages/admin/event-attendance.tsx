@@ -1,5 +1,5 @@
 import AdminLayout from "@/layouts/dashboard/AdminLayout";
-import { Deferred, Link, usePage } from "@inertiajs/react";
+import { Deferred, Link, router, usePage } from "@inertiajs/react";
 import AttendanceCard from "@/features/admin/attendance/components/attendance-card";
 import {
     ArrowLeft,
@@ -9,6 +9,7 @@ import {
     MapPin,
     QrCode,
     Search,
+    X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,8 @@ import {
     formatWeekDayOnly,
 } from "@/util/dateUtil";
 import { NoContent } from "@/features/app/home/no-content";
+import { useState } from "react";
+import { QRScanner } from "@/components/ui/qr-scanner";
 
 interface EventAttendanceProps {
     [key: string]: unknown;
@@ -41,7 +44,8 @@ interface EventAttendanceProps {
 
 export default function EventAttendance() {
     const { props } = usePage<EventAttendanceProps>();
-    console.log(props);
+    const [showScanner, setShowScanner] = useState(false);
+    const [selectedDevice, setSelectedDevice] = useState<any>(null);
     const stats = props.stats;
     const attendees = props.attendees;
 
@@ -49,6 +53,16 @@ export default function EventAttendance() {
 
     const start = new Date(event.start_date);
     const end = new Date(event.end_date);
+ const handleScan = (data: any) => {
+        // console.log(data[0].rawValue)
+        router.post("/attendance/record", {
+            qr_data: data[0].rawValue,
+        });
+    };
+    const handleError = () => {
+        console.log("error");
+    };
+
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl p-5 flex flex-col md:min-h-min">
@@ -79,7 +93,7 @@ export default function EventAttendance() {
                                 {formatTime12h(event.start_time).slice(0, 5)} -{" "}
                                 {formatTime12h(event.end_time)}
                             </span>
-                            <span>
+                            <span className="md:hidden">
                                 {formatTime12h(event.start_time).slice(0, 5)} -{" "}
                                 {formatTime12h(event.end_time)}
                             </span>
@@ -117,7 +131,27 @@ export default function EventAttendance() {
                 {/* Main Content Area */}
                 <div className="flex flex-col lg:flex-row md:border rounded-xl overflow-hidden bg-white shadow-xs animate-fade-up-1 gap-2 md:gap-0">
                     {/* Left Section: QR Scanner */}
-                    <div className="lg:w-1/2 xl:w-1/4 lg:border-r bg-background p-8 flex flex-col items-center justify-center text-center gap-4">
+
+                    <div
+                        className={`${showScanner ? "flex" : "hidden"} lg:w-1/2 xl:w-1/3 lg:border-r relative`}
+                    >
+                        <Button
+                            onClick={() => setShowScanner(false)}
+                            className="absolute right-2 top-2 z-50 rounded-full bg-black/50 hover:bg-black/40 backdrop-blur-sm"
+                            size={"xs"}
+                        >
+                            <X /> Close
+                        </Button>
+                        <QRScanner
+                            open={showScanner}
+                            onScan={handleScan}
+                            onError={handleError}
+                            device={selectedDevice}
+                        />
+                    </div>
+                    <div
+                        className={`${showScanner ? "hidden" : "flex"} lg:w-1/2 xl:w-1/3 lg:border-r bg-background p-8 flex-col items-center justify-center text-center gap-4`}
+                    >
                         <div className="size-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2">
                             <QrCode className="size-8 text-primary" />
                         </div>
@@ -130,7 +164,10 @@ export default function EventAttendance() {
                                 in instantly
                             </p>
                         </div>
-                        <Button className="w-full mt-2 shadow-sm">
+                        <Button
+                            className="w-full mt-2 shadow-sm"
+                            onClick={() => setShowScanner(true)}
+                        >
                             <Camera className="mr-2 size-4" /> Turn on Scanner
                         </Button>
                     </div>
