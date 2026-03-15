@@ -275,12 +275,12 @@ export default function Index() {
                         Quick Actions
                     </h2>
                     <div className="flex flex-row gap-5">
-                        <div className="border flex-1 bg-white rounded-xl w-40  py-2 px-3 flex flex-col items-center justify-center hover-card">
+                        <Link href={"/app/history"} className="border flex-1 bg-white rounded-xl w-40  py-2 px-3 flex flex-col items-center justify-center hover-card">
                             <History className="text-primary mb-2" />
                             <span className="text-xs font-semibold">
                                 View History
                             </span>
-                        </div>
+                        </Link>
                         <Link href={"/app/my-id"} className="border flex-1 bg-white rounded-xl w-40 py-2 px-3 flex flex-col items-center justify-center-safe hover-card">
                             <User className="text-primary mb-2" />
                             <span className="text-xs font-semibold">My ID</span>

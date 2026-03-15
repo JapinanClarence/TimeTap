@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -39,14 +40,43 @@ class EventController extends Controller
         ]);
     }
 
-    public function show(Request $request, Event $event){
+    public function show(Request $request, Event $event)
+    {
         $event->area_geojson = DB::table('events')
-               ->where('id', $event->id)
-               ->selectRaw('ST_AsGeoJSON(area) as geojson')
-               ->value('geojson');
+            ->where('id', $event->id)
+            ->selectRaw('ST_AsGeoJSON(area) as geojson')
+            ->value('geojson');
 
-       return Inertia::render("app/event-detail", [
-               "event" => new EventResource($event)
-          ]);
+        return Inertia::render("app/event-detail", [
+            "event" => new EventResource($event)
+        ]);
+    }
+    public function showHistory()
+    {
+        $user = Auth::user();
+        
+        $events = Event::where('organization_id', $user->current_organization_id)
+            ->with(['attendances' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }])
+            ->latest('start_date')
+            ->get()
+            ->map(function ($event) {
+                $attendance = $event->attendances->first();
+
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'start_date' => $event->start_date,
+                    'location' => $event->location,
+                    // Check if the user is present
+                    'is_present' => !is_null($attendance?->checked_in_at),
+                    'check_in_time' => $attendance?->checked_in_at?->format('g:i A'),
+                ];
+            });
+
+        return Inertia::render("app/history", [
+            "history" => $events
+        ]);
     }
 }

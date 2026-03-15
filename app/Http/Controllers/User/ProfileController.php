@@ -12,7 +12,7 @@ class ProfileController extends Controller
      public function index(Request $request){
         return Inertia::render("app/profile");
     }
-    public function viewUserId(Request $request){
+    public function showUserId(Request $request){
         $user = Auth::user();
         return Inertia::render("app/user-id", [
             "user" => [
