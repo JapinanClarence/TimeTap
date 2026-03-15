@@ -9,7 +9,7 @@ export default function QuickActions() {
                 Quick Actions
             </h2>
             <div className="grid grid-cols-2 gap-3 flex-1">
-                <Link   className=" flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-border text-muted-foreground text-[12px] font-semibold hover:text-primary hover:bg-primary/10 transition-all duration-150 cursor-pointer bg-primary/5">
+                <Link href={"app/history"}  className=" flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-border text-muted-foreground text-[12px] font-semibold hover:text-primary hover:bg-primary/10 transition-all duration-150 cursor-pointer bg-primary/5">
                     <Clock size={22} />
                     View History
                 </Link>

@@ -1,15 +1,14 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { BubbleBgDecoration } from "@/components/ui/bubble-bg-decoration";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { OrganizationType } from "@/types/organization";
-import { Building2 } from "lucide-react";
-import React from "react";
+
 interface CurrentOrgProps {
     organization: OrganizationType;
     onSwitch: () => void;
 }
+
 export default function CurrentOrgCard({
     organization,
     onSwitch,
@@ -33,7 +32,7 @@ export default function CurrentOrgCard({
                     variant={"link"}
                     onClick={(e) => {
                         (e.currentTarget as HTMLButtonElement).blur();
-                        onSwitch;
+                        onSwitch();
                     }}
                 >
                     Tap to switch
@@ -72,7 +71,8 @@ export default function CurrentOrgCard({
                 </div>
                 <Button
                     size={"sm"}
-                    className="bg-white/10 border border-white/50"
+                    className="bg-white/10 border border-white/50 hover:bg-white/20"
+                    onClick={()=>onSwitch()}
                 >
                     Switch Org
                 </Button>

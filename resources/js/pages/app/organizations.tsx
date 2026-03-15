@@ -35,9 +35,10 @@ export default function organizations() {
         (e.currentTarget as HTMLButtonElement).blur();
         setShowJoinSheet(true);
     };
+
     return (
         <AppLayout secondaryHeader={true} title={"Organizations"}>
-                 <Head title="Organizations" />
+            <Head title="Organizations" />
             <Container className="xl:px-8 mt-5 space-y-5 ">
                 {currentOrg && (
                     <CurrentOrgCard
@@ -48,12 +49,12 @@ export default function organizations() {
                 {/* search */}
                 <div className="hidden animate-fade-up-1 md:flex justify-between items-center">
                     <InputGroup className="max-w-sm">
-                        <InputGroupInput placeholder="Search organizations..."/>
+                        <InputGroupInput placeholder="Search organizations..." />
                         <InputGroupAddon>
                             <Search />
                         </InputGroupAddon>
                     </InputGroup>
-                     <Button
+                    <Button
                         className="rounded-lg"
                         size={"sm"}
                         onClick={handleJoinOrg}
@@ -73,12 +74,17 @@ export default function organizations() {
                 </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] animate-fade-up-2">
                     {organizations.length > 0 ? (
-                        organizations.map((organization) => (
-                            <OrganizationCard
-                                key={organization.id}
-                                name={organization.name}
-                            />
-                        ))
+                        organizations.map((organization) => {
+                            const isCurrent =
+                                currentOrg?.name === organization.name;
+                            return (
+                                <OrganizationCard
+                                    key={organization.id}
+                                    name={organization.name}
+                                    isCurrent={isCurrent}
+                                />
+                            );
+                        })
                     ) : (
                         <NoContent
                             title="No organizations"

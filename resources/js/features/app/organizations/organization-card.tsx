@@ -6,11 +6,13 @@ interface OrganizationCardProps {
     name: string;
     description?: string;
     image?: string;
+    isCurrent?: boolean;
 }
 
 export default function OrganizationCard({
     name,
     description,
+    isCurrent = false,
 }: OrganizationCardProps) {
     return (
         <div className="flex gap-2 items-center justify-between border p-3.5 bg-white rounded-xl shadow-xs animate-fade-up cursor-pointer hover-card">
@@ -23,9 +25,14 @@ export default function OrganizationCard({
                 <div>
                     <div className="flex gap-2 items-center">
                         <h2 className="text-md font-medium">{name} </h2>
-                        <div className="bg-primary size-4  rounded-full p-1">
-                            <Check className="size-2 text-white" strokeWidth={5} />
-                        </div>
+                        {isCurrent && (
+                            <div className="bg-primary size-4  rounded-full p-1">
+                                <Check
+                                    className="size-2 text-white"
+                                    strokeWidth={5}
+                                />
+                            </div>
+                        )}
                     </div>
                     <span className="inline-flex gap-2 text-sm text-muted-foreground">
                         <Users2 className="size-4" />
