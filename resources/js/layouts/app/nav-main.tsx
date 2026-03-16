@@ -1,7 +1,6 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
-
+import { type Icon } from "@tabler/icons-react";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -11,7 +10,6 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link, usePage } from "@inertiajs/react";
-import { useState } from "react";
 
 export function NavMain({
     items,

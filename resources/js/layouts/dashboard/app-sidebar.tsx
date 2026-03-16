@@ -2,25 +2,13 @@
 
 import * as React from "react";
 import {
-    IconCamera,
-    IconChartBar,
     IconClock,
     IconDashboard,
-    IconDatabase,
-    IconFileAi,
-    IconFileDescription,
-    IconFileWord,
-    IconFolder,
-    IconHelp,
-    IconInnerShadowTop,
+    IconDashboardFilled,
     IconListDetails,
-    IconReport,
-    IconSearch,
-    IconSettings,
     IconUsers,
 } from "@tabler/icons-react";
 import { NavMain } from "@/layouts/dashboard/nav-main";
-import { NavSecondary } from "@/layouts/dashboard/nav-secondary";
 import { NavUser } from "@/layouts/dashboard/nav-user";
 import {
     Sidebar,
@@ -44,31 +32,23 @@ const data = {
     navMain: [
         {
             title: "Dashboard",
-            url: "/",
-            icon: IconDashboard,
+            url: "/admin",
+            activeIcon: IconDashboard,
+            inactiveIcon: IconDashboard,
         },
         {
             title: "Events",
             url: "/admin/events",
-            icon: IconListDetails,
+            activeIcon: IconListDetails,
+            inactiveIcon: IconListDetails
         },
         {
             title: "Members",
             url: "/admin/members",
-            icon: IconUsers,
+            activeIcon: IconUsers,
+            inactiveIcon: IconUsers
         },
-        // {
-        //     title: "Analytics",
-        //     url: "#",
-        //     icon: IconChartBar,
-        // },
-        // {
-        //     title: "Projects",
-        //     url: "#",
-        //     icon: IconFolder,
-        // },
     ],
-    navSecondary: [],
 };
 interface AppSidebar {
     auth: { user: { data: UserType } };
@@ -76,7 +56,7 @@ interface AppSidebar {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const {auth} = usePage<AppSidebar>().props;
+    const { auth } = usePage<AppSidebar>().props;
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -87,7 +67,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             className="data-[slot=sidebar-menu-button]:p-1.5!"
                         >
                             <a href="#">
-                                <Button size={"icon-sm"} className="rounded-full">
+                                <Button
+                                    size={"icon-sm"}
+                                    className="rounded-full"
+                                >
                                     <IconClock className="size-5!" />
                                 </Button>
                                 <span className="text-base font-semibold">
@@ -100,8 +83,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                {/* <NavDocuments items={data.documents} /> */}
-                {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={auth.user.data} />

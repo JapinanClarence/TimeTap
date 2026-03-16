@@ -1,8 +1,6 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
+import { type Icon } from "@tabler/icons-react";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -10,7 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 export function NavMain({
     items,
@@ -18,23 +16,50 @@ export function NavMain({
     items: {
         title: string;
         url: string;
-        icon?: Icon;
+        activeIcon: Icon;
+        inactiveIcon: Icon;
     }[];
 }) {
+     const { url } = usePage();
     return (
         <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-2">
                 <SidebarMenu>
-                    {items.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton tooltip={item.title} className=" hover:bg-primary/5 hover:text-primary" asChild>
-                                <Link href={item.url}>
-                                    {item.icon && <item.icon />}
-                                    <span>{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
+                    {items.map((item) => {
+                        const isActive =
+                            item.url === "/admin"
+                                ? url === item.url
+                                : url.startsWith(item.url);
+
+                        const Icon = isActive
+                            ? item.activeIcon
+                            : item.inactiveIcon;
+                        return (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    isActive={isActive}
+                                    tooltip={item.title}
+                                    asChild
+                                    className={`
+                                    transition-colors
+                                    /* Normal state */
+                                    text-muted-foreground 
+                                    hover:bg-primary/5 hover:text-primary
+                                    
+                                    /* Active state: Text white, Background Primary */
+                                    data-[active=true]:bg-primary 
+                                    data-[active=true]:text-primary-foreground
+                                    data-[active=true]:hover:bg-primary/90
+                                    `}
+                                >
+                                    <Link href={item.url}>
+                                        <Icon />
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    })}
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
