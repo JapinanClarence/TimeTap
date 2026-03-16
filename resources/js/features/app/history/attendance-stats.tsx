@@ -13,7 +13,7 @@ export default function AttendanceStats({ rate }: { rate: number }) {
     const bgColor = statusClasses[1];   // e.g., bg-green-500
 
     return (
-        <div className=" bg-white p-4 rounded-xl border shadow-xs animate-fade-up-1">
+        <div className=" bg-white p-4 rounded-xl border shadow-xs animate-fade-up-1 hover-card">
             <div className="text-xs font-semibold flex justify-between mb-2">
                 <p className="text-muted-foreground">Attendance Rate</p>
                 <p className={textColor}>

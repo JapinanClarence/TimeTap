@@ -155,7 +155,7 @@ export default function UserId() {
                             <Share2 /> Share ID
                         </Button>
                     </div>
-                    <div className="space-y-5 animate-fade-up">
+                    <div className="hidden md:flex space-y-5 animate-fade-up">
                         <div className="border p-5 rounded-xl shadow-sm flex flex-col gap-2">
                             <h4 className="font-bold text-xl">Manage ID</h4>
                             <div className="flex items-center gap-2 font-semibold">
@@ -172,7 +172,6 @@ export default function UserId() {
 
                             <div className="flex items-center gap-2 font-semibold">
                                 <Button
-                                    onClick={handleDownload}
                                     className="shadow-sm rounded-full border-primary text-primary hover:text-primary"
                                     size={"icon-lg"}
                                     variant={"outline"}

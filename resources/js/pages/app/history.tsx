@@ -86,47 +86,56 @@ export default function History() {
     };
     return (
         <AppLayout secondaryHeader={true} title="History" showNav={false}>
-            <Container className="mt-5 space-y-5">
-                <StatCard
-                    absentCount={absentCount}
-                    presentCount={presentCount}
-                    totalEvents={totalEvents}
-                />
-                {totalEvents > 0 && <AttendanceStats rate={rate} />}
+            <Container className="xl:px-8 mt-5 space-y-5">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    {/* Left Column (Stats & Progress) - Sticky on Desktop */}
+                    <div className="lg:col-span-4  space-y-5 lg:sticky lg:top-5">
+                        <StatCard
+                            absentCount={absentCount}
+                            presentCount={presentCount}
+                            totalEvents={totalEvents}
+                        />
+                        {totalEvents > 0 && <AttendanceStats rate={rate} />}
+                    </div>
 
-                <Tabs className="animate-fade-up-2" defaultValue="all">
-                    <TabsList className="bg-gray-200/80">
-                        <TabsTrigger
-                            value="all"
-                            className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
-                        >
-                            All
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="present"
-                            className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
-                        >
-                            Present
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="absent"
-                            className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
-                        >
-                            Absent
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="all" className="mt-0">
-                        {renderGroupedList(groups.all)}
-                    </TabsContent>
+                    {/* Right Column (Tabs & History) */}
+                    <div className="lg:col-span-8  animate-fade-up-2">
+                        <Tabs defaultValue="all" className="w-full">
+                            <TabsList className="bg-gray-200/80 w-50 justify-start">
+                                <TabsTrigger
+                                    value="all"
+                                    className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
+                                >
+                                    All
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="present"
+                                    className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
+                                >
+                                    Present
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="absent"
+                                    className="data-[state=active]:bg-white data-[state=active]:text-foreground text-sm"
+                                >
+                                    Absent
+                                </TabsTrigger>
+                            </TabsList>
 
-                    <TabsContent value="present" className="mt-0">
-                        {renderGroupedList(groups.present)}
-                    </TabsContent>
-
-                    <TabsContent value="absent" className="mt-0">
-                        {renderGroupedList(groups.absent)}
-                    </TabsContent>
-                </Tabs>
+                            <div className="mt-5">
+                                <TabsContent value="all" className="mt-0">
+                                    {renderGroupedList(groups.all)}
+                                </TabsContent>
+                                <TabsContent value="present" className="mt-0">
+                                    {renderGroupedList(groups.present)}
+                                </TabsContent>
+                                <TabsContent value="absent" className="mt-0">
+                                    {renderGroupedList(groups.absent)}
+                                </TabsContent>
+                            </div>
+                        </Tabs>
+                    </div>
+                </div>
             </Container>
         </AppLayout>
     );
