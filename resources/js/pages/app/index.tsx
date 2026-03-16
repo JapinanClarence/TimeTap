@@ -31,6 +31,7 @@ import { router } from "@inertiajs/react";
 import * as turf from "@turf/turf";
 import { Badge } from "@/components/ui/badge";
 import QuickActions from "@/features/app/home/quick-actions";
+import QrScannerModal from "@/features/app/QR/qr-modal";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
@@ -80,6 +81,7 @@ export default function Index() {
     const [time, setTime] = useState(new Date());
     const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
     const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
+    const [showScanner, setShowScanner] = useState(false);
     const [userLocation, setUserLocation] = useState<{
         lat: number;
         lng: number;
@@ -170,7 +172,9 @@ export default function Index() {
     }, [currentEvent]);
 
     const handleCheckIn = () => {
-        router.get(`/app/qr/`);
+        console.log("clicked");
+        setShowScanner(true);
+        // router.get(`/app/qr/`);
     };
 
     const handleViewMap = () => {
@@ -331,6 +335,8 @@ export default function Index() {
                 onClose={() => setShowSwitchDrawer(false)}
                 organizations={props.myOrganizations}
             />
+
+            <QrScannerModal open={showScanner} onClose={()=>setShowScanner(false)}/>
         </AppLayout>
     );
 }

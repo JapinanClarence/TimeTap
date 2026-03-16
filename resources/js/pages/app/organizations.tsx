@@ -37,7 +37,7 @@ export default function organizations() {
     };
 
     return (
-        <AppLayout secondaryHeader={true} title={"Organizations"}>
+        <AppLayout showHeader={false}>
             <Head title="Organizations" />
             <Container className="xl:px-8 mt-5 space-y-5 ">
                 {currentOrg && (

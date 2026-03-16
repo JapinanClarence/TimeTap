@@ -24,7 +24,7 @@ export default function Profile() {
         post("/logout");
     };
     return (
-        <AppLayout secondaryHeader={true} title="My Profile">
+        <AppLayout showHeader={false}>
             <Head title="Profile" />
             <Container>
                 <div className="space-y-5 mt-5">

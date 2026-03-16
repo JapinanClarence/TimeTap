@@ -121,7 +121,7 @@ export default function Schedule() {
     }, [events, currentMonth]);
 
     return (
-        <AppLayout secondaryHeader={true} title="Event Calendar">
+        <AppLayout showHeader={false}>
             <Container className="xl:px-8 mt-5 space-y-5">
                      <Head title="Schedule" />
                 <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-5">

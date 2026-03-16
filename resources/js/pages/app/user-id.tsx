@@ -3,7 +3,7 @@ import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
 import { Head, usePage } from "@inertiajs/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { QRGenerator } from "@/features/app/QR/qr-generator";
+import { QRGenerator } from "@/components/ui/qr-generator";
 import { BubbleBgDecoration } from "@/components/ui/bubble-bg-decoration";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,7 @@ export default function UserId() {
                                     SCAN TO VERIFY
                                 </p>
                                 <div className="p-2 bg-white rounded-xl">
-                                    <QRGenerator data={user} />
+                                    <QRGenerator data={user} type="user" />
                                 </div>
                             </div>
                         </div>
