@@ -14,15 +14,13 @@ import {
 import { NavSecondary } from "./nav-secondary";
 import {
     IconBell,
+    IconBellFilled,
     IconCalendar,
-    IconHelp,
-    IconHistory,
+    IconCalendarFilled,
     IconHome,
-    IconQrcode,
-    IconSearch,
-    IconSettings,
-    IconUser,
-    IconUsersGroup,
+    IconHomeFilled,
+    IconCircles,
+    IconCirclesFilled
 } from "@tabler/icons-react";
 import { usePage } from "@inertiajs/react";
 import { OrganizationType } from "@/types/organization";
@@ -39,37 +37,30 @@ const data = {
     navMain: [
         {
             title: "Home",
-            url: "/",
-            icon: IconHome,
+            url: "/app",
+            activeIcon: IconHomeFilled,
+            inactiveIcon: IconHome
         },
         {
             title: "Schedules",
             url: "/app/schedule",
-            icon: IconCalendar,
+            activeIcon: IconCalendarFilled,
+            inactiveIcon: IconCalendar
         },
         {
             title: "Teams",
             url: "/app/organizations",
-            icon: IconUsersGroup,
+            activeIcon: IconCirclesFilled,
+            inactiveIcon: IconCircles
         },
         {
             title: "Notifications",
             url: "/app/notifications",
-            icon: IconBell,
+            activeIcon: IconBellFilled,
+            inactiveIcon: IconBell
         },
     ],
-    navSecondary: [
-        // {
-        //     title: "History",
-        //     url: "#",
-        //     icon: IconHistory,
-        // },
-        // {
-        //     title: "My ID",
-        //     url: "#",
-        //     icon: IconUser,
-        // },
-    ],
+
 };
 
 interface AppHomeProps {
@@ -92,7 +83,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={auth.user.data} />
