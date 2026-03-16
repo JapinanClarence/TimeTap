@@ -1,45 +1,41 @@
-import { ScanQrCode } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import Container from "../../components/ui/container";
 import {
-    HomeIcon,
-    CalendarIcon,
-    BellIcon,
-    UserIcon,
-    BuildingOffice2Icon as BuildingIcon,
-} from "@heroicons/react/24/solid";
-import {
-    HomeIcon as HomeOutline,
-    CalendarIcon as CalendarOutline,
-    UserIcon as UserOutline,
-    BuildingOffice2Icon as BuildingOutline,
-} from "@heroicons/react/24/outline";
+    IconUser,
+    IconUserFilled,
+    IconCalendarEvent,
+    IconCalendarEventFilled,
+    IconHome,
+    IconHomeFilled,
+    IconCircles,
+    IconCirclesFilled
+} from "@tabler/icons-react";
 import { Link, usePage } from "@inertiajs/react";
 
 const navItems = [
     {
         label: "Home",
         href: "/app",
-        activeIcon: HomeIcon,
-        inactiveIcon: HomeOutline,
+        activeIcon: IconHomeFilled,
+        inactiveIcon: IconHome,
     },
     {
         label: "Schedule",
         href: "/app/schedule",
-        activeIcon: CalendarIcon,
-        inactiveIcon: CalendarOutline,
+        activeIcon: IconCalendarEventFilled,
+        inactiveIcon: IconCalendarEvent
     },
     {
         label: "Teams",
         href: "/app/organizations",
-        activeIcon: BuildingIcon,
-        inactiveIcon: BuildingOutline,
+        activeIcon: IconCirclesFilled,
+        inactiveIcon: IconCircles,
     },
     {
         label: "Profile",
         href: "/app/profile",
-        activeIcon: UserIcon,
-        inactiveIcon: UserOutline,
+        activeIcon: IconUserFilled,
+        inactiveIcon: IconUser,
     },
 ];
 
