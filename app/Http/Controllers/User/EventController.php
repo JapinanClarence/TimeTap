@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -54,8 +55,11 @@ class EventController extends Controller
     public function showHistory()
     {
         $user = Auth::user();
-        
+        $now = Carbon::now();
+
         $events = Event::where('organization_id', $user->current_organization_id)
+            // 1. Only fetch events that have already started or passed
+            ->where('start_date', '<=', $now)
             ->with(['attendances' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }])
@@ -69,7 +73,6 @@ class EventController extends Controller
                     'title' => $event->title,
                     'start_date' => $event->start_date,
                     'location' => $event->location,
-                    // Check if the user is present
                     'is_present' => !is_null($attendance?->checked_in_at),
                     'check_in_time' => $attendance?->checked_in_at?->format('g:i A'),
                 ];
