@@ -6,24 +6,19 @@ import Container from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
-import { Head, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Building2, ChevronRight, LockIcon, LogOut, User2 } from "lucide-react";
 import React from "react";
 
-interface Paginated<T> {
-    data: T;
-    links: any[];
-    meta: any;
-}
-
-interface PageProps {
-    auth: { user: Paginated<UserType> };
+interface ProfilePageProps {
+    auth: { user: { data: UserType } };
     [key: string]: unknown;
 }
 
 export default function Profile() {
-    const page = usePage<PageProps>();
-    const { auth } = page.props;
+    const { auth } = usePage<ProfilePageProps>().props;
+
+    const { first_name, last_name, email, created_at } = auth.user.data;
     const { post } = useForm();
     const handleLogout = () => {
         post("/logout");
@@ -36,23 +31,22 @@ export default function Profile() {
                     <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative animate-fade-up">
                         {/* Background decoration */}
                         <BubbleBgDecoration />
-                        <Avatar className="size-20 rounded-xl">
-                            <AvatarImage
-                                src="https://github.com/shadcn.png"
-                                alt="@shadcn"
-                                // className="grayscale"
-                            />
-                            <AvatarFallback>CN</AvatarFallback>
+                        <Avatar className="size-20 border-4 border-white/20 rounded-full shadow-sm relative ">
+                            <AvatarImage src={""} alt={first_name} />
+                            <AvatarFallback className="bg-white/20 text-white rounded-full font-bold text-xl backdrop-blur-sm">
+                                {first_name[0]}
+                                {last_name[0]}
+                            </AvatarFallback>
                         </Avatar>
                         <div className="space-y-1">
                             <h1 className="font-bold text-2xl text-white">
-                                Arthur Morgan
+                                {first_name} {last_name}
                             </h1>
                             <p className="font-semibold text-sm text-gray-300">
-                                arthurM@gmail.com
+                                {email}
                             </p>
                             <Badge className="bg-white/10 font-semibold">
-                                <Building2 /> Van der Linde
+                                Created at {created_at}
                             </Badge>
                         </div>
                     </div>
@@ -60,9 +54,9 @@ export default function Profile() {
                         <h2 className="font-bold text-muted-foreground">
                             Account
                         </h2>
-                        <button
+                        <Link
+                            href={"/app/profile/edit"}
                             className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
-                            // onClick={handleLogout}
                         >
                             <div className="flex items-center gap-5 font-semibold">
                                 <div className="bg-primary/10 text-primary rounded-lg size-9 inline-flex items-center justify-center">
@@ -72,7 +66,7 @@ export default function Profile() {
                             </div>
 
                             <ChevronRight className="text-muted-foreground" />
-                        </button>
+                        </Link>
                         <button
                             className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
                             // onClick={handleLogout}

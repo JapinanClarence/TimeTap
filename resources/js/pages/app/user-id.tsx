@@ -12,15 +12,7 @@ import { useCallback, useRef } from "react";
 import { toPng } from "html-to-image";
 
 interface UserIdProps {
-    user: {
-        id: string;
-        first_name: string;
-        last_name: string;
-        email: string;
-        created_at: string;
-        member_since: string;
-        total_organizations: number;
-    };
+    user: UserType;
     [key: string]: unknown;
 }
 

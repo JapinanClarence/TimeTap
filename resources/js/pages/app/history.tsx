@@ -3,7 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import HistoryCard from "@/features/app/history/history-card";
 import { NoContent } from "@/features/app/home/no-content";
 import AppLayout from "@/layouts/app/app-layout";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { Calendar, ChartLine, Check, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMemo, useState } from "react";
@@ -86,7 +86,9 @@ export default function History() {
     };
     return (
         <AppLayout secondaryHeader={true} title="History" showNav={false}>
+            <Head title="History"/>
             <Container className="xl:px-8 mt-5 space-y-5">
+                
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                     {/* Left Column (Stats & Progress) - Sticky on Desktop */}
                     <div className="lg:col-span-4  space-y-5 lg:sticky lg:top-5">
