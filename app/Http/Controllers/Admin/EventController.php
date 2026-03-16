@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -15,7 +17,9 @@ class EventController extends Controller
      //
      public function index()
      {
-          $events = Event::select(
+          $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
+
+          $events = $organization->events()->select(
                'id',
                'title',
                'description',
