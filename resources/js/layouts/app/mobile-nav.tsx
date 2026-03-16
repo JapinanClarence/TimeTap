@@ -6,16 +6,45 @@ import {
     CalendarIcon,
     BellIcon,
     UserIcon,
+    BuildingOffice2Icon as BuildingIcon,
 } from "@heroicons/react/24/solid";
 import {
     HomeIcon as HomeOutline,
     CalendarIcon as CalendarOutline,
-    BellIcon as BellOutline,
     UserIcon as UserOutline,
-    BuildingOffice2Icon,
+    BuildingOffice2Icon as BuildingOutline,
 } from "@heroicons/react/24/outline";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+
+const navItems = [
+    {
+        label: "Home",
+        href: "/app",
+        activeIcon: HomeIcon,
+        inactiveIcon: HomeOutline,
+    },
+    {
+        label: "Schedule",
+        href: "/app/schedule",
+        activeIcon: CalendarIcon,
+        inactiveIcon: CalendarOutline,
+    },
+    {
+        label: "Teams",
+        href: "/app/organizations",
+        activeIcon: BuildingIcon,
+        inactiveIcon: BuildingOutline,
+    },
+    {
+        label: "Profile",
+        href: "/app/profile",
+        activeIcon: UserIcon,
+        inactiveIcon: UserOutline,
+    },
+];
+
 export default function MobileNav() {
+    const { url } = usePage();
     const [visible, setVisible] = useState(true);
 
     const lastScrollY = useRef(0);
@@ -69,19 +98,40 @@ export default function MobileNav() {
             }`}
         >
             <Container className="flex flex-row justify-between">
-                <div className="flex items-center justify-center flex-col text-primary">
-                    <HomeIcon className="size-6 text-primary" />
-                    <Link href={"/app"} className="text-xs">
-                        Home
-                    </Link>
-                </div>
-                <div className="flex items-center justify-center flex-col text-primary">
-                    <CalendarOutline className="size-6 text-primary" />
-                    <Link href={"/app/schedule"} className="text-xs">
-                        Schedule
-                    </Link>
-                </div>
-                {/* <div className="flex relative items-center justify-center flex-col text-primary">
+                {navItems.map((item) => {
+                    // Check if the current URL starts with the href
+                    const isActive =
+                        item.href === "/app"
+                            ? url === item.href
+                            : url.startsWith(item.href);
+
+                    const Icon = isActive ? item.activeIcon : item.inactiveIcon;
+
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`flex flex-col items-center justify-center transition-colors ${
+                                isActive
+                                    ? "text-primary"
+                                    : "text-primary/80"
+                            }`}
+                        >
+                            <Icon className="size-6" />
+                            <span className="text-xs font-medium">
+                                {item.label}
+                            </span>
+                        </Link>
+                    );
+                })}
+            </Container>
+        </nav>
+    );
+}
+
+//center icon for qr
+{
+    /* <div className="flex relative items-center justify-center flex-col text-primary">
                     <div className="absolute  -top-10 rounded-full bg-linear-to-r from-timetap-primary via-timetap-accent to-timetap-secondary p-1 shadow-lg">
                         <div className="rounded-full bg-white p-3 flex items-center justify-center">
                             <Link href="/app/qr">
@@ -91,20 +141,5 @@ export default function MobileNav() {
                     </div>
 
                     <span className="text-xs absolute bottom-0">QR</span>
-                </div> */}
-                <div className="flex items-center justify-center flex-col text-primary">
-                    <BuildingOffice2Icon className="size-6 text-primary" />
-                    <Link href={"/app/organizations"} className="text-xs">
-                        Teams
-                    </Link>
-                </div>
-                <div className="flex items-center justify-center flex-col text-primary">
-                    <UserOutline className="size-6 text-primary" />
-                    <Link href={"/app/profile"} className="text-xs">
-                        Profile
-                    </Link>
-                </div>
-            </Container>
-        </nav>
-    );
+                </div> */
 }
