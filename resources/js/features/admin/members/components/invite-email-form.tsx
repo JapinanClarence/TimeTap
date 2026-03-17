@@ -1,15 +1,24 @@
-import React, { useState, KeyboardEvent, useRef } from "react";
+import React, { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge"; // Assuming you have a Badge component
 import { X } from "lucide-react";
 import { FieldLabel } from "@/components/ui/field";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
+interface InviteEmailProps {
+    [key: string]: unknown;
+    flash: {
+        warning: string;
+        error: string;
+        success: string;
+    };
+}
+
 export default function InviteEmailForm() {
-    const [emails, setEmails] = useState<string[]>([]);
+    const {flash} = usePage<InviteEmailProps>().props;
     const [inputValue, setInputValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -60,12 +69,26 @@ export default function InviteEmailForm() {
             onSuccess: () => {
                 setInputValue("");
                 reset();
-                toast.success("User invited successfully!");
             },
             onError: () =>
                 toast.error("Invitation failed, user may not exists!"),
         });
     };
+
+     useEffect(() => {
+            // Check if flash exists AND if success has a value
+            if (flash?.success) {
+                toast.success(flash.success);
+            }
+    
+            if (flash?.error) {
+                toast.error(flash.error);
+            }
+
+            if(flash?.warning){
+                toast.warning(flash.warning)
+            }
+        }, [flash]);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">

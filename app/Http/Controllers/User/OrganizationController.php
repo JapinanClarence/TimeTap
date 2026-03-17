@@ -16,7 +16,7 @@ class OrganizationController extends Controller
 
         // 1. Get Orgs where the user is NOT already in the user_organizations table
         $organizations = $user->organizations->select("id", "name", "description", "image");
-        
+
         return Inertia::render('app/organizations', [
             'organizations' => $organizations
         ]);
@@ -35,16 +35,27 @@ class OrganizationController extends Controller
         $organization = Organization::where('invitation_code', $request->invitation_code)->firstOrFail();
         $user = $request->user();
 
-        // Attach user to the organization in user_organizations table
-        // We use syncWithoutDetaching to prevent duplicate rows
+        // 1. Check if the user is already a member
+        $isAlreadyMember = $user->organizations()
+            ->where('organization_id', $organization->id)
+            ->exists();
+
+        if ($isAlreadyMember) {
+            // switch their active org and warn them
+            $user->update(['current_organization_id' => $organization->id]);
+
+            return redirect()->back()->with('warning', "You are already a member of {$organization->name}. We've switched it to your active organization.");
+        }
+
+        // 2. Attach user to the organization
         $user->organizations()->syncWithoutDetaching([$organization->id]);
 
-        // Automatically set this as their "Active" org so the home page updates
+        // 3. Set as Active
         $user->update([
             'current_organization_id' => $organization->id
         ]);
 
-        return redirect()->back()->with('message', 'Joined successfully!');
+        return redirect()->back()->with('success', "Welcome to {$organization->name}!");
     }
     /**
      * Switch the user's active organization view.

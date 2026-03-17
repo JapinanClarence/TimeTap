@@ -64,10 +64,36 @@ class MemberController extends Controller
             'emails.*' => 'email'
         ]);
 
-        $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
+        $organization = Organization::where('owner_id', auth()->id())
+            ->with('members:email') // Eager load member emails
+            ->firstOrFail();
+
+        // Get list of existing member emails for this organization
+        $existingMemberEmails = $organization->members->pluck('email')->toArray();
+
+        // Get list of emails that already have a pending invitation
+        $pendingInviteEmails = Invitation::where('organization_id', $organization->id)
+            ->whereIn('email', $request->emails)
+            ->where('status', 'pending')
+            ->pluck('email')
+            ->toArray();
+
+        $skippedMembers = [];
+        $invitedCount = 0;
 
         foreach ($request->emails as $email) {
-            // 1. Create the invitation record
+            // 1. Skip if already a member
+            if (in_array($email, $existingMemberEmails)) {
+                $skippedMembers[] = $email;
+                continue;
+            }
+
+            // 2. Skip if an invitation is already pending
+            if (in_array($email, $pendingInviteEmails)) {
+                continue;
+            }
+
+            // 3. Create Invitation
             $invitation = Invitation::create([
                 'organization_id' => $organization->id,
                 'email' => $email,
@@ -75,10 +101,8 @@ class MemberController extends Controller
                 'status' => 'pending'
             ]);
 
-            // 2. Check if the user exists in our system
+            // 4. Handle Notification
             $invitedUser = User::where('email', $email)->first();
-
-            // 3. Only store in-app notification if the user actually has an account
             if ($invitedUser) {
                 Notification::create([
                     'user_id' => $invitedUser->id,
@@ -88,8 +112,16 @@ class MemberController extends Controller
                     'message' => "You have been invited to join {$organization->name}.",
                 ]);
             }
+
+            $invitedCount++;
         }
 
-        return back()->with('success', 'Invitations processed successfully!');
+        // Prepare response
+        if (count($skippedMembers) > 0) {
+            $message = "Sent {$invitedCount} invitations. The following are already members: " . implode(', ', $skippedMembers);
+            return back()->with('warning', $message);
+        }
+
+        return back()->with('success', 'Invitations sent successfully!');
     }
 }

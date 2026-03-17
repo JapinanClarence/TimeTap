@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
     Drawer,
     DrawerContent,
@@ -8,7 +8,7 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { OrganizationType } from "@/types/organization";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
@@ -27,19 +27,24 @@ import {
 } from "@/components/ui/alert-dialog";
 import { joinOrgSchema } from "@/features/app/schema/join-organization.schema";
 
-
 interface JoinOrgSheetProps {
     open: boolean;
     onClose: () => void;
 }
 
+interface JoinResponseProps {
+    [key: string]: unknown;
+    flash: {
+        warning: string;
+        error: string;
+        success: string;
+    };
+}
 const snapPoints = ["148px", "355px", 1];
 
-export default function JoinOrgSheet({
-    open,
-    onClose,
-}: JoinOrgSheetProps) {
-    const { post, data, setData, processing, errors, clearErrors, setError } =
+export default function JoinOrgSheet({ open, onClose }: JoinOrgSheetProps) {
+    const { flash } = usePage<JoinResponseProps>().props;
+    const { post, data, setData, processing, errors, reset, clearErrors, setError } =
         useForm({
             invitation_code: "",
         });
@@ -53,7 +58,7 @@ export default function JoinOrgSheet({
                 const field = issue.path[0];
 
                 if (typeof field === "string") {
-                   setError(field as keyof typeof data, issue.message);
+                    setError(field as keyof typeof data, issue.message);
                 }
             });
             return false;
@@ -64,16 +69,34 @@ export default function JoinOrgSheet({
     };
 
     const submit = (e: React.SubmitEvent) => {
-        if(!validate()) return;
+        if (!validate()) return;
         e.preventDefault();
 
         // Use Inertia to post the join request to your controller
         post("/app/organizations/join", {
             showProgress: false,
-            onSuccess: () => toast.success("Joined organization successfully!"),
-            onError: (errors) => toast.error("Failed to join organization!"),
+            onSuccess: () =>{
+                setData({invitation_code:""});
+                onClose();
+                reset();
+            }
         });
     };
+
+    useEffect(() => {
+        // Check if flash exists AND if success has a value
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+
+        if (flash?.warning) {
+            toast.warning(flash.warning);
+        }
+    }, [flash]);
 
     return (
         <Drawer
