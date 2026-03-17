@@ -7,6 +7,7 @@ use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -92,6 +93,31 @@ class AuthController extends Controller
 
 
         return redirect("/home")->with("message", "User registered and logged in");
+    }
+    public function changePassword(Request $request, User $user)
+    {
+        $isAdmin = auth()->user()->role === 'admin';
+
+        if ($isAdmin) {
+            return Inertia::render("admin/change-password");
+        }
+        return Inertia::render("app/change-password");
+    }
+    public function updatePassword(Request $request, User $user)
+    {
+        
+        $data = $request->validate([
+            "old_password" => ["required", "current_password"],
+            "password" => "required|confirmed|min:8",
+        ], [
+            'old_password.current_password' => 'Password incorrect.',
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return back()->with('success', 'Password updated successfully!');
     }
     public function logout(Request $request)
     {

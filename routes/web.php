@@ -27,7 +27,8 @@ Route::middleware(["guest"])->group(function () {
 // --- AUTHENTICATED SHARED ROUTES ---
 Route::middleware(['auth'])->group(function () {
     Route::post("/logout", [AuthController::class, "logout"])->name('logout');
-
+    Route::get("/auth/change-password", [AuthController::class, "changePassword"]);
+    Route::patch("/auth/change-password/{user}", [AuthController::class, "updatePassword"]);
     // Redirect logic: A central route to send users to their respective home
     Route::get('/home', function () {
         return auth()->user()->role === 'admin'

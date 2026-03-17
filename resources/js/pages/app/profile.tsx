@@ -67,9 +67,9 @@ export default function Profile() {
 
                             <ChevronRight className="text-muted-foreground" />
                         </Link>
-                        <button
+                        <Link
                             className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
-                            // onClick={handleLogout}
+                               href={"/auth/change-password"}
                         >
                             <div className="flex items-center gap-5  font-semibold">
                                 <div className="bg-primary/10 text-primary rounded-lg size-9 inline-flex items-center justify-center">
@@ -78,7 +78,7 @@ export default function Profile() {
                                 Change Password
                             </div>
                             <ChevronRight className="text-muted-foreground" />
-                        </button>
+                        </Link>
                         <Separator />
                         <button
                             className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"

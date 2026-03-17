@@ -39,7 +39,7 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
 
         // 1. Local Validation
         const result = profileSchema.safeParse(data);
-        console.log(result)
+  
         if (!result.success) {
             // 2. Map Zod errors to Inertia errors
             result.error.issues.forEach((error) => {
@@ -55,6 +55,7 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
                 ...data,
             },
             {
+                showProgress:false,
                 preserveScroll: true,
                 onSuccess: () => toast.success("Profile updated successfully"),
             },
