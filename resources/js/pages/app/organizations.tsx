@@ -25,16 +25,16 @@ interface OrganizationProps {
 }
 
 export default function organizations() {
-    const { props } = usePage<OrganizationProps>();
-    const organizations = props.organizations;
+    const { organizations, myOrganizations, currentOrg } =
+        usePage<OrganizationProps>().props;
     const [showJoinSheet, setShowJoinSheet] = useState(false);
     const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
-    const currentOrg = props.currentOrg;
 
     const handleJoinOrg = (e: any) => {
         (e.currentTarget as HTMLButtonElement).blur();
         setShowJoinSheet(true);
     };
+    console.log(organizations)
 
     return (
         <AppLayout showHeader={false}>
@@ -69,7 +69,7 @@ export default function organizations() {
                         Your Organizations
                     </h2>
                     <Badge className="font-medium bg-muted text-muted-foreground">
-                        3 orgs
+                        {myOrganizations.length} orgs
                     </Badge>
                 </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] animate-fade-up-2">
@@ -81,6 +81,7 @@ export default function organizations() {
                                 <OrganizationCard
                                     key={organization.id}
                                     name={organization.name}
+                                    members_count={organization.members_count}
                                     isCurrent={isCurrent}
                                 />
                             );
@@ -106,7 +107,7 @@ export default function organizations() {
             <SwitchOrgSheet
                 open={showSwitchDrawer}
                 onClose={() => setShowSwitchDrawer(false)}
-                organizations={props.myOrganizations}
+                organizations={myOrganizations}
             />
             <JoinOrgSheet
                 open={showJoinSheet}

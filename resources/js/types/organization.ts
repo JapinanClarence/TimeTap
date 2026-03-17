@@ -3,4 +3,5 @@ export type OrganizationType = {
     description?: string;
     image?: string;
     id? :string;
+    members_count?:number
 };

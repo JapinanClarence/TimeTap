@@ -4,14 +4,14 @@ import React from "react";
 
 interface OrganizationCardProps {
     name: string;
-    description?: string;
+    members_count?: number;
     image?: string;
     isCurrent?: boolean;
 }
 
 export default function OrganizationCard({
     name,
-    description,
+    members_count,
     isCurrent = false,
 }: OrganizationCardProps) {
     return (
@@ -36,7 +36,7 @@ export default function OrganizationCard({
                     </div>
                     <span className="inline-flex gap-2 text-sm text-muted-foreground">
                         <Users2 className="size-4" />
-                        12 Members
+                        {members_count} Members
                     </span>
                 </div>
             </div>

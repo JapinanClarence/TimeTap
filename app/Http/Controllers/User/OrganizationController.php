@@ -14,8 +14,10 @@ class OrganizationController extends Controller
     {
         $user = $request->user();
 
-        // 1. Get Orgs where the user is NOT already in the user_organizations table
-        $organizations = $user->organizations->select("id", "name", "description", "image");
+        $organizations = $user->organizations()
+            ->select("organizations.id", "organizations.name", "organizations.image")
+            ->withCount("members")
+            ->get();
 
         return Inertia::render('app/organizations', [
             'organizations' => $organizations
