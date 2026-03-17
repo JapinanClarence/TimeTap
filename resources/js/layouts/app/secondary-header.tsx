@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
 import Container from "../../components/ui/container";
-import { Link, useForm, usePage } from "@inertiajs/react";
-import { ArrowLeft, Bell, ChevronLeft, Settings, Timer } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
-export default function SecondaryHeader({title}: {title?:string}) {
+export default function SecondaryHeader({ title }: { title?: string }) {
     const handleBack = () => {
         // Standard browser back behavior
         window.history.back();
@@ -14,7 +11,7 @@ export default function SecondaryHeader({title}: {title?:string}) {
             <Container className="mx-auto flex items-center justify-center h-16 relative">
                 <div className="absolute left-0 pl-8 gap-3">
                     <button onClick={handleBack}>
-                        <ChevronLeft className="size-5"/>
+                        <ChevronLeft className="size-5" />
                     </button>
                 </div>
                 <div className="font-semibold text-lg">{title}</div>

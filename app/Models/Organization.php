@@ -14,7 +14,7 @@ class Organization extends Model
         'name',
         'description',
         'owner_id',
-        'org_profile',
+        'image',
         'invitation_code',
         'invitation_expires_at'
     ];

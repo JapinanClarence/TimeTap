@@ -1,4 +1,4 @@
-import AdminLayout from "@/layouts/dashboard/AdminLayout";
+import AdminLayout from "@/layouts/dashboard/admin-layout";
 import { Header } from "@/components/ui/header";
 import { DataTable } from "@/features/admin/events/components/data-table";
 import { columns } from "@/features/admin/events/components/columns";

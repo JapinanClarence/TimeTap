@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\OrganizationController;
 use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\User\QRController;
 use App\Http\Controllers\User\EventController as UserEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -68,6 +68,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/members", [MemberController::class, "index"])->name("admin.members");
     Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
+    Route::get("/profile", [UserController::class, "edit"]);
+    Route::put("/profile/edit/{user}", [UserController::class, "update"]);
 });
 
 Route::middleware(['auth'])->prefix("attendance")->group(function () {

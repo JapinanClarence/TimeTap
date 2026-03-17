@@ -1,5 +1,5 @@
 import { Header } from "@/components/ui/header";
-import AdminLayout from "@/layouts/dashboard/AdminLayout";
+import AdminLayout from "@/layouts/dashboard/admin-layout";
 import React, { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InvitationCodeType, MemberType } from "@/types/member";

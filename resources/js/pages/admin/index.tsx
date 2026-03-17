@@ -1,4 +1,4 @@
-import AdminLayout from "@/layouts/dashboard/AdminLayout";
+import AdminLayout from "@/layouts/dashboard/admin-layout";
 import React from "react";
 import { SectionCards } from "@/features/admin/dashboard/components/section-cards";
 import { ChartAreaInteractive } from "@/features/admin/dashboard/components/chat-area-interactive";

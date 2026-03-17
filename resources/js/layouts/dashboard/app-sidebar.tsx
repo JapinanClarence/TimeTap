@@ -23,33 +23,27 @@ import { Button } from "@/components/ui/button";
 import { UserType } from "@/types/user";
 import { usePage } from "@inertiajs/react";
 
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "https://github.com/shadcn.png",
+const navMain = [
+    {
+        title: "Dashboard",
+        url: "/admin",
+        activeIcon: IconDashboard,
+        inactiveIcon: IconDashboard,
     },
-    navMain: [
-        {
-            title: "Dashboard",
-            url: "/admin",
-            activeIcon: IconDashboard,
-            inactiveIcon: IconDashboard,
-        },
-        {
-            title: "Events",
-            url: "/admin/events",
-            activeIcon: IconListDetails,
-            inactiveIcon: IconListDetails
-        },
-        {
-            title: "Members",
-            url: "/admin/members",
-            activeIcon: IconUsers,
-            inactiveIcon: IconUsers
-        },
-    ],
-};
+    {
+        title: "Events",
+        url: "/admin/events",
+        activeIcon: IconListDetails,
+        inactiveIcon: IconListDetails,
+    },
+    {
+        title: "Members",
+        url: "/admin/members",
+        activeIcon: IconUsers,
+        inactiveIcon: IconUsers,
+    },
+];
+
 interface AppSidebar {
     auth: { user: { data: UserType } };
     [key: string]: unknown;
@@ -82,7 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={navMain} />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={auth.user.data} />

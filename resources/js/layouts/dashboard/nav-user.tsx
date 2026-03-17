@@ -1,10 +1,12 @@
 "use client";
 
 import {
-    IconCreditCard,
     IconDotsVertical,
     IconLogout,
-    IconNotification,
+    IconPassword,
+    IconPasswordUser,
+    IconSettings,
+    IconSettings2,
     IconUserCircle,
 } from "@tabler/icons-react";
 
@@ -24,14 +26,10 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { UserType } from "@/types/user";
 
-export function NavUser({
-    user,
-}: {
-    user: UserType;
-}) {
+export function NavUser({ user }: { user: UserType }) {
     const { isMobile } = useSidebar();
 
     const { post } = useForm();
@@ -58,7 +56,7 @@ export function NavUser({
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                     {user.first_name} {user.last_name}
+                                    {user.first_name} {user.last_name}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
                                     {user.email}
@@ -77,7 +75,7 @@ export function NavUser({
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                       src="https://github.com/shadcn.png"
+                                        src="https://github.com/shadcn.png"
                                         alt={user.first_name}
                                     />
                                     <AvatarFallback className="rounded-lg">
@@ -86,7 +84,7 @@ export function NavUser({
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                         {user.first_name} {user.last_name}
+                                        {user.first_name} {user.last_name}
                                     </span>
                                     <span className="text-muted-foreground truncate text-xs">
                                         {user.email}
@@ -96,14 +94,22 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <IconUserCircle className="text-primary"/>
-                                Account
+                            <DropdownMenuItem asChild>
+                                <Link href={"/admin/profile"}>
+                                    <IconUserCircle className="text-primary" />
+                                    Account
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href={"/auth/change-password"}>
+                                    <IconPasswordUser className="text-primary" />
+                                    Change Password
+                                </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         {/* <DropdownMenuSeparator /> */}
                         <DropdownMenuItem onClick={handleLogout}>
-                            <IconLogout className="text-destructive"/>
+                            <IconLogout className="text-destructive" />
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>

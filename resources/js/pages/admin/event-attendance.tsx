@@ -1,4 +1,4 @@
-import AdminLayout from "@/layouts/dashboard/AdminLayout";
+import AdminLayout from "@/layouts/dashboard/admin-layout";
 import { Deferred, Link, router, usePage } from "@inertiajs/react";
 import AttendanceCard from "@/features/admin/attendance/components/attendance-card";
 import {

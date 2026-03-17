@@ -1,4 +1,4 @@
-import AdminLayout from "@/layouts/dashboard/AdminLayout";
+import AdminLayout from "@/layouts/dashboard/admin-layout";
 import React, { useState } from "react";
 import Form from "@/features/admin/events/components/form";
 import { Button } from "@/components/ui/button";
