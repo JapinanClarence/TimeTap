@@ -14,10 +14,6 @@ class ProfileController extends Controller
     {
         return Inertia::render("app/profile");
     }
-    public function edit()
-    {
-        return Inertia::render("app/edit-profile");
-    }
     public function update(Request $request, User $user)
     {
         $data = $request->validate([

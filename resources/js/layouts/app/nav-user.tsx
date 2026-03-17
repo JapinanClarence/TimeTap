@@ -16,11 +16,19 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
+import EditProfile from "@/features/app/profile/components/edit-profile";
 import { UserType } from "@/types/user";
 import { Link, useForm } from "@inertiajs/react";
-import { IconDotsVertical, IconLogout, IconPasswordUser, IconUserCircle } from "@tabler/icons-react";
+import {
+    IconDotsVertical,
+    IconLogout,
+    IconPasswordUser,
+    IconUserCircle,
+} from "@tabler/icons-react";
+import { useState } from "react";
 
 export function NavUser({ user }: { user: UserType }) {
+    const [showEditProfile, setShowEditProfile] = useState(false);
     const { isMobile } = useSidebar();
 
     const { post } = useForm();
@@ -81,20 +89,15 @@ export function NavUser({ user }: { user: UserType }) {
                                         {user.email}
                                     </span>
                                 </div>
+                                {/* <EditProfile {...user} open={showEditProfile} onClose={()=>setShowEditProfile(false)}/> */}
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem asChild>
-                                <Link href={"/app/profile/edit"}>
+                                <Link href={"/app/profile"}>
                                     <IconUserCircle className="text-primary" />
-                                    Account
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href={"/auth/change-password"}>
-                                    <IconPasswordUser className="text-primary" />
-                                    Change Password
+                                    Profile
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/input-group";
 import { Eye, EyeOff } from "lucide-react";
 import PasswordStrength from "@/components/ui/password-strength";
-import { changePasswordSchema } from "./schema/profile.schema";
+import { changePasswordSchema } from "../schema/profile.schema";
 import { UserType } from "@/types/user";
 import { toast } from "sonner";
 
@@ -31,7 +31,7 @@ interface FlashProps {
     };
 }
 
-export default function ChangePasswordForm({ user }: { user: UserType }) {
+export default function ChangePasswordForm({ user,onClose }: { user: UserType, onClose: ()=>void; }) {
     const { flash } = usePage<FlashProps>().props;
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [showPasswords, setShowPasswords] = React.useState({
@@ -113,7 +113,7 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
             <FieldGroup>
                 <Field>
                     <FieldLabel htmlFor="old_password">Old Password</FieldLabel>
-                    <InputGroup className="bg-white">
+                    <InputGroup className="bg-gray-100/50">
                         <InputGroupInput
                             type={
                                 showPasswords.old_password ? "text" : "password"
@@ -151,7 +151,7 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="password">New Password</FieldLabel>
-                    <InputGroup className="bg-white">
+                    <InputGroup className="bg-gray-100/50">
                         <InputGroupInput
                             type={showPasswords.password ? "text" : "password"}
                             value={data.password}
@@ -199,7 +199,7 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
                     <FieldLabel htmlFor="password_confirmation">
                         Confirm Password
                     </FieldLabel>
-                    <InputGroup className="bg-white">
+                    <InputGroup className="bg-gray-100/50">
                         <InputGroupInput
                             type={"password"}
                             value={data.password_confirmation}
@@ -219,18 +219,25 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
                         </FieldError>
                     )}
                 </Field>
+                <Field className="md:justify-end " orientation="responsive">
+                    <Button
+                        disabled={!isPasswordValid}
+                        className="w-full md:w-min"
+                        type="submit"
+                    >
+                        {loading && <Spinner />}
+                        Save
+                    </Button>
+                    <Button
+                        onClick={onClose}
+                        variant="outline"
+                        type="button"
+                        className="w-full md:w-min"
+                    >
+                        Cancel
+                    </Button>
+                </Field>
             </FieldGroup>
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-5">
-                <Button
-                    className="w-full  text-base rounded-xl"
-                    type="submit"
-                    size={"lg"}
-                    disabled={!isPasswordValid}
-                >
-                    {loading && <Spinner />}
-                    Save
-                </Button>
-            </div>
         </form>
     );
 }

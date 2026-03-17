@@ -20,9 +20,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { profileSchema } from "./schema/profile.schema";
+import { profileSchema } from "../schema/profile.schema";
 import { toast } from "sonner";
 import { UserType } from "@/types/user";
+
+interface EditFormProps extends UserType {
+ onClose : () => void;   
+}
 
 export default function EditForm({
     id,
@@ -30,7 +34,8 @@ export default function EditForm({
     last_name,
     email,
     gender,
-}: UserType) {
+    onClose
+}: EditFormProps) {
     const { data, setData, post, processing, errors, setError, clearErrors } =
         useForm({
             first_name: first_name || "",
@@ -39,6 +44,7 @@ export default function EditForm({
             gender: gender || "",
         });
     const [loading, setLoading] = useState(false);
+
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -66,12 +72,15 @@ export default function EditForm({
                 preserveScroll: true,
                 onBefore: () => setLoading(true),
                 onFinish: () => setLoading(false),
-                onSuccess: () => toast.success("Profile updated successfully"),
+                onSuccess: () => {
+                    toast.success("Profile updated successfully");
+                },
             },
         );
     };
+
     return (
-        <form className="" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <FieldGroup>
                 <Field className={"grid md:grid-cols-2 gap-4"}>
                     <Field>
@@ -84,7 +93,7 @@ export default function EditForm({
                             onChange={(e) =>
                                 setData("first_name", e.target.value)
                             }
-                            className={`bg-white
+                            className={`bg-gray-100/50
                                 ${errors.first_name ? "border-destructive" : ""}
                             `}
                         />
@@ -104,7 +113,7 @@ export default function EditForm({
                             onChange={(e) =>
                                 setData("last_name", e.target.value)
                             }
-                            className={`bg-white
+                            className={`bg-gray-100/50
                                 ${errors.last_name ? "border-destructive" : ""}
                             `}
                         />
@@ -123,7 +132,7 @@ export default function EditForm({
                         type="email"
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
-                        className={`bg-white
+                        className={`bg-gray-100/50
                                 ${errors.email ? "border-destructive" : ""}
                             `}
                     />
@@ -139,7 +148,7 @@ export default function EditForm({
                         value={data.gender}
                         onValueChange={(value) => setData("gender", value)}
                     >
-                        <SelectTrigger size="lg" className="w-full bg-white">
+                        <SelectTrigger size="lg" className="w-full bg-gray-100/50">
                             <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent position="popper">
@@ -157,17 +166,21 @@ export default function EditForm({
                         </FieldError>
                     )}
                 </Field>
+                <Field className="md:justify-end " orientation="responsive">
+                    <Button className="w-full md:w-min" type="submit">
+                        {loading && <Spinner />}
+                        Save
+                    </Button>
+                    <Button
+                        onClick={onClose}
+                        variant="outline"
+                        type="button"
+                        className="w-full md:w-min"
+                    >
+                        Cancel
+                    </Button>
+                </Field>
             </FieldGroup>
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-5">
-                <Button
-                    className="w-full  text-base rounded-xl"
-                    type="submit"
-                    size={"lg"}
-                >
-                    {loading && <Spinner />}
-                    Save
-                </Button>
-            </div>
         </form>
     );
 }

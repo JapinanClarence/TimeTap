@@ -101,7 +101,6 @@ class AuthController extends Controller
         if ($isAdmin) {
             return Inertia::render("admin/change-password");
         }
-        return Inertia::render("app/change-password");
     }
     public function updatePassword(Request $request, User $user)
     {

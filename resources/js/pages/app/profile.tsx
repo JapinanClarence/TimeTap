@@ -7,8 +7,18 @@ import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import { Building2, ChevronRight, LockIcon, LogOut, User2 } from "lucide-react";
-import React from "react";
+import {
+    Building2,
+    ChevronRight,
+    LockIcon,
+    LogOut,
+    User2,
+    UserRoundPen,
+} from "lucide-react";
+import React, { useState } from "react";
+import EditProfile from "@/features/app/profile/components/edit-profile";
+import { useIsMobile } from "@/hooks/use-mobile";
+import ChangePassword from "@/features/app/profile/components/change-password";
 
 interface ProfilePageProps {
     auth: { user: { data: UserType } };
@@ -16,6 +26,8 @@ interface ProfilePageProps {
 }
 
 export default function Profile() {
+    const [showEditProfile, setShowEditProfile] = useState(false);
+    const [showChangePassword, setShowChangePassword] = useState(false);
     const { auth } = usePage<ProfilePageProps>().props;
 
     const { first_name, last_name, email, created_at } = auth.user.data;
@@ -51,22 +63,28 @@ export default function Profile() {
                 </div>
                 <div className="space-y-5 animate-fade-up-1">
                     <h2 className="font-bold text-muted-foreground">Account</h2>
-                    <Link
-                        href={"/app/profile/edit"}
+                    <button
+                        onClick={(e) => {
+                            (e.currentTarget as HTMLButtonElement).blur();
+                            setShowEditProfile(true);
+                        }}
                         className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
                     >
                         <div className="flex items-center gap-5 font-semibold">
                             <div className="bg-primary/10 text-primary rounded-lg size-9 inline-flex items-center justify-center">
-                                <User2 className="size-5" />
+                                <UserRoundPen className="size-5" />
                             </div>
-                            Profile
+                            Edit Profile
                         </div>
 
                         <ChevronRight className="text-muted-foreground" />
-                    </Link>
-                    <Link
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            (e.currentTarget as HTMLButtonElement).blur();
+                            setShowChangePassword(true);
+                        }}
                         className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
-                        href={"/auth/change-password"}
                     >
                         <div className="flex items-center gap-5  font-semibold">
                             <div className="bg-primary/10 text-primary rounded-lg size-9 inline-flex items-center justify-center">
@@ -75,21 +93,36 @@ export default function Profile() {
                             Change Password
                         </div>
                         <ChevronRight className="text-muted-foreground" />
-                    </Link>
-                    <Separator />
-                    <button
-                        className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
-                        onClick={handleLogout}
-                    >
-                        <div className="flex items-center gap-5 text-destructive  font-semibold">
-                            <div className="bg-destructive/10 text-destructive rounded-lg size-9 inline-flex items-center justify-center">
-                                <LogOut className="size-5" />
-                            </div>
-                            Log out
-                        </div>
                     </button>
+                    {useIsMobile() && (
+                        <>
+                            <Separator />
+                            <button
+                                className="flex justify-between items-center w-full bg-white border p-3.5 rounded-xl"
+                                onClick={handleLogout}
+                            >
+                                <div className="flex items-center gap-5 text-destructive  font-semibold">
+                                    <div className="bg-destructive/10 text-destructive rounded-lg size-9 inline-flex items-center justify-center">
+                                        <LogOut className="size-5" />
+                                    </div>
+                                    Log out
+                                </div>
+                            </button>
+                        </>
+                    )}
                 </div>
             </Container>
+            <EditProfile
+                {...auth.user.data}
+                open={showEditProfile}
+                onClose={() => setShowEditProfile(false)}
+            />
+ 
+            <ChangePassword
+                user={auth.user.data}
+                open={showChangePassword}
+                onClose={() => setShowChangePassword(false)}
+            />
         </AppLayout>
     );
 }
