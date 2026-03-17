@@ -8,9 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EventType } from "@/types/event";
-import { type DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 import {
     InputGroup,
     InputGroupAddon,
@@ -99,7 +97,7 @@ export default function EventForm({ data, setData, errors, method }: EventFormPr
                         onChange={(date) =>
                             setData(
                                 "start_date",
-                                date ? date.toISOString() : "",
+                                date ? format(date, "yyyy-MM-dd") : "",
                             )
                         }
                     />
@@ -108,7 +106,7 @@ export default function EventForm({ data, setData, errors, method }: EventFormPr
                         value={data.end_date}
                         error={errors.end_date}
                         onChange={(date) =>
-                            setData("end_date", date ? date.toISOString() : "")
+                            setData("end_date", date ? format(date, "yyyy-MM-dd") : "")
                         }
                     />
                 </Field>

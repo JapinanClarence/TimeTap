@@ -29,6 +29,7 @@ export default function Form({ method = "add", event_data }: EventFormProps) {
     // coords live under `area.coordinates`.  fall back to empty/blank values
     // for the add case (or missing properties).
     const initialData: EventType = useMemo(() => {
+        console.log(event_data)
         if (method === "edit" && event_data) {
             return {
                 title: event_data.title || "",
@@ -85,7 +86,6 @@ export default function Form({ method = "add", event_data }: EventFormProps) {
 
         return true;
     };
-
     // handle stepper state
     const nextStep = () => {
         if (!validate()) return;
@@ -95,7 +95,7 @@ export default function Form({ method = "add", event_data }: EventFormProps) {
     };
 
     const prevStep = () => setStep((prev) => prev - 1);
-
+    console.log(data)
     const submit = (e: React.SubmitEvent) => {
         e.preventDefault();
 

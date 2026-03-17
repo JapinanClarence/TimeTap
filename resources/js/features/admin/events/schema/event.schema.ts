@@ -24,7 +24,7 @@ export const eventSchema = z
     })
     .refine(
         (data) =>
-            new Date(data.end_date).getTime() >
+            new Date(data.end_date).getTime() >=
             new Date(data.start_date).getTime(),
         {
             message: "End date must be after start date",
