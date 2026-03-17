@@ -19,7 +19,7 @@ export default function EditProfile() {
     return (
         <AppLayout secondaryHeader={true} showNav={false} title="Edit Profile">
             <Head title="Edit Profile" />
-            <Container className="xl:px-8 mt-5 space-y-5">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0 space-y-5">
                 <div className="relative">
                     <Avatar className="size-24 mx-auto border-4 border-primary/20 rounded-full shadow-sm relative ">
                         <AvatarImage src={""} alt={first_name} />
@@ -37,7 +37,7 @@ export default function EditProfile() {
                     </Button>
                 </div>
 
-                <EditForm {...auth.user.data}/>
+                <EditForm {...auth.user.data} />
             </Container>
         </AppLayout>
     );

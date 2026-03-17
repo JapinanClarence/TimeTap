@@ -64,13 +64,9 @@ export default function EventDetail() {
 
     return (
         <AppLayout secondaryHeader={true} showNav={false} title="Event Details">
-                 <Head title="Event" />
+            <Head title="Event" />
             <div className="md:h-[89vh]">
-                <Map
-                    center={center}
-                    zoom={15}
-                    theme="light"
-                >
+                <Map center={center} zoom={15} theme="light">
                     {/* User location marker */}
                     {center && (
                         <MapMarker longitude={center[0]} latitude={center[1]}>

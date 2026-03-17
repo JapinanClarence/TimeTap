@@ -122,82 +122,82 @@ export default function Schedule() {
 
     return (
         <AppLayout showHeader={false}>
-            <Container className="xl:px-8 mt-5 space-y-5">
-                     <Head title="Schedule" />
-                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center gap-5">
-                    <Calendar
-                        mode="multiple"
-                        className="rounded-xl  w-full  max-w-md bg-white md:bg-transparent border shadow-xs animate-fade-up"
-                        month={currentMonth}
-                        onMonthChange={setCurrentMonth}
-                        animate
-                        components={{
-                            Day: ({ day, ...props }) => {
-                                const date = day.date;
-                                const key = date.toISOString().slice(0, 10);
-                                const colorIndices = dayColorMap[key] ?? [];
-                                const isOutside =
-                                    date.getMonth() !==
-                                    day.displayMonth.getMonth();
+            <Head title="Schedule" />
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0  flex flex-col md:flex-row gap-5">
+                <Calendar
+                    mode="multiple"
+                    className="rounded-xl  w-full max-w-full bg-white md:bg-transparent border shadow-xs animate-fade-up"
+                    month={currentMonth}
+                    onMonthChange={setCurrentMonth}
+                    animate
+                    components={{
+                        Day: ({ day, ...props }) => {
+                            const date = day.date;
+                            const key = date.toISOString().slice(0, 10);
+                            const colorIndices = dayColorMap[key] ?? [];
+                            const isOutside =
+                                date.getMonth() !== day.displayMonth.getMonth();
 
-                                return (
-                                    <td
-                                        {...props}
-                                        className={[
-                                            props.className,
-                                            "relative flex flex-col items-center justify-start pt-1 h-9 w-9",
-                                            isOutside ? "opacity-30" : "",
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" ")}
-                                    >
-                                        <span className="text-sm leading-none">
-                                            {date.getDate()}
+                            return (
+                                <td
+                                    {...props}
+                                    className={[
+                                        props.className,
+                                        "relative flex flex-col items-center justify-start pt-1 h-9 w-9",
+                                        isOutside ? "opacity-30" : "",
+                                    ]
+                                        .filter(Boolean)
+                                        .join(" ")}
+                                >
+                                    <span className="text-sm leading-none">
+                                        {date.getDate()}
+                                    </span>
+                                    {colorIndices.length > 0 && !isOutside && (
+                                        <span className="flex gap-0.5 mt-0.5">
+                                            {colorIndices
+                                                .slice(0, 4)
+                                                .map((ci) => (
+                                                    <span
+                                                        key={ci}
+                                                        className={`block w-1 h-1 md:w-10 rounded-full ${EVENT_COLORS[ci].dot}`}
+                                                    />
+                                                ))}
                                         </span>
-                                        {colorIndices.length > 0 &&
-                                            !isOutside && (
-                                                <span className="flex gap-0.5 mt-0.5">
-                                                    {colorIndices
-                                                        .slice(0, 4)
-                                                        .map((ci) => (
-                                                            <span
-                                                                key={ci}
-                                                                className={`block w-1 h-1 rounded-full ${EVENT_COLORS[ci].dot}`}
-                                                            />
-                                                        ))}
-                                                </span>
-                                            )}
-                                    </td>
-                                );
-                            },
-                        }}
-                    />
+                                    )}
+                                </td>
+                            );
+                        },
+                    }}
+                />
 
-                    {/* Event Legend / List — current month only */}
-                    <div className="w-full max-w-md md:max-w-lg flex md: flex-col gap-2 animate-fade-up-1">
-                        <h2 className="md:hidden text-sm font-semibold px-1">
-                            {currentMonth.toLocaleString("default", {
-                                month: "long",
-                                year: "numeric",
-                            })}
-                        </h2>
+                {/* Event Legend / List — current month only */}
+                <div className="w-full flex flex-col gap-2 animate-fade-up-1">
+                    <h2 className="md:hidden text-sm font-semibold px-1">
+                        {currentMonth.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        })}
+                    </h2>
 
-                        {currentMonthEvents.length === 0 ? (
-                            <NoContent
-                                title="No data"
-                                description="No events found this month"
-                            />
-                        ) : (
-                            currentMonthEvents.map((event) => {
-                                if (!event.id) return;
-                                const ci = eventColorMap[event.id];
-                                const color = EVENT_COLORS[ci];
-                                return (
-                                    <ScheduleCard key={event.id} color={color} event={event}/>
-                                );
-                            })
-                        )}
-                    </div>
+                    {currentMonthEvents.length === 0 ? (
+                        <NoContent
+                            title="No data"
+                            description="No events found this month"
+                        />
+                    ) : (
+                        currentMonthEvents.map((event) => {
+                            if (!event.id) return;
+                            const ci = eventColorMap[event.id];
+                            const color = EVENT_COLORS[ci];
+                            return (
+                                <ScheduleCard
+                                    key={event.id}
+                                    color={color}
+                                    event={event}
+                                />
+                            );
+                        })
+                    )}
                 </div>
             </Container>
         </AppLayout>

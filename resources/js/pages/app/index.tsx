@@ -183,7 +183,7 @@ export default function Index() {
 
     return (
         <AppLayout>
-            <Container className="space-y-5 mt-5 md:px-5 md:flex-1 lg:px-5 xl:px-8 mx-none">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0 space-y-5  md:flex-1 mx-none">
                 {currentOrg ? (
                     <div className="md:hidden flex justify-between items-center bg-primary/5 border border-primary rounded-xl  px-3 py-1.5 animate-fade-up">
                         <p className="font-semibold">

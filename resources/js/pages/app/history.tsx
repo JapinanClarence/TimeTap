@@ -87,7 +87,7 @@ export default function History() {
     return (
         <AppLayout secondaryHeader={true} title="History" showNav={false}>
             <Head title="History"/>
-            <Container className="xl:px-8 mt-5 space-y-5">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0 space-y-5">
                 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                     {/* Left Column (Stats & Progress) - Sticky on Desktop */}

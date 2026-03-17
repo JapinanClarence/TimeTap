@@ -51,7 +51,7 @@ export default function UserId() {
 
     return (
         <AppLayout secondaryHeader={true} showNav={false} title="My ID">
-            <Container className="xl:px-8 mt-5">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0">
                 <Head title="My ID" />
                 <div className=" flex flex-col md:flex-row gap-5">
                     <div

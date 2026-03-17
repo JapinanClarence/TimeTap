@@ -21,7 +21,7 @@ export default function ChangePassword() {
             title="Change Password"
         >
             <Head title="Change Password" />
-            <Container className="space-y-5 mt-5">
+            <Container className="xl:px-8 lg:px-8 space-y-5 py-8 md:py-0">
                 <div className="flex gap-2">
                     <div className="bg-primary/10 text-primary size-10 inline-flex items-center justify-center rounded-lg">
                         <Lock />

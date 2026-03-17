@@ -73,9 +73,9 @@ export default function Notifications() {
 
     return (
         <AppLayout secondaryHeader={true} title="Notifications" showNav={false}>
-            <Container className="xl:px-8">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0 space-y-5">
                 <Head title="Notifications" />
-                <div className="flex justify-between items-center py-6 animate-fade-up">
+                <div className="flex justify-between items-center animate-fade-up">
                     <h1 className="text-2xl font-bold"></h1>
                     <Button
                         variant="ghost"

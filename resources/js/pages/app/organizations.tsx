@@ -39,7 +39,7 @@ export default function organizations() {
     return (
         <AppLayout showHeader={false}>
             <Head title="Organizations" />
-            <Container className="xl:px-8 mt-5 space-y-5 ">
+            <Container className="xl:px-8 lg:px-8 py-8 md:py-0 space-y-5 ">
                 {currentOrg && (
                     <CurrentOrgCard
                         organization={currentOrg}
