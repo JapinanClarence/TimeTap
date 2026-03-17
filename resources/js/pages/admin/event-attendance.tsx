@@ -30,6 +30,7 @@ import { useEffect, useState } from "react";
 import { QRScanner } from "@/components/ui/qr-scanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 interface EventAttendanceProps {
     [key: string]: unknown;
@@ -45,6 +46,10 @@ interface EventAttendanceProps {
         search: string | null;
         filter: "All" | "Check In" | "Check Out" | null;
     };
+    flash: {
+        success: string | null;
+        error: string | null;
+    };
 }
 
 export default function EventAttendance() {
@@ -59,9 +64,16 @@ export default function EventAttendance() {
     const end = new Date(event.end_date);
     const handleScan = (data: any) => {
         // console.log(data[0].rawValue)
-        router.post("/attendance/record", {
-            qr_data: data[0].rawValue,
-        });
+        router.post(
+            "/attendance/record",
+            {
+                qr_data: data[0].rawValue,
+                current_event_id: event.id,
+            },
+            {
+                onSuccess: () => handleQuery(search, filters.filter || "All"),
+            },
+        );
     };
     const handleError = () => {
         console.log("error");
@@ -91,6 +103,17 @@ export default function EventAttendance() {
             },
         );
     };
+
+    useEffect(() => {
+        // Check if flash exists AND if success has a value
+        if (props.flash?.success) {
+            toast.success(props.flash.success);
+        }
+
+        if (props.flash?.error) {
+            toast.error(props.flash.error);
+        }
+    }, [props.flash]);
 
     return (
         <AdminLayout>
@@ -231,7 +254,7 @@ export default function EventAttendance() {
                             </InputGroup>
 
                             <Tabs
-                                defaultValue={ "All"}
+                                defaultValue={"All"}
                                 onValueChange={(tab) =>
                                     handleQuery(search, tab)
                                 }

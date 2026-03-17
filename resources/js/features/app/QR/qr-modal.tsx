@@ -33,14 +33,34 @@ export default function QrScannerModal({ open, onClose }: QrScannerModalProps) {
     const { props } = usePage<QRPageProps>();
     const devices = useDevices();
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
+    const [isProcessing, setIsProcessing] = useState(false); // 1. Add loading state
+
     const handleScan = (data: any) => {
-        router.post("/attendance/record", {
-            qr_data: data[0].rawValue,
-        });
+        // Check if already processing a request
+        if (isProcessing || !data?.[0]?.rawValue) return;
+
+        setIsProcessing(true); // 3. Lock the scanner
+
+        router.post(
+            "/attendance/record",
+            {
+                qr_data: data[0].rawValue,
+            },
+            {
+                
+                //  Reset the lock when the request finishes
+                onFinish: () => {
+                    // delay so it doesn't instantly re-scan
+                    setTimeout(() => setIsProcessing(false), 2000);
+                },
+                onError: () => setIsProcessing(false),
+            },
+        );
     };
 
     const handleError = (error: any) => {
         console.log(error);
+        setIsProcessing(false);
     };
 
     useEffect(() => {

@@ -40,7 +40,7 @@ export function QRScanner({
                 }}
                 onScan={handleScan}
                 onError={handleError}
-                scanDelay={2000}
+                scanDelay={5000}
                 allowMultiple={false}
                 sound={false}
             />
