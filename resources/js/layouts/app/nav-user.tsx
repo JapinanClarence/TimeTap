@@ -1,15 +1,5 @@
 "use client";
 
-import {
-    BadgeCheck,
-    Bell,
-    ChevronsUpDown,
-    CreditCard,
-    EllipsisVertical,
-    LogOut,
-    Sparkles,
-} from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -27,7 +17,8 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { UserType } from "@/types/user";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
+import { IconDotsVertical, IconLogout, IconPasswordUser, IconUserCircle } from "@tabler/icons-react";
 
 export function NavUser({ user }: { user: UserType }) {
     const { isMobile } = useSidebar();
@@ -62,7 +53,7 @@ export function NavUser({ user }: { user: UserType }) {
                                     {user.email}
                                 </span>
                             </div>
-                             <EllipsisVertical className="ml-auto size-4" />
+                            <IconDotsVertical className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -94,14 +85,22 @@ export function NavUser({ user }: { user: UserType }) {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck className="text-primary"/>
-                                Account
+                            <DropdownMenuItem asChild>
+                                <Link href={"/app/profile/edit"}>
+                                    <IconUserCircle className="text-primary" />
+                                    Account
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href={"/auth/change-password"}>
+                                    <IconPasswordUser className="text-primary" />
+                                    Change Password
+                                </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout}>
-                            <LogOut className="text-destructive"/>
+                            <IconLogout className="text-destructive" />
                             Logout
                         </DropdownMenuItem>
                     </DropdownMenuContent>

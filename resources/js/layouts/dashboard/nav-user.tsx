@@ -3,10 +3,7 @@
 import {
     IconDotsVertical,
     IconLogout,
-    IconPassword,
     IconPasswordUser,
-    IconSettings,
-    IconSettings2,
     IconUserCircle,
 } from "@tabler/icons-react";
 

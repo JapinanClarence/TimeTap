@@ -124,7 +124,7 @@ export default function Schedule() {
         <AppLayout showHeader={false}>
             <Container className="xl:px-8 mt-5 space-y-5">
                      <Head title="Schedule" />
-                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center md:justify-between gap-5">
+                <div className="flex flex-wrap flex-col md:flex-row items-center md:items-start justify-center gap-5">
                     <Calendar
                         mode="multiple"
                         className="rounded-xl  w-full  max-w-md bg-white md:bg-transparent border shadow-xs animate-fade-up"
