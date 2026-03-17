@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Field,
     FieldDescription,
@@ -24,7 +24,13 @@ import { profileSchema } from "./schema/profile.schema";
 import { toast } from "sonner";
 import { UserType } from "@/types/user";
 
-export default function EditForm({id, first_name, last_name, email, gender}:UserType) {
+export default function EditForm({
+    id,
+    first_name,
+    last_name,
+    email,
+    gender,
+}: UserType) {
     const { data, setData, post, processing, errors, setError, clearErrors } =
         useForm({
             first_name: first_name || "",
@@ -32,6 +38,7 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
             email: email || "",
             gender: gender || "",
         });
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -39,7 +46,7 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
 
         // 1. Local Validation
         const result = profileSchema.safeParse(data);
-  
+
         if (!result.success) {
             // 2. Map Zod errors to Inertia errors
             result.error.issues.forEach((error) => {
@@ -55,8 +62,10 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
                 ...data,
             },
             {
-                showProgress:false,
+                showProgress: false,
                 preserveScroll: true,
+                onBefore: () => setLoading(true),
+                onFinish: () => setLoading(false),
                 onSuccess: () => toast.success("Profile updated successfully"),
             },
         );
@@ -126,7 +135,10 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
                 </Field>
                 <Field>
                     <FieldLabel htmlFor="gender">Gender</FieldLabel>
-                    <Select value={data.gender} onValueChange={(value)=>setData("gender",value)}>
+                    <Select
+                        value={data.gender}
+                        onValueChange={(value) => setData("gender", value)}
+                    >
                         <SelectTrigger size="lg" className="w-full bg-white">
                             <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
@@ -152,7 +164,7 @@ export default function EditForm({id, first_name, last_name, email, gender}:User
                     type="submit"
                     size={"lg"}
                 >
-                    {processing && <Spinner />}
+                    {loading && <Spinner />}
                     Save
                 </Button>
             </div>

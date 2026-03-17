@@ -235,7 +235,7 @@ export default function ProfileForm({
                 </div>
                 <Field className="md:justify-end" orientation="responsive">
                     <Button className="w-full md:w-min" type="submit">
-                       {processing && <Spinner />}
+                       {loading && <Spinner />}
                        Save
                     </Button>
                     <Button

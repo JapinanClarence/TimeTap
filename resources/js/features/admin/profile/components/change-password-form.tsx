@@ -225,7 +225,7 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
                         className="w-full md:w-min"
                         type="submit"
                     >
-                      {processing && <Spinner />}
+                      {loading && <Spinner />}
                       Save
                     </Button>
                     <Button
