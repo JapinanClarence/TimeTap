@@ -9,7 +9,7 @@ use Inertia\Inertia;
 
 class AttendanceController extends Controller
 {
-    public function index(Request $request, Event $event)
+     public function index(Request $request, Event $event)
      {
           $totalMembers    = $event->organization->members()->count();
           $allAttendances  = $this->fetchAttendances($event, null);         // unfiltered, for stats
@@ -43,7 +43,9 @@ class AttendanceController extends Controller
 
      private function buildActivityLog($attendances)
      {
-          return $attendances->flatMap(function ($a) {
+          $timezone = 'Asia/Manila';
+
+          return $attendances->flatMap(function ($a) use ($timezone) {
                $logs = [];
 
                if ($a->checked_in_at) {
@@ -52,8 +54,9 @@ class AttendanceController extends Controller
                          'first_name' => $a->user->first_name,
                          'last_name'  => $a->user->last_name,
                          'email'      => $a->user->email,
-                         'time'       => $a->checked_in_at->format('g:i A'),
+                         'time'       => $a->checked_in_at->timezone($timezone)->format('g:i A'),
                          'type'       => 'check-in',
+                         'raw_time'   => $a->checked_in_at, // Use this for sorting
                     ];
                }
 
@@ -63,13 +66,18 @@ class AttendanceController extends Controller
                          'first_name' => $a->user->first_name,
                          'last_name'  => $a->user->last_name,
                          'email'      => $a->user->email,
-                         'time'       => $a->checked_out_at->format('g:i A'),
+                         'time'       => $a->checked_out_at->timezone($timezone)->format('g:i A'),
                          'type'       => 'check-out',
+                         'raw_time'   => $a->checked_out_at, // Use this for sorting
                     ];
                }
 
                return $logs;
-          });
+          })
+               // 1. Sort by the Carbon object (latest first)
+               ->sortByDesc('raw_time')
+               // 2. Reset the array keys for JavaScript/Inertia compatibility
+               ->values();
      }
 
      private function applyTabFilter($activityLog, ?string $filter)
