@@ -7,7 +7,6 @@ import { DataTable } from "@/features/admin/members/components/data-table";
 import { columns } from "@/features/admin/members/components/columns";
 import { Deferred, usePage } from "@inertiajs/react";
 import { TableSkeleton } from "@/components/ui/table-skeleton";
-import { fa } from "zod/v4/locales";
 import InvitationModal from "@/features/admin/members/components/invitation-modal";
 
 interface Paginated<T> {
@@ -29,6 +28,7 @@ function MemberTableContent({
     members: Paginated<MemberType>;
     handleInvite: ()=>void;
 }) {
+
     return (
         <DataTable
             columns={columns}

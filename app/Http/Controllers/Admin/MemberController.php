@@ -23,12 +23,12 @@ class MemberController extends Controller
                 'users.id',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
                 'users.email',
-                'user_organizations.created_at'
+                'user_organizations.created_at as joined_at'
             ])
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)
             ->withQueryString();
-
+    
         // Check if the current code is expired
         $isExpired = $organization->invitation_expires_at
             ? $organization->invitation_expires_at->isPast()

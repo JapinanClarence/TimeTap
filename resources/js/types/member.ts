@@ -4,6 +4,7 @@ export type MemberType = {
     email: string;
     id?: string;
     gender?: string;
+    created_at?:string;
 };
 export type InvitationCodeType = {
     code: string;

@@ -36,15 +36,15 @@ export const columns: ColumnDef<MemberType>[] = [
         ),
     },
     {
-        accessorKey: "created_at",
+        accessorKey: "joined_at",
         header: ({ column }) => (
             <div className="ml-2">
                 <DataTableColumnHeader column={column} title="Date Joined" />
             </div>
         ),
         cell: ({ row }) => {
-            const created_at = formatSimpleDate(row.getValue("created_at"));
-            return <div>{created_at}</div>;
+            const joined_at = formatSimpleDate(row.getValue("joined_at"));
+            return <div>{joined_at}</div>;
         },
     },
     {
