@@ -29,12 +29,11 @@ export default function organizations() {
         usePage<OrganizationProps>().props;
     const [showJoinSheet, setShowJoinSheet] = useState(false);
     const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
-
     const handleJoinOrg = (e: any) => {
         (e.currentTarget as HTMLButtonElement).blur();
         setShowJoinSheet(true);
     };
-    console.log(organizations)
+
 
     return (
         <AppLayout showHeader={false}>
@@ -77,9 +76,11 @@ export default function organizations() {
                         organizations.map((organization) => {
                             const isCurrent =
                                 currentOrg?.name === organization.name;
+                            if(!organization.id)return;
                             return (
                                 <OrganizationCard
                                     key={organization.id}
+                                    id={organization.id}
                                     name={organization.name}
                                     members_count={organization.members_count}
                                     isCurrent={isCurrent}
@@ -113,6 +114,7 @@ export default function organizations() {
                 open={showJoinSheet}
                 onClose={() => setShowJoinSheet(false)}
             />
+          
         </AppLayout>
     );
 }

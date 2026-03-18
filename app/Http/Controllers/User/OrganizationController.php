@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\Invitation;
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class OrganizationController extends Controller
@@ -21,6 +25,51 @@ class OrganizationController extends Controller
 
         return Inertia::render('app/organizations', [
             'organizations' => $organizations
+        ]);
+    }
+
+    public function show(Organization $organization)
+    {
+        $user = auth()->user();
+
+        // 1. Get user's membership details
+        $membership = $organization->members()
+            ->where('user_id', $user->id)
+            ->first();
+        $totalMembers = $organization->members()->count();
+        // 2. Calculate Stats
+        // Get IDs of all events belonging to this organization
+        $eventIds = $organization->events()->pluck('id');
+        $totalEvents = $eventIds->count();
+
+        // Count how many of those events the user actually attended
+        $presentCount = Attendance::where('user_id', $user->id)
+            ->whereIn('event_id', $eventIds)
+            ->count();
+
+        $absentCount = max(0, $totalEvents - $presentCount);
+
+        // Calculate Attendance Rate
+        $attendanceRate = $totalEvents > 0
+            ? round(($presentCount / $totalEvents) * 100, 1)
+            : 0;
+
+        return Inertia::render("app/organization-detail", [
+            "organization" => array_merge(
+                $organization->only(['id', 'name', 'description', 'org_profile']),
+                ['members_count' => $totalMembers] // Appending the count here
+            ),
+            "joined_at"
+            // Formatting to Philippine local time
+            => $membership
+                ? $membership->created_at->timezone('Asia/Manila')->format('M d, Y')
+                : null,
+            "stats" => [
+                "total_events" => $totalEvents,
+                "present"      => $presentCount,
+                "absent"       => $absentCount,
+                "rate"         => $attendanceRate,
+            ]
         ]);
     }
     /**
@@ -58,6 +107,27 @@ class OrganizationController extends Controller
         ]);
 
         return redirect()->back()->with('success', "Welcome to {$organization->name}!");
+    }
+    public function leave(Organization $organization)
+    {
+        $user = auth()->user();
+
+        DB::transaction(function () use ($user, $organization) {
+
+            // 1. Remove the relationship from the pivot table
+            $user->organizations()->detach($organization->id);
+
+            // 2. Find the latest organization the user is still a member of
+            $latestOrg = $user->organizations()
+                ->orderByPivot('created_at', 'desc')
+                ->first();
+            // 3. Update the user's current_org column
+            $user->update([
+                'current_organization_id' => $latestOrg ? $latestOrg->id : null
+            ]);
+        });
+
+        return redirect()->route('organizations')->with('success', "You have left {$organization->name}.");
     }
     /**
      * Switch the user's active organization view.

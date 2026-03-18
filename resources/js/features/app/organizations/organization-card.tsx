@@ -1,8 +1,10 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Link } from "@inertiajs/react";
 import { Check, CheckCircle2, ChevronRight, Users, Users2 } from "lucide-react";
 import React from "react";
 
 interface OrganizationCardProps {
+    id:string;
     name: string;
     members_count?: number;
     image?: string;
@@ -10,6 +12,7 @@ interface OrganizationCardProps {
 }
 
 export default function OrganizationCard({
+    id,
     name,
     members_count,
     isCurrent = false,
@@ -41,9 +44,11 @@ export default function OrganizationCard({
                 </div>
             </div>
 
-            <div>
+            <Link
+              href={`/app/organizations/${id}`}
+            >
                 <ChevronRight className="text-muted-foreground shrink-0 transition-all duration-150" />
-            </div>
+            </Link>
         </div>
     );
 }

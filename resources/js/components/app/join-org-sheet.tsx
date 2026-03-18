@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { router, useForm, usePage } from "@inertiajs/react";
-import { OrganizationType } from "@/types/organization";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";

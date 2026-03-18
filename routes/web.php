@@ -53,7 +53,9 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/profile", [ProfileController::class, "index"]);
     Route::put("/profile/edit/{user}", [ProfileController::class, "update"]);
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
+    Route::get("/organizations/{organization}", [OrganizationController::class, "show"]);
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");
+    Route::delete("/organizations/{organization}", [OrganizationController::class,"leave"]);
     Route::patch("/organizations/switch", [OrganizationController::class, "switchOrganization"])->name("organizations.switch");
     Route::post("/organizations/handle-invitation/{id}", [OrganizationController::class, "handleInvitation"]);
     Route::get("/schedule", [UserEventController::class, "index"]);
