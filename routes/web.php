@@ -1,18 +1,26 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+// Shared Routes
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AttendanceController;
+
+// Auth Routes
+use App\Http\Controllers\Auth\AuthController;
+
+// Admin Routes
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
+
+//  User Routes
 use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\OrganizationController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\EventController as UserEventController;
-use Illuminate\Support\Facades\Route;
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("welcome");
@@ -24,7 +32,7 @@ Route::middleware(["guest"])->group(function () {
     Route::post("/auth/register", [AuthController::class, "store"]);
 });
 
-// --- AUTHENTICATED SHARED ROUTES ---
+//* --- AUTHENTICATED SHARED ROUTES ---
 Route::middleware(['auth'])->group(function () {
     Route::post("/logout", [AuthController::class, "logout"])->name('logout');
     Route::get("/auth/change-password", [AuthController::class, "changePassword"]);
@@ -37,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// --- USER ONLY ROUTES ---
+//* --- USER ONLY ROUTES ---
 Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/", [AppController::class, "index"])->name("app.index");
     Route::get("/notifications", [NotificationController::class, "index"]);
@@ -54,7 +62,7 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::get("/history", [UserEventController::class, "showHistory"]);
 });
 
-// --- ADMIN ONLY ROUTES ---
+//* --- ADMIN ONLY ROUTES ---
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/", [DashboardController::class, "index"])->name("admin.dashboard");
     Route::get("/events", [EventController::class, "index"])->name("admin.events");
@@ -63,7 +71,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get("/events/edit/{event}", [EventController::class, "edit"]);
     Route::put("/events/edit/{event}", [EventController::class, 'update']);
     Route::patch("/events/{event}", [EventController::class, "updateStatus"])->name("event.updateStatus");
-    Route::get("/events/attendance/{event}", [EventController::class, 'viewAttendance']);
+    Route::get("/events/attendance/{event}", [AdminAttendanceController::class, 'index']);
     Route::get("/members", [MemberController::class, "index"])->name("admin.members");
     Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
