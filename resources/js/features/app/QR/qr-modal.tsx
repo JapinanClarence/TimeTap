@@ -1,5 +1,4 @@
 import { QRScanner } from "@/components/ui/qr-scanner";
-import AppLayout from "@/layouts/app/app-layout";
 import { useDevices } from "@yudiel/react-qr-scanner";
 import { useEffect, useState } from "react";
 import {
@@ -12,17 +11,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { router, usePage } from "@inertiajs/react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-
-interface QRPageProps {
-    [key: string]: unknown;
-    flash: {
-        success: string | null;
-        error: string | null;
-    };
-}
 
 interface QrScannerModalProps {
     open: boolean;
@@ -30,49 +20,19 @@ interface QrScannerModalProps {
 }
 
 export default function QrScannerModal({ open, onClose }: QrScannerModalProps) {
-    const { props } = usePage<QRPageProps>();
     const devices = useDevices();
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
-    const [isProcessing, setIsProcessing] = useState(false); // 1. Add loading state
 
     const handleScan = (data: any) => {
-        // Check if already processing a request
-        if (isProcessing || !data?.[0]?.rawValue) return;
-
-        setIsProcessing(true); // 3. Lock the scanner
-
-        router.post(
-            "/attendance/record",
-            {
-                qr_data: data[0].rawValue,
-            },
-            {
-                
-                //  Reset the lock when the request finishes
-                onFinish: () => {
-                    // delay so it doesn't instantly re-scan
-                    setTimeout(() => setIsProcessing(false), 2000);
-                },
-                onError: () => setIsProcessing(false),
-            },
-        );
+        router.post("/attendance/record", {
+            qr_data: data[0].rawValue,
+        });
     };
 
     const handleError = (error: any) => {
         console.log(error);
-        setIsProcessing(false);
     };
 
-    useEffect(() => {
-        // Check if flash exists AND if success has a value
-        if (props.flash?.success) {
-            toast.success(props.flash.success);
-        }
-
-        if (props.flash?.error) {
-            toast.error(props.flash.error);
-        }
-    }, [props.flash]);
     return (
         <div
             className={`

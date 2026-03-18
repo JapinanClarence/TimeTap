@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
     Command,
+    CommandDialog,
     CommandEmpty,
     CommandGroup,
     CommandInput,
@@ -20,19 +21,18 @@ import {
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { router } from "@inertiajs/react";
-import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Spinner } from "@/components/ui/spinner";
 interface SwitchOrgSheetProps {
     open: boolean;
     onClose: () => void;
@@ -49,9 +49,8 @@ export default function SwitchOrgSheet({
     const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
     const [selectedOrgId, setSelectedOrgId] = useState("");
     const [loading, setLoading] = useState(false);
-    const isMobile = useIsMobile();
 
-    const handleSwitch = () => {
+    const handleSwitch = (selectedOrgId: string | any) => {
         if (!selectedOrgId) return;
         // Use Inertia to post the join request to your controller
         router.patch(
@@ -61,157 +60,62 @@ export default function SwitchOrgSheet({
             },
             {
                 showProgress: false,
-                onBefore: () => setLoading(true),
+                onBefore: () =>setLoading(true),
                 onFinish: () => setLoading(false), // Stop loading
-                onSuccess: () =>
-                    toast.success("Organization switched successfully!"),
-                onError: (errors) =>
-                    toast.error("Failed to switch organization!"),
+                onSuccess:()=>onClose()
             },
         );
     };
 
-    if (isMobile) {
-        return (
-            <Drawer
-                open={open}
-                onOpenChange={(val) => !val && onClose()}
-                // snapPoints={snapPoints}
-                // activeSnapPoint={snap}
-                // setActiveSnapPoint={setSnap}
-            >
-                <DrawerContent className="bg-white max-h-[96%]">
-                    <DrawerHeader>
-                        <DrawerTitle>Organizations</DrawerTitle>
-                        <DrawerDescription>
-                            {/* Select organization to display. */}
-                        </DrawerDescription>
-                    </DrawerHeader>
-
-                    <div className="px-4 flex-1 overflow-y-auto">
-                        <Command className="rounded-lg border shadow-md">
-                            <CommandInput placeholder="Search organizations..." />
-                            <CommandList>
-                                {organizations.length > 0 ? (
-                                    <CommandGroup heading="Organizations">
-                                        {organizations.map((org) => (
-                                            <CommandItem
-                                                key={org.id}
-                                                value={org.name}
-                                                onSelect={() => {
-                                                    setSelectedOrgId(
-                                                        org.id || "",
-                                                    );
-                                                    // Drop back to middle snap point on selection
-                                                    setSnap(snapPoints[1]);
-                                                }}
-                                            >
-                                                <Check
-                                                    className={cn(
-                                                        "mr-2 h-4 w-4",
-                                                        selectedOrgId === org.id
-                                                            ? "opacity-100"
-                                                            : "opacity-0",
-                                                    )}
-                                                />
-                                                {org.name}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                ) : (
-                                    <CommandEmpty>
-                                        No organization found.
-                                    </CommandEmpty>
-                                )}
-                            </CommandList>
-                        </Command>
-                    </div>
-
-                    <DrawerFooter className="pt-4">
-                        <Button
-                            onClick={handleSwitch}
-                            disabled={!selectedOrgId || loading}
-                            className="w-full"
-                        >
-                            {loading ? (
-                                <>
-                                    <Spinner />
-                                    Submitting...
-                                </>
-                            ) : (
-                                <>Save Changes</>
-                            )}
-                        </Button>
-                        <Button variant="outline" onClick={onClose}>
-                            Cancel
-                        </Button>
-                    </DrawerFooter>
-                </DrawerContent>
-            </Drawer>
-        );
-    }
     return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-sm">
-                <DialogHeader>
-                    <DialogTitle>Organizations</DialogTitle>
-                    <DialogDescription></DialogDescription>
-                </DialogHeader>
-                <div className="px-4 flex-1 overflow-y-auto">
-                    <Command className="rounded-lg border shadow-md">
-                        <CommandInput placeholder="Search organizations..." />
-                        <CommandList>
-                            {organizations.length > 0 ? (
-                                <CommandGroup heading="Organizations">
-                                    {organizations.map((org) => (
-                                        <CommandItem
-                                            key={org.id}
-                                            value={org.name}
-                                            onSelect={() => {
-                                                setSelectedOrgId(org.id || "");
-                                                // Drop back to middle snap point on selection
-                                                setSnap(snapPoints[1]);
-                                            }}
-                                        >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    selectedOrgId === org.id
-                                                        ? "opacity-100"
-                                                        : "opacity-0",
-                                                )}
-                                            />
-                                            {org.name}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            ) : (
-                                <CommandEmpty>
-                                    No organization found.
-                                </CommandEmpty>
-                            )}
-                        </CommandList>
-                    </Command>
-                </div>
-                <DialogFooter className="pt-4">
-                    <Button variant="outline" onClick={onClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSwitch}
-                        disabled={!selectedOrgId || loading}
-                    >
-                        {loading ? (
-                            <>
-                                <Spinner />
-                                Submitting...
-                            </>
+        <CommandDialog
+            className="sm:max-w-sm"
+            open={open}
+            onOpenChange={onClose}
+        >
+            <div className="flex-1 overflow-y-auto">
+                <Command className="rounded-lg border shadow-md">
+                    <CommandInput placeholder="Search organizations..." />
+                    <CommandList>
+                        {organizations.length > 0 ? (
+                            <CommandGroup heading="Organizations">
+                                {organizations.map((org) => (
+                                    <CommandItem
+                                        key={org.id}
+                                        value={org.name}
+                                        onSelect={() => {
+                                            handleSwitch(org.id);
+                                            setSelectedOrgId(org.id || "");
+                                        }}
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                selectedOrgId === org.id
+                                                    ? "opacity-100"
+                                                    : "opacity-0",
+                                            )}
+                                        />
+                                        {org.name}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
                         ) : (
-                            <>Save Changes</>
+                            <CommandEmpty>No organization found.</CommandEmpty>
                         )}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    </CommandList>
+                </Command>
+            </div>
+            <AlertDialog  open={loading} onOpenChange={setLoading}>
+                <AlertDialogContent className="max-w-xs">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Loading...</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <Spinner className="size-7"/>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                </AlertDialogContent>
+            </AlertDialog>
+        </CommandDialog>
     );
 }

@@ -31,8 +31,8 @@ class AttendanceController extends Controller
         // Flow B: Admin scans User QR
         if (isset($data['type']) && $data['type'] === 'user') {
             // Ensure only admins/managers can do this
-            if ($user->role !== "admin" ) return back()->with('error', 'Unauthorized');
-            
+            if ($user->role !== "admin") return back()->with('error', 'Unauthorized');
+
             return $this->processAttendance($request->current_event_id, $data['id'], 'admin_scan');
         }
 

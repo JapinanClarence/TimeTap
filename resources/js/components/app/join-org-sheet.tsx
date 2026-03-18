@@ -32,18 +32,8 @@ interface JoinOrgSheetProps {
     onClose: () => void;
 }
 
-interface JoinResponseProps {
-    [key: string]: unknown;
-    flash: {
-        warning: string;
-        error: string;
-        success: string;
-    };
-}
-const snapPoints = ["148px", "355px", 1];
-
 export default function JoinOrgSheet({ open, onClose }: JoinOrgSheetProps) {
-    const { flash } = usePage<JoinResponseProps>().props;
+   
     const { post, data, setData, processing, errors, reset, clearErrors, setError } =
         useForm({
             invitation_code: "",
@@ -79,32 +69,15 @@ export default function JoinOrgSheet({ open, onClose }: JoinOrgSheetProps) {
                 setData({invitation_code:""});
                 onClose();
                 reset();
-            }
+            },
+            onError: ()=> toast.error("Failed to join organization")
         });
     };
-
-    useEffect(() => {
-        // Check if flash exists AND if success has a value
-        if (flash?.success) {
-            toast.success(flash.success);
-        }
-
-        if (flash?.error) {
-            toast.error(flash.error);
-        }
-
-        if (flash?.warning) {
-            toast.warning(flash.warning);
-        }
-    }, [flash]);
 
     return (
         <Drawer
             open={open}
             onOpenChange={(val) => !val && onClose()}
-            // snapPoints={snapPoints}
-            // activeSnapPoint={snap}
-            // setActiveSnapPoint={setSnap}
         >
             <DrawerContent className="bg-white max-h-[96%]">
                 <form onSubmit={submit}>

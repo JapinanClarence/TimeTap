@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AppLayout from "@/layouts/app/app-layout";
 import Container from "@/components/ui/container";
 import {
@@ -32,12 +32,18 @@ import * as turf from "@turf/turf";
 import { Badge } from "@/components/ui/badge";
 import QuickActions from "@/features/app/home/quick-actions";
 import QrScannerModal from "@/features/app/QR/qr-modal";
+import { toast } from "sonner";
 
 interface AppHomeProps {
     currentOrg: OrganizationType | null;
     currentEvent: { data: EventType } | null;
     upcomingEvents: { data: EventType[] };
     myOrganizations: OrganizationType[];
+    flash: {
+        warning: string;
+        error: string;
+        success: string;
+    };
     [key: string]: unknown;
 }
 
@@ -79,18 +85,24 @@ export const formatEventDisplay = (event: EventType): ProcessedEvent => {
 export default function Index() {
     const { props } = usePage<AppHomeProps>();
     const [time, setTime] = useState(new Date());
+    // modal/drawer states
     const [showJoinOrgSheet, setShowJoinOrgSheet] = useState(false);
     const [showSwitchDrawer, setShowSwitchDrawer] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
+    // flash message ref
+    const lastMessage = useRef<string | null>(null);
+    // event and location data
     const [userLocation, setUserLocation] = useState<{
         lat: number;
         lng: number;
     } | null>(null);
     const [isInRange, setIsInRange] = useState(false);
     const [distance, setDistance] = useState<string | null>(null);
+    // inertia page props
     const currentOrg = props.currentOrg;
     const currentEvent = props.currentEvent?.data;
     const upcomingEvents = props.upcomingEvents?.data;
+    const flash = props.flash;
 
     const processedEvent = useMemo(() => {
         if (!currentEvent) {
@@ -119,6 +131,7 @@ export default function Index() {
 
         return () => clearInterval(interval);
     }, []);
+    // * Calculates the user location and validate if user is at the event area
     useEffect(() => {
         if (!currentEvent?.coordinates) return;
 
@@ -180,6 +193,28 @@ export default function Index() {
     const handleViewMap = () => {
         router.get(`/app/schedule/${currentEvent?.id}`);
     };
+
+    // * Handle dynamic toaster for flash messages
+    useEffect(() => {
+        // 1. Create a unique string for the current flash state
+        const currentFlash = JSON.stringify(flash);
+
+        // 2. Only proceed if the message is new and not null
+        if (currentFlash !== lastMessage.current) {
+            if (flash?.success) {
+                toast.success(flash.success);
+            }
+            if (flash?.error) {
+                toast.error(flash.error);
+            }
+            if (flash?.warning) {
+                toast.warning(flash.warning);
+            }
+
+            // 3. Mark this message as "seen"
+            lastMessage.current = currentFlash;
+        }
+    }, [flash]);
 
     return (
         <AppLayout>
@@ -279,13 +314,19 @@ export default function Index() {
                         Quick Actions
                     </h2>
                     <div className="flex flex-row gap-5">
-                        <Link href={"/app/history"} className="border flex-1 bg-white rounded-xl w-40  py-2 px-3 flex flex-col items-center justify-center hover-card">
+                        <Link
+                            href={"/app/history"}
+                            className="border flex-1 bg-white rounded-xl w-40  py-2 px-3 flex flex-col items-center justify-center hover-card"
+                        >
                             <History className="text-primary mb-2" />
                             <span className="text-xs font-semibold">
                                 View History
                             </span>
                         </Link>
-                        <Link href={"/app/my-id"} className="border flex-1 bg-white rounded-xl w-40 py-2 px-3 flex flex-col items-center justify-center-safe hover-card">
+                        <Link
+                            href={"/app/my-id"}
+                            className="border flex-1 bg-white rounded-xl w-40 py-2 px-3 flex flex-col items-center justify-center-safe hover-card"
+                        >
                             <User className="text-primary mb-2" />
                             <span className="text-xs font-semibold">My ID</span>
                         </Link>
@@ -305,7 +346,7 @@ export default function Index() {
                             href="/app/schedule"
                             className="text-sm font-semibold text-primary hover:underline"
                         >
-                            View all <ArrowRight className="inline size-3"/>
+                            View all <ArrowRight className="inline size-3" />
                         </Link>
                     </div>
 
@@ -336,7 +377,10 @@ export default function Index() {
                 organizations={props.myOrganizations}
             />
 
-            <QrScannerModal open={showScanner} onClose={()=>setShowScanner(false)}/>
+            <QrScannerModal
+                open={showScanner}
+                onClose={() => setShowScanner(false)}
+            />
         </AppLayout>
     );
 }

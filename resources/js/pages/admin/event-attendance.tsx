@@ -79,7 +79,7 @@ export default function EventAttendance() {
         console.log("error");
     };
 
-    // Handle Debounce
+    //* Handle Debounce
     useEffect(() => {
         const timer = setTimeout(() => {
             if (search !== (filters.search || "")) {
