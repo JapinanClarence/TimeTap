@@ -30,46 +30,56 @@ class OrganizationController extends Controller
 
     public function show(Organization $organization)
     {
-        $user = auth()->user();
-
-        // 1. Get user's membership details
-        $membership = $organization->members()
-            ->where('user_id', $user->id)
-            ->first();
-        $totalMembers = $organization->members()->count();
-        // 2. Calculate Stats
-        // Get IDs of all events belonging to this organization
+        $user    = auth()->user();
         $eventIds = $organization->events()->pluck('id');
-        $totalEvents = $eventIds->count();
 
-        // Count how many of those events the user actually attended
-        $presentCount = Attendance::where('user_id', $user->id)
-            ->whereIn('event_id', $eventIds)
-            ->count();
+        // Single query for membership + events + attendances
+        [$membership, $events, $stats] = [
+            $organization->members()
+                ->where('user_id', $user->id)
+                ->first(),
 
-        $absentCount = max(0, $totalEvents - $presentCount);
+            $organization->events()
+                ->with(['attendances' => fn($q) => $q->where('user_id', $user->id)
+                    ->select('event_id', 'user_id', 'checked_in_at')])
+                ->select('id', 'title', 'start_date', 'location', 'organization_id')
+                ->latest('start_date')
+                ->get(),
 
-        // Calculate Attendance Rate
-        $attendanceRate = $totalEvents > 0
-            ? round(($presentCount / $totalEvents) * 100, 1)
-            : 0;
+            Attendance::where('user_id', $user->id)
+                ->whereIn('event_id', $eventIds)
+                ->selectRaw('COUNT(*) as total, SUM(checked_in_at IS NOT NULL) as present_count')
+                ->first(),
+        ];
+
+        $totalEvents  = $eventIds->count();
+        $presentCount = (int) ($stats->present_count ?? 0);
+        $absentCount  = max(0, $totalEvents - $presentCount);
 
         return Inertia::render("app/organization-detail", [
-            "organization" => array_merge(
-                $organization->only(['id', 'name', 'description', 'org_profile']),
-                ['members_count' => $totalMembers] // Appending the count here
-            ),
-            "joined_at"
-            // Formatting to Philippine local time
-            => $membership
-                ? $membership->created_at->timezone('Asia/Manila')->format('M d, Y')
-                : null,
+            "organization" => [
+                ...$organization->only(['id', 'name', 'description', 'org_profile']),
+                'members_count' => $organization->members()->count(),
+            ],
+            "joined_at" => $membership?->created_at
+                ->timezone('Asia/Manila')
+                ->format('M d, Y'),
             "stats" => [
                 "total_events" => $totalEvents,
                 "present"      => $presentCount,
                 "absent"       => $absentCount,
-                "rate"         => $attendanceRate,
-            ]
+                "rate"         => $totalEvents > 0
+                    ? round(($presentCount / $totalEvents) * 100, 1)
+                    : 0,
+            ],
+            "events" => $events->map(fn($event) => [
+                'id'             => $event->id,
+                'title'          => $event->title,
+                'start_date'     => $event->start_date,
+                'location'       => $event->location,
+                'is_present'     => !is_null($event->attendances->first()?->checked_in_at),
+                'check_in_time'  => $event->attendances->first()?->checked_in_at?->format('g:i A'),
+            ]),
         ]);
     }
     /**

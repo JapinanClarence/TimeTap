@@ -34,7 +34,6 @@ export default function organizations() {
         setShowJoinSheet(true);
     };
 
-
     return (
         <AppLayout showHeader={false}>
             <Head title="Organizations" />
@@ -46,13 +45,15 @@ export default function organizations() {
                     />
                 )}
                 {/* search */}
-                <div className="hidden animate-fade-up-1 md:flex justify-between items-center">
-                    <InputGroup className="max-w-sm">
-                        <InputGroupInput placeholder="Search organizations..." />
-                        <InputGroupAddon>
-                            <Search />
-                        </InputGroupAddon>
-                    </InputGroup>
+        
+                {/* section header */}
+                <div className="flex items-center justify-between mb-4 animate-fade-up-1">
+                    <h2 className="font-display font-bold text-base text-ink">
+                        Your Organizations
+                        <Badge className="ml-2 font-medium bg-muted text-muted-foreground">
+                            {myOrganizations.length} orgs
+                        </Badge>
+                    </h2>
                     <Button
                         className="rounded-lg"
                         size={"sm"}
@@ -62,21 +63,12 @@ export default function organizations() {
                         Join Org
                     </Button>
                 </div>
-                {/* section header */}
-                <div className="flex items-center justify-between mb-4 animate-fade-up-2">
-                    <h2 className="font-display font-bold text-base text-ink">
-                        Your Organizations
-                    </h2>
-                    <Badge className="font-medium bg-muted text-muted-foreground">
-                        {myOrganizations.length} orgs
-                    </Badge>
-                </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] animate-fade-up-2">
                     {organizations.length > 0 ? (
                         organizations.map((organization) => {
                             const isCurrent =
                                 currentOrg?.name === organization.name;
-                            if(!organization.id)return;
+                            if (!organization.id) return;
                             return (
                                 <OrganizationCard
                                     key={organization.id}
@@ -114,7 +106,6 @@ export default function organizations() {
                 open={showJoinSheet}
                 onClose={() => setShowJoinSheet(false)}
             />
-          
         </AppLayout>
     );
 }
