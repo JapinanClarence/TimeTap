@@ -28,7 +28,7 @@ class MemberController extends Controller
             ->latest('user_organizations.created_at') // Sort by when they joined
             ->paginate(10)
             ->withQueryString();
-    
+
         // Check if the current code is expired
         $isExpired = $organization->invitation_expires_at
             ? $organization->invitation_expires_at->isPast()
@@ -42,6 +42,31 @@ class MemberController extends Controller
                 'is_expired' => $isExpired,
             ]
         ]);
+    }
+    public function delete(User $user)
+    {
+        // 1. Identify the organization owned by the admin
+        $organization = Organization::where('owner_id', auth()->id())->firstOrFail();
+
+        DB::transaction(function () use ($user, $organization) {
+            // 2. Remove the relationship from the pivot table
+            $user->organizations()->detach($organization->id);
+
+            // 3. Conditional Update: Only change current_org if it matches the one they were removed from
+            if ($user->current_organization_id === $organization->id) {
+
+                // Find the most recently joined organization remaining
+                $latestOrg = $user->organizations()
+                    ->orderByPivot('created_at', 'desc')
+                    ->first();
+
+                $user->update([
+                    'current_organization_id' => $latestOrg ? $latestOrg->id : null
+                ]);
+            }
+        });
+
+        return back()->with('success', "Member removed successfully.");
     }
     public function generateCode(Request $request)
     {

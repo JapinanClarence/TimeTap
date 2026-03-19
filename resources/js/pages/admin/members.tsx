@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InvitationCodeType, MemberType } from "@/types/member";
 import { DataTable } from "@/features/admin/members/components/data-table";
 import { columns } from "@/features/admin/members/components/columns";
-import { Deferred, usePage } from "@inertiajs/react";
+import { Deferred, router, usePage } from "@inertiajs/react";
 import { TableSkeleton } from "@/components/ui/table-skeleton";
 import InvitationModal from "@/features/admin/members/components/invitation-modal";
+import { toast } from "sonner";
 
 interface Paginated<T> {
     data: T[];
@@ -24,15 +25,18 @@ interface MemberPageProps {
 function MemberTableContent({
     members,
     handleInvite,
+    onRemove,
 }: {
     members: Paginated<MemberType>;
     handleInvite: () => void;
+    onRemove: (id:string)=>void;
 }) {
     return (
         <DataTable
             columns={columns}
             data={members.data}
             handleInvite={handleInvite}
+            onRemove={onRemove}
         />
     );
 }
@@ -64,6 +68,15 @@ export default function Members() {
             ),
         };
     }, [props.members, currentTab]);
+
+    const handleRemove = (id: string)=>{
+       
+        router.delete(`/admin/members/${id}`, {
+            showProgress: false,
+            onSuccess: ()=>toast.success("Member removed successfully"),
+            onError : ()=>toast.error("Something went wrong")
+        })
+    }
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl md:min-h-min flex flex-col p-5">
@@ -90,6 +103,7 @@ export default function Members() {
                                     handleInvite={() =>
                                         setShowInvitationModal(true)
                                     }
+                                    onRemove={handleRemove}
                                 />
                             </Deferred>
                         </TabsContent>

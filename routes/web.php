@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::patch("/events/{event}", [EventController::class, "updateStatus"])->name("event.updateStatus");
     Route::get("/events/attendance/{event}", [AdminAttendanceController::class, 'index']);
     Route::get("/members", [MemberController::class, "index"])->name("admin.members");
+    Route::delete("/members/{user}", [MemberController::class, "delete"]);
     Route::post("/members/generate-code", [MemberController::class, "generateCode"]);
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
     Route::get("/profile", [UserController::class, "edit"]);

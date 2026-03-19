@@ -37,7 +37,7 @@ export const columns: ColumnDef<MemberType>[] = [
         accessorKey: "gender",
         header: "Gender",
         cell: ({ row }) => {
-            const gender : string = row.getValue("gender")
+            const gender: string = row.getValue("gender");
             return <div>{capitalize(gender)}</div>;
         },
     },
@@ -55,7 +55,9 @@ export const columns: ColumnDef<MemberType>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
+            const meta = table.options.meta as any;
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -67,7 +69,13 @@ export const columns: ColumnDef<MemberType>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                if (meta?.onRemove) {
+                                    meta.onRemove(row.original.id);
+                                }
+                            }}
+                        >
                             <UserX />
                             Remove User
                         </DropdownMenuItem>

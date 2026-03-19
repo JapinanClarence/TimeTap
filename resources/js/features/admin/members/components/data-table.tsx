@@ -25,12 +25,11 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Plus } from "lucide-react";
-import { Link } from "@inertiajs/react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    onStatusChange?: (id: number, status: string) => void;
+    onRemove?: (id: string) => void;
     processingId?: number | null;
     handleInvite: ()=>void;
 }
@@ -38,7 +37,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
     columns,
     data,
-    onStatusChange,
+    onRemove,
     processingId,
     handleInvite,
 }: DataTableProps<TData, TValue>) {
@@ -56,7 +55,7 @@ export function DataTable<TData, TValue>({
         columns,
         getCoreRowModel: getCoreRowModel(),
         meta: {
-            onStatusChange,
+            onRemove,
             processingId,
         },
         getPaginationRowModel: getPaginationRowModel(),
