@@ -10,13 +10,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    MoreHorizontal,
-    UserX,
-} from "lucide-react";
+import { MoreHorizontal, UserX } from "lucide-react";
 import { DataTableColumnHeader } from "../../../../components/ui/data-table-column-header";
 import { MemberType } from "@/types/member";
-import { formatSimpleDate} from "@/util/dateUtil";
+import { formatSimpleDate } from "@/util/dateUtil";
+import { capitalize } from "@/util/stringUtil";
 
 export const columns: ColumnDef<MemberType>[] = [
     {
@@ -34,6 +32,14 @@ export const columns: ColumnDef<MemberType>[] = [
                 <DataTableColumnHeader column={column} title="Email" />
             </div>
         ),
+    },
+    {
+        accessorKey: "gender",
+        header: "Gender",
+        cell: ({ row }) => {
+            const gender : string = row.getValue("gender")
+            return <div>{capitalize(gender)}</div>;
+        },
     },
     {
         accessorKey: "joined_at",

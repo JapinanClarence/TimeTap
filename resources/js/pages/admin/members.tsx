@@ -26,51 +26,56 @@ function MemberTableContent({
     handleInvite,
 }: {
     members: Paginated<MemberType>;
-    handleInvite: ()=>void;
+    handleInvite: () => void;
 }) {
-
     return (
         <DataTable
             columns={columns}
             data={members.data}
             handleInvite={handleInvite}
-            // onStatusChange={onStatusChange}
-            // processingId={processingId}
         />
     );
 }
 
 export default function Members() {
+    const [showInvitationModal, setShowInvitationModal] = useState(false);
     const { props } = usePage<MemberPageProps>();
 
-    const [showInvitationModal, setShowInvitationModal] = useState(false);
-    const [currentTab, setCurrentTab] = useState<"all" | "male" | "female">(
-        "all",
-    );
+    const [currentTab, setCurrentTab] = useState("all");
 
-    // Filter logic
-    // const categorizedMembers = useMemo(() => {
-    //     const members = props.members;
-    //     if(!members) return;
-    //     return {
-    //         all: members,
-    //         male: members.filter(m => m.gender?.toLowerCase() === 'male'),
-    //         female: members.filter(m => m.gender?.toLowerCase() === 'female'),
-    //     };
-    // }, [members]);
-    // const displayList = categorizedMembers[currentTab];
+    // Filter the members array based on the selected tab
+    const filteredMembers = useMemo(() => {
+        if (!props.members?.data) {
+            return {
+                data: [],
+                links: [],
+                meta: {},
+            } as unknown as Paginated<MemberType>;
+        }
+
+        if (currentTab === "all") return props.members;
+
+        // We create a new object that mimics the paginated structure
+        // but with filtered data
+        return {
+            ...props.members,
+            data: props.members.data.filter(
+                (member: any) => member.gender?.toLowerCase() === currentTab,
+            ),
+        };
+    }, [props.members, currentTab]);
     return (
         <AdminLayout>
             <div className="bg-white min-h-screen flex-1 rounded-xl md:min-h-min flex flex-col p-5">
                 <Header>Members</Header>
                 <div className="p-5 border rounded-lg">
-                    <Tabs defaultValue="all" className="">
+                    <Tabs defaultValue="all" onValueChange={setCurrentTab}>
                         <TabsList>
                             <TabsTrigger value="all">All</TabsTrigger>
                             <TabsTrigger value="male">Male</TabsTrigger>
                             <TabsTrigger value="female">Female</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="all">
+                        <TabsContent value={currentTab}>
                             <Deferred
                                 data="members"
                                 fallback={
@@ -80,19 +85,22 @@ export default function Members() {
                                     />
                                 }
                             >
-                                <MemberTableContent members={props.members} handleInvite={()=>setShowInvitationModal(true)}/>
+                                <MemberTableContent
+                                    members={filteredMembers}
+                                    handleInvite={() =>
+                                        setShowInvitationModal(true)
+                                    }
+                                />
                             </Deferred>
-                        </TabsContent>
-                        <TabsContent value="male">
-                            <div className="border border-dashed rounded-lg h-125"></div>
-                        </TabsContent>
-                        <TabsContent value="female">
-                            <div className="border border-dashed rounded-lg h-125"></div>
                         </TabsContent>
                     </Tabs>
                 </div>
             </div>
-            <InvitationModal open={showInvitationModal} onOpenChange={()=>setShowInvitationModal(false)} invitation={props.invitation}/>
+            <InvitationModal
+                open={showInvitationModal}
+                onOpenChange={() => setShowInvitationModal(false)}
+                invitation={props.invitation}
+            />
         </AdminLayout>
     );
 }

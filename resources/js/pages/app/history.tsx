@@ -24,7 +24,6 @@ interface HistoryPageProps {
 
 export default function History() {
     const { history } = usePage<HistoryPageProps>().props;
-    const [activeTab, setActiveTab] = useState("all");
 
     // 1. Calculate Stats (Total, Present, Absent, Rate)
     const totalEvents = history.length;
