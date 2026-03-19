@@ -16,7 +16,7 @@ class AttendanceController extends Controller
           $attendances     = $this->fetchAttendances($event, $request->search); // filtered, for log
           $activityLog     = $this->buildActivityLog($attendances);
           $filteredLog     = $this->applyTabFilter($activityLog, $request->filter);
-          $stats           = $this->calculateStats($allAttendances, $totalMembers, $event->start_date);
+          $stats           = $this->calculateStats($allAttendances, $totalMembers, $event->start_date, $event);
 
           return Inertia::render("admin/event-attendance", [
                "activityLog" => $filteredLog,
@@ -90,20 +90,45 @@ class AttendanceController extends Controller
                ->values();
      }
 
-     private function calculateStats($attendances, int $totalMembers, $startDate)
-     {
-          $eventStarted = now()->gte(\Carbon\Carbon::parse($startDate));
-          $presentCount = $eventStarted ? $attendances->whereNotNull('checked_in_at')->count() : null;
-          $absentCount  = $eventStarted ? $totalMembers - $presentCount : null;
-          $percentage   = $eventStarted && $totalMembers > 0
-               ? round(($presentCount / $totalMembers) * 100, 1)
-               : null;
+    private function calculateStats($attendances, int $currentMemberCount, $startDate, Event $event)
+{
+    $eventStarted = now()->gte(\Carbon\Carbon::parse($startDate));
 
-          return [
-               "total"      => $totalMembers,
-               "present"    => $presentCount,
-               "absent"     => $absentCount,
-               "percentage" => $percentage,
-          ];
-     }
+    if (!$eventStarted) {
+        return [
+            "total"      => $currentMemberCount,
+            "present"    => null,
+            "absent"     => null,
+            "percentage" => null,
+        ];
+    }
+
+    // Historical: everyone who checked in, including ex-members (persists forever)
+    $checkedInUserIds = $attendances
+        ->whereNotNull('checked_in_at')
+        ->pluck('user_id')
+        ->unique();
+
+    $presentCount = $checkedInUserIds->count();
+
+    // Current active member IDs (source of truth for who is expected)
+    $currentMemberIds = $event->organization->members()->pluck('users.id');
+
+    // Absent = current members who never checked in
+    $absentCount = $currentMemberIds->diff($checkedInUserIds)->count();
+
+    // Total = everyone who showed up (incl. ex-members) + current members who didn't
+    $effectiveTotal = $presentCount + $absentCount;
+
+    $percentage = $effectiveTotal > 0
+        ? round(($presentCount / $effectiveTotal) * 100, 1)
+        : 0;
+
+    return [
+        "total"      => $effectiveTotal,
+        "present"    => $presentCount,
+        "absent"     => $absentCount,
+        "percentage" => $percentage,
+    ];
+}
 }
