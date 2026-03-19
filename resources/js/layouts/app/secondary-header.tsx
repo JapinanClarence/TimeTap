@@ -7,7 +7,7 @@ export default function SecondaryHeader({ title }: { title?: string }) {
         window.history.back();
     };
     return (
-        <header className="fixed top-0 z-50 w-full border-b bg-background ">
+        <header className="fixed top-0 z-50 w-full border-b bg-white ">
             <Container className="mx-auto flex items-center justify-center h-16 relative">
                 <div className="absolute left-0 pl-8 gap-3">
                     <button onClick={handleBack}>

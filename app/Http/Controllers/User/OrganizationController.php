@@ -82,6 +82,23 @@ class OrganizationController extends Controller
             ]),
         ]);
     }
+    public function showMembers(Organization $organization)
+    {
+        $query = $organization->members()
+            ->where('users.id', '!=', auth()->id()) // Exclude the current user
+            ->select([
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'users.email',
+                'user_organizations.created_at as joined_at'
+            ])
+            ->latest('user_organizations.created_at');
+
+        return Inertia::render("app/members", [
+            'members' => Inertia::defer(fn() => $query->get()),
+        ]);
+    }
     /**
      * Handle the Join Request
      */

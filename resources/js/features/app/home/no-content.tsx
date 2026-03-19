@@ -13,14 +13,15 @@ interface NoContentProps{
     title?:string;
     description?:string;
     className?: string;
-}
+    showIcon?:boolean
+}   
 
-export const NoContent = ({className, title="No data", description="No data found"}: NoContentProps) => {
+export const NoContent = ({className, title="No data", description="No data found", showIcon=true}: NoContentProps) => {
     return (
         <Empty className={`border-2 ${className}`}>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
-                    <IconFolderCode/>
+                    {showIcon &&<IconFolderCode/>}
                 </EmptyMedia>
                 <EmptyTitle>{title}</EmptyTitle>
                 <EmptyDescription>{description}</EmptyDescription>

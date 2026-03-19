@@ -109,6 +109,11 @@ export default function OrganizationDetail() {
             onSuccess: () => setShowSheet(false),
         });
     };
+
+    const handleShowMembers = ()=>{
+        router.get(`/app/organizations/members/${organization.id}`)
+    }
+
     return (
         <AppLayout
             secondaryHeader={true}
@@ -124,6 +129,7 @@ export default function OrganizationDetail() {
                 members_count={organization.members_count}
                 joined_at={joined_at}
                 onShowSheet={() => setShowSheet(true)}
+                onShowMembers={handleShowMembers}
             />
             <Container className="xl:px-8 lg:px-8 py-8 space-y-5">
                 <div className="border p-5 rounded-xl flex-1 bg-white md:bg-gray-50 shadow-xs animate-fade-up-1">

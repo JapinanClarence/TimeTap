@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { BubbleBgDecoration } from "@/components/ui/bubble-bg-decoration";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { OrganizationType } from "@/types/organization";
-import { Ellipsis, Settings, Users2 } from "lucide-react";
-import LeaveOrgSheet from "./leave-org-sheet";
-import { Button } from "@/components/ui/button";
+import { Calendar, Ellipsis, Settings, Users2 } from "lucide-react";
+import {
+    Avatar,
+    AvatarBadge,
+    AvatarFallback,
+    AvatarGroup,
+    AvatarGroupCount,
+    AvatarImage,
+} from "@/components/ui/avatar";
 
 interface OrganizationHeaderProps extends OrganizationType {
     joined_at: string;
     onShowSheet: () => void;
+    onShowMembers: () =>void;
 }
 
 export default function OrganziationHeader({
@@ -19,45 +25,57 @@ export default function OrganziationHeader({
     members_count,
     joined_at,
     onShowSheet,
+    onShowMembers,
 }: OrganizationHeaderProps) {
     return (
-        <div className="relative overflow-hidden flex items-center justify-between px-6 md:px-10 xl:px-8 py-5  bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1]">
-            {/* Background decoration */}
+        <div className="relative overflow-hidden w-full min-h-[80px] flex items-stretch justify-between px-6 md:px-10 xl:px-8 py-5 bg-linear-to-tr from-[#4F6EF7] to-[#6366f1]">
             <BubbleBgDecoration />
-            <div className="flex items-start gap-5">
-                <Avatar className="size-20 md:size-30 rounded-lg border border-primary/50">
-                    <AvatarFallback className="rounded-lg bg-white/10 border border-white text-white text-xl font-bold">
+
+            <div className="flex items-start  gap-5 grow">
+                <Avatar className="flex-none size-15 md:h-full md:w-30 aspect-square rounded-xl border border-white/20 shadow-sm">
+                    <AvatarFallback className="rounded-xl bg-white/90 border border-white text-primary text-xl font-bold h-full w-full">
                         {name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
-                <div className="">
-                    <h3 className="text-xl md:text-3xl font-semibold text-white">{name}</h3>
-                    <Badge className="bg-white/10 border border-white mb-2 md:mb-0 md: mr-2">
-                        Member since {joined_at}
-                    </Badge>
-                    <Badge className="bg-white/10 border border-white">
-                        <Users2 className="size-4" />
-                        {members_count} members
-                    </Badge>
+
+                <div className="grow py-1">
+                    <h3 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
+                        {name}
+                    </h3>
+                    <div className="flex gap-2 flex-col  mt-1">
+                        <Badge className="bg-white/10 border border-white md:mb-0 md:mr-4 w-fit text-[10px] md:text-xs">
+                            <Users2 /> Since {joined_at}
+                        </Badge>
+
+                        <AvatarGroup className="hover:grayscale scale-90 origin-left cursor-pointer" onClick={onShowMembers}>
+                            <Avatar>
+                                <AvatarImage src="https://github.com/shadcn.png" />
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <Avatar>
+                                <AvatarImage src="https://github.com/maxleiter.png" />
+                                <AvatarFallback>LR</AvatarFallback>
+                            </Avatar>
+                            <Avatar>
+                                <AvatarImage src="https://github.com/evilrabbit.png" />
+                                <AvatarFallback>ER</AvatarFallback>
+                            </Avatar>
+                            <AvatarGroupCount>
+                                    +3
+                            </AvatarGroupCount>
+                        </AvatarGroup>
+                    </div>
                 </div>
 
                 <button
                     onClick={onShowSheet}
-                    className="text-white relative md:hidden"
+                    className="flex-none text-white relative  p-2 self-start"
                 >
                     <Ellipsis />
                 </button>
             </div>
-            <div className="gap-2 hidden md:flex">
-                <Button className="bg-white/10 hover:bg-white/20 text-white border border-white">
-                    <Users2 />
-                    Members
-                </Button>
-                <Button variant="outline" onClick={onShowSheet}>
-                    <Settings />
-                    Manage
-                </Button>
-            </div>
+           
+           
         </div>
     );
 }
