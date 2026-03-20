@@ -16,7 +16,7 @@ export default function MembersCard({
 }: MemberType) {
     return (
         <div
-            className={`text-xs px-8 md:px-2 border rounded-lg shadow-xs py-2  flex gap-3  hover:bg-primary/5`}
+            className={`text-xs px-8 md:px-2 md:border rounded-lg md:shadow-xs py-2  flex gap-3  hover:bg-primary/5`}
         >
             <Avatar className="size-10 rounded-full border border-primary/50">
                 <AvatarFallback className="rounded-full bg-primary/10 text-primary font-semibold">

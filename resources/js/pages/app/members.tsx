@@ -42,7 +42,7 @@ export default function Members() {
                 <h3 className="px-8 py-2 text-xs text-muted-foreground font-semibold">
                     You
                 </h3>
-                <div className="mx-8 w-min">
+                <div className="md:mx-8 md:w-min">
                     <MembersCard
                         first_name={user.first_name}
                         last_name={user.last_name}
@@ -55,7 +55,7 @@ export default function Members() {
             </h3>
             <Deferred data="members" fallback={<MembersCardSkeleton />}>
                 {members?.length > 0 ? (
-                    <div className="mx-8 grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+                    <div className="md:mx-8 grid md:grid-cols-2 lg:grid-cols-4 gap-2">
                         {members.map((member) => (
                             <MembersCard key={member.id} {...member} />
                         ))}
