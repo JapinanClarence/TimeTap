@@ -7,24 +7,9 @@ import { OrganizationType } from "@/types/organization";
 import { NoContent } from "@/features/app/home/no-content";
 import LeaveOrgSheet from "@/features/app/organizations/leave-org-sheet";
 import Container from "@/components/ui/container";
-import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { ListFilter } from "lucide-react";
-import EventCard from "@/features/app/home/event-card";
-import { UpcomingEventCard } from "@/features/app/home/upcoming-event-card";
-import { ScheduleCard } from "@/features/app/event/schedule-card";
 import HistoryCard from "@/features/app/history/history-card";
-import { EventType } from "@/types/event";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { MemberType } from "@/types/member";
 
 interface OrganizationDetailProps {
     [key: string]: unknown;
@@ -44,14 +29,15 @@ interface OrganizationDetailProps {
         absent: number;
         rate: number;
     };
+    members: MemberType[]
 }
 
 export default function OrganizationDetail() {
-    const { organization, joined_at, stats, events } =
+    const { organization, joined_at, stats, events, members } =
         usePage<OrganizationDetailProps>().props;
     const [showSheet, setShowSheet] = useState(false);
-    const [currentTab, setCurrentTab] = useState("all");
-
+ 
+    console.log(members)
     // 2. Helper function to group any array by Month
     const getGroupedData = (dataArray: typeof events) => {
         return dataArray.reduce(
@@ -126,7 +112,7 @@ export default function OrganizationDetail() {
                 id={organization.id}
                 name={organization.name}
                 image={organization.image}
-                members_count={organization.members_count}
+                members={members}
                 joined_at={joined_at}
                 onShowSheet={() => setShowSheet(true)}
                 onShowMembers={handleShowMembers}

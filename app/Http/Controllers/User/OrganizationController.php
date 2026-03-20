@@ -56,11 +56,18 @@ class OrganizationController extends Controller
         $presentCount = (int) ($stats->present_count ?? 0);
         $absentCount  = max(0, $totalEvents - $presentCount);
 
+        $members = $organization->members()
+            ->where('users.id', '!=', $user->id)
+            ->select([
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'user_organizations.created_at as joined_at'
+            ])
+            ->latest('user_organizations.created_at');
+
         return Inertia::render("app/organization-detail", [
-            "organization" => [
-                ...$organization->only(['id', 'name', 'description', 'org_profile']),
-                'members_count' => $organization->members()->count(),
-            ],
+            "organization" => $organization->only(['id', 'name', 'description', 'org_profile']),
             "joined_at" => $membership?->created_at
                 ->timezone('Asia/Manila')
                 ->format('M d, Y'),
@@ -80,6 +87,7 @@ class OrganizationController extends Controller
                 'is_present'     => !is_null($event->attendances->first()?->checked_in_at),
                 'check_in_time'  => $event->attendances->first()?->checked_in_at?->format('g:i A'),
             ]),
+            "members" => Inertia::defer(fn() => $members->get()),
         ]);
     }
     public function showMembers(Organization $organization)
