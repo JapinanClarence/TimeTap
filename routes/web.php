@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
-
+use App\Http\Controllers\Admin\OrganizationController as AdminOrganizationController;
 //  User Routes
 use App\Http\Controllers\User\AppController;
 use App\Http\Controllers\User\NotificationController;
@@ -82,6 +82,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post("/members/invite-members", [MemberController::class, "storeInvitations"]);
     Route::get("/profile", [UserController::class, "edit"]);
     Route::put("/profile/edit/{user}", [UserController::class, "update"]);
+    Route::patch("/org-profile/upload/{organization}", [AdminOrganizationController::class, "upload"]);
 });
 
 Route::middleware(['auth'])->prefix("attendance")->group(function () {

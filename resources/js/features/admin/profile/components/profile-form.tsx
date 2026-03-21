@@ -23,7 +23,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface ProfileFormProps {
     id: string;
     name: string;
-    description: string;
+    description?: string;
     first_name: string;
     last_name: string;
     email: string;

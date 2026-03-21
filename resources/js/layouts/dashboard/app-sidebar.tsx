@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { UserType } from "@/types/user";
 import { usePage } from "@inertiajs/react";
+import { OrganizationType } from "@/types/organization";
 
 const navMain = [
     {
@@ -46,11 +47,17 @@ const navMain = [
 
 interface AppSidebar {
     auth: { user: { data: UserType } };
+    owned_org: OrganizationType;
     [key: string]: unknown;
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { auth } = usePage<AppSidebar>().props;
+    const { auth, owned_org } = usePage<AppSidebar>().props;
+ 
+    const userData = {
+        ...auth.user.data,
+        profile: owned_org.image
+    }
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -79,7 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={auth.user.data} />
+                <NavUser user={userData} />
             </SidebarFooter>
         </Sidebar>
     );

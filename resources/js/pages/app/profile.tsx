@@ -22,6 +22,7 @@ import ChangePassword from "@/features/app/profile/components/change-password";
 import { toast } from "sonner";
 import { FilePicker } from "@/components/ui/file-picker";
 import { uploadToCloudinary } from "@/util/cloudinary";
+import { ProfileCard } from "@/components/ui/profile-card";
 
 interface ProfilePageProps {
     auth: { user: { data: UserType } };
@@ -34,7 +35,8 @@ export default function Profile() {
     const [showFilePicker, setShowFilePicker] = useState(false);
     const [loading, setLoading] = useState(false);
     const { auth } = usePage<ProfilePageProps>().props;
-    const { id, first_name, last_name, email, created_at, profile } = auth.user.data;
+    const { id, first_name, last_name, email, created_at, profile } =
+        auth.user.data;
     const { post } = useForm();
     const handleLogout = () => {
         post("/logout");
@@ -43,8 +45,7 @@ export default function Profile() {
     const handleUploadPhoto = async (file: File) => {
         setLoading(true);
         try {
-       
-            const {url} = await uploadToCloudinary(file, "timetap/profiles");
+            const { url } = await uploadToCloudinary(file, "timetap/profiles");
             router.patch(
                 `/app/profile/upload/${id}`,
                 { profile: url },
@@ -67,31 +68,18 @@ export default function Profile() {
         <AppLayout showHeader={false}>
             <Head title="Profile" />
             <Container className="space-y-5 py-8">
-                <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative animate-fade-up">
-                    {/* Background decoration */}
-                    <BubbleBgDecoration />
-                    <Avatar
-                        onClick={() => setShowFilePicker(true)}
-                        className="size-20 border-4 border-white/20 rounded-full shadow-sm relative "
-                    >
-                        <AvatarImage src={profile} alt={first_name} />
-                        <AvatarFallback className="bg-white/20 text-white rounded-full font-bold text-xl backdrop-blur-sm">
-                            {first_name[0]}
-                            {last_name[0]}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                        <h1 className="font-bold text-2xl text-white">
-                            {first_name} {last_name}
-                        </h1>
-                        <p className="font-semibold text-sm text-gray-300">
-                            {email}
-                        </p>
-                        <Badge className="bg-white/10 font-semibold">
-                            Created at {created_at}
-                        </Badge>
-                    </div>
-                </div>
+                {id && created_at && (
+                    <ProfileCard
+                        name={`${first_name} ${last_name}`}
+                        fallback={`${first_name[0]} ${last_name[0]}`}
+                        email={email}
+                        id={id}
+                        created_at={created_at}
+                        image={profile}
+                        setShowFilePicker={() => setShowFilePicker(true)}
+                    />
+                )}
+
                 <div className="space-y-5 animate-fade-up-1">
                     <h2 className="font-bold text-muted-foreground">Account</h2>
                     <button

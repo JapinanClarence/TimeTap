@@ -65,7 +65,7 @@ export const FilePicker = ({
             <div
                 className={`
                 bg-white flex flex-col overflow-hidden shadow-2xl transition-all
-                ${isMobile ? "w-full h-full" : "w-full max-w-sm h-[500px] rounded-2xl"}
+                ${isMobile ? "w-full h-full" : "w-full max-w-lg aspect-square rounded-2xl"}
             `}
             >
                 {isCropping && previewUrl ? (
@@ -147,7 +147,7 @@ export const FilePicker = ({
                         </div>
 
                         {/* Footer */}
-                        <div className="flex gap-2 p-6 border-t bg-white space-y-3">
+                        <div className="flex  gap-2 p-6 border-t bg-white">
                             <Button
                                 variant={"outline"}
                                 onClick={() => fileInputRef.current?.click()}
@@ -173,7 +173,7 @@ export const FilePicker = ({
                                         <span>Uploading...</span>
                                     </div>
                                 ) : (
-                                    "Save Profile"
+                                     "Save Profile"
                                 )}
                             </Button>
                         </div>

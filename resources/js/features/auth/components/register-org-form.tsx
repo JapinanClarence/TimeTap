@@ -15,7 +15,10 @@ import {
     FieldLabel,
 } from "../../../components/ui/field";
 import PasswordStrength from "../../../components/ui/password-strength";
-import { Check, Eye, EyeClosed } from "lucide-react";
+import { Check, Eye, EyeClosed, ImagePlus, Loader2 } from "lucide-react";
+import { FilePicker } from "@/components/ui/file-picker";
+import { uploadToCloudinary } from "@/util/cloudinary";
+import { toast } from "sonner";
 
 const passwordType = {
     password: "pass",
@@ -28,7 +31,6 @@ export default function RegisterOrgForm() {
     const [showConfirmPassword, setShowConfirmPassword] =
         useState<Boolean>(false);
     const [step, setStep] = useState(1);
-
     const { data, setData, post, processing, errors } = useForm({
         first_name: "",
         last_name: "",
@@ -37,8 +39,29 @@ export default function RegisterOrgForm() {
         password_confirmation: "",
         organization_name: "",
         description: "",
-        org_profile: "",
+        image: "",
     });
+    const [isPickerOpen, setIsPickerOpen] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleImageUpload = async (croppedFile: File) => {
+        setIsUploading(true);
+        try {
+            const result = await uploadToCloudinary(
+                croppedFile,
+                "timetap/organizations",
+            );
+
+            setData("image", result.secure_url);
+
+            setIsPickerOpen(false);
+            // toast.success("Logo uploaded!");
+        } catch (error) {
+            toast.error("Something went wrong.");
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     // ✅ STEP 1 VALIDATION
     const isStep1Valid = useMemo(() => {
@@ -59,8 +82,9 @@ export default function RegisterOrgForm() {
 
     const submit = (e: React.SubmitEvent) => {
         e.preventDefault();
+        console.log(data)
         post("/register/organization", {
-            showProgress:false
+            showProgress: false,
         });
     };
 
@@ -388,13 +412,7 @@ export default function RegisterOrgForm() {
                             )}
 
                             {step === 2 && (
-                                <motion.div
-                                    key="step2"
-                                    // initial={{ x: 50, opacity: 0 }}
-                                    // animate={{ x: 0, opacity: 1 }}
-                                    // exit={{ x: -50, opacity: 0 }}
-                                    // transition={{ duration: 0.3 }}
-                                >
+                                <motion.div key="step2">
                                     <FieldGroup className="gap-5">
                                         <Field>
                                             <FieldLabel htmlFor="organization_name">
@@ -450,29 +468,55 @@ export default function RegisterOrgForm() {
                                         </Field>
 
                                         <Field>
-                                            <FieldLabel htmlFor="org_profile">
-                                                Upload Image
+                                            <FieldLabel>
+                                                Organization Logo
                                             </FieldLabel>
-                                            <Input
-                                                id="org_profile"
-                                                type="file"
-                                                disabled
-                                                value={data.org_profile}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "org_profile",
-                                                        e.target.value,
-                                                    )
+
+                                            {/* The Trigger / Preview Area */}
+                                            <div
+                                                onClick={() =>
+                                                    !isUploading &&
+                                                    setIsPickerOpen(true)
                                                 }
-                                                className={
-                                                    errors.org_profile
-                                                        ? "border-destructive"
-                                                        : ""
-                                                }
-                                            />
-                                            {errors.org_profile && (
-                                                <FieldError className="text-xs">
-                                                    {errors.org_profile}
+                                                className={`
+                                                    relative w-full h-32 border-2 border-dashed rounded-xl 
+                                                    flex flex-col items-center justify-center cursor-pointer transition-all
+                                                    ${errors.image ? "border-destructive bg-destructive/5" : "border-slate-200 hover:bg-slate-50"}
+                                                `}
+                                            >
+                                                {data.image ? (
+                                                    <div className="relative group w-full h-full p-2">
+                                                        <img
+                                                            src={data.image}
+                                                            alt="Preview"
+                                                            className="w-full h-full object-contain rounded-lg"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition-opacity">
+                                                            <span className="text-white text-xs font-bold">
+                                                                Change Logo
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center text-slate-400">
+                                                        {isUploading ? (
+                                                            <Loader2 className="size-6 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <ImagePlus className="size-6 mb-1" />
+                                                                <span className="text-sm">
+                                                                    Click to
+                                                                    upload logo
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {errors.image && (
+                                                <FieldError className="text-xs text-destructive">
+                                                    {errors.image}
                                                 </FieldError>
                                             )}
                                         </Field>
@@ -504,6 +548,13 @@ export default function RegisterOrgForm() {
                     </form>
                 </CardContent>
             </Card>
+            <FilePicker
+                open={isPickerOpen}
+                onClose={() => setIsPickerOpen(false)}
+                onFileSelect={handleImageUpload}
+                currentImage={data.image}
+                isLoading={isUploading}
+            />
         </div>
     );
 }

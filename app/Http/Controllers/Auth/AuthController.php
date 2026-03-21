@@ -66,7 +66,7 @@ class AuthController extends Controller
             "password" => "required|confirmed|min:8",
             "organization_name" => ["required", "string", "max:255", Rule::unique("organizations", "name")],
             "description" => "nullable|string|max:1000",
-            "org_profile" => "nullable|string",
+            "image" => "nullable|string",
         ]);
 
         DB::transaction(function () use ($data) {
@@ -83,6 +83,7 @@ class AuthController extends Controller
                 'name' => $data["organization_name"],
                 'description' => $data["description"],
                 'owner_id' => $user->id,
+                'image' => $data["image"]
             ]);
 
 

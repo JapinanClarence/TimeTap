@@ -44,11 +44,12 @@ export function NavUser({ user }: { user: UserType }) {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
-                                    src="https://github.com/shadcn.png"
+                                    src={user.profile}
                                     alt={user.first_name}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    CN
+                                    {user.first_name.charAt(0).toUpperCase()}{" "}
+                                    {user.last_name.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -72,11 +73,14 @@ export function NavUser({ user }: { user: UserType }) {
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src="https://github.com/shadcn.png"
+                                        src={user.profile}
                                         alt={user.first_name}
                                     />
                                     <AvatarFallback className="rounded-lg">
-                                        CN
+                                        {user.first_name
+                                            .charAt(0)
+                                            .toUpperCase()}{" "}
+                                        {user.last_name.charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
