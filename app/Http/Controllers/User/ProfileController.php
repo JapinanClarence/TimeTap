@@ -29,7 +29,19 @@ class ProfileController extends Controller
             "email" => $data["email"],
             "gender" => $data["gender"]
         ]);
-        
+
+        return back()->with('message', 'Profile updated successfully!');
+    }
+
+    public function upload(Request $request, User $user)
+    {
+        $data = $request->validate([
+            "profile" => "string"
+        ]);
+     
+        $user->update([
+            "profile" => $data["profile"]
+        ]);
         return back()->with('message', 'Profile updated successfully!');
     }
     public function showUserId(Request $request)

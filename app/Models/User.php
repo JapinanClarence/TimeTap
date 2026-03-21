@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         "role",
+        "profile",
         "current_organization_id"
     ];
 

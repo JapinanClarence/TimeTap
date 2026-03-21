@@ -32,21 +32,13 @@ export default function MobileHeader() {
     return (
         <header className="fixed top-0 z-50 w-full border-b bg-background ">
             <Container className="mx-auto flex items-center justify-between h-16">
-                {/* <Link href={"/"}>
-                    <div className="flex items-end rounded-full h-10 w-10">
-                        <h2 className="text-2xl font-extrabold text-transparent inline-block bg-linear-to-r from-primary to-timetap-accent  bg-clip-text">
-                            TimeTap
-                        </h2>
-                    </div>
-                </Link> */}
                 <div className="flex gap-3">
                     <Avatar className="size-12">
-                        <AvatarImage
-                            src="https://github.com/shadcn.png"
-                            alt="@shadcn"
-                            // className="grayscale"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarImage src={user.profile} alt={user.first_name} />
+                        <AvatarFallback className="rounded-lg">
+                            {user.first_name.charAt(0).toUpperCase()}
+                            {user.last_name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="">
                         <p className="text-muted-foreground text-sm">
@@ -62,10 +54,6 @@ export default function MobileHeader() {
                         <Button
                             variant={"ghost"}
                             size={"icon-lg"}
-                            // onClick={(e) => {
-                            //     (e.currentTarget as HTMLButtonElement).blur(); // Manually remove focus
-                            //     setOpenSheet(true);
-                            // }}
                         >
                             <Bell />
                         </Button>

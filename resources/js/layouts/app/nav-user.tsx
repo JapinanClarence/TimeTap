@@ -16,19 +16,16 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import EditProfile from "@/features/app/profile/components/edit-profile";
 import { UserType } from "@/types/user";
 import { Link, useForm } from "@inertiajs/react";
 import {
     IconDotsVertical,
     IconLogout,
-    IconPasswordUser,
     IconUserCircle,
 } from "@tabler/icons-react";
 import { useState } from "react";
 
 export function NavUser({ user }: { user: UserType }) {
-    const [showEditProfile, setShowEditProfile] = useState(false);
     const { isMobile } = useSidebar();
 
     const { post } = useForm();
@@ -46,11 +43,12 @@ export function NavUser({ user }: { user: UserType }) {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
-                                    src="https://github.com/shadcn.png"
+                                    src={user.profile}
                                     alt={user.first_name}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    CN
+                                    {user.first_name.charAt(0).toUpperCase()}
+                                    {user.last_name.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -74,11 +72,14 @@ export function NavUser({ user }: { user: UserType }) {
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src="https://github.com/shadcn.png"
+                                        src={user.profile}
                                         alt={user.first_name}
                                     />
                                     <AvatarFallback className="rounded-lg">
-                                        CN
+                                        {user.first_name
+                                            .charAt(0)
+                                            .toUpperCase()}
+                                        {user.last_name.charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">

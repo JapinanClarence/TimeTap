@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role:user'])->prefix('app')->group(function () {
     Route::post("/notifications/mark-all-read", [NotificationController::class, "markAllRead"]);
     Route::get("/profile", [ProfileController::class, "index"]);
     Route::put("/profile/edit/{user}", [ProfileController::class, "update"]);
+    Route::patch("/profile/upload/{user}", [ProfileController::class, "upload"]);
     Route::get("/organizations", [OrganizationController::class, "index"])->name("organizations");
     Route::get("/organizations/{organization}", [OrganizationController::class, "show"]);
     Route::post("/organizations/join", [OrganizationController::class, "join"])->name("organizations.join");

@@ -8,4 +8,5 @@ export type UserType = {
     member_since?: string;
     total_organizations?: number;
     gender?:string;
+    profile?:string;
 };

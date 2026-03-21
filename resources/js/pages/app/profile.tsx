@@ -6,7 +6,7 @@ import Container from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/layouts/app/app-layout";
 import { UserType } from "@/types/user";
-import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
 import {
     Building2,
     ChevronRight,
@@ -19,6 +19,9 @@ import React, { useState } from "react";
 import EditProfile from "@/features/app/profile/components/edit-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ChangePassword from "@/features/app/profile/components/change-password";
+import { toast } from "sonner";
+import { FilePicker } from "@/components/ui/file-picker";
+import { uploadToCloudinary } from "@/util/cloudinary";
 
 interface ProfilePageProps {
     auth: { user: { data: UserType } };
@@ -28,13 +31,38 @@ interface ProfilePageProps {
 export default function Profile() {
     const [showEditProfile, setShowEditProfile] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
+    const [showFilePicker, setShowFilePicker] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { auth } = usePage<ProfilePageProps>().props;
-
-    const { first_name, last_name, email, created_at } = auth.user.data;
+    const { id, first_name, last_name, email, created_at, profile } = auth.user.data;
     const { post } = useForm();
     const handleLogout = () => {
         post("/logout");
     };
+
+    const handleUploadPhoto = async (file: File) => {
+        setLoading(true);
+        try {
+       
+            const {url} = await uploadToCloudinary(file, "timetap/profiles");
+            router.patch(
+                `/app/profile/upload/${id}`,
+                { profile: url },
+                {
+                    showProgress: false,
+                    onBefore: () => setLoading(true),
+                    onFinish: () => setLoading(false),
+                    onSuccess: () => {
+                        setShowFilePicker(false);
+                        toast.success("Profile updated successfully");
+                    },
+                },
+            );
+        } catch (err) {
+            toast.error("Upload failed");
+        }
+    };
+
     return (
         <AppLayout showHeader={false}>
             <Head title="Profile" />
@@ -42,8 +70,11 @@ export default function Profile() {
                 <div className="flex items-center gap-5 px-6 py-5 bg-linear-to-tr from-[#4F6EF7]  to-[#6366f1] rounded-xl relative animate-fade-up">
                     {/* Background decoration */}
                     <BubbleBgDecoration />
-                    <Avatar className="size-20 border-4 border-white/20 rounded-full shadow-sm relative ">
-                        <AvatarImage src={""} alt={first_name} />
+                    <Avatar
+                        onClick={() => setShowFilePicker(true)}
+                        className="size-20 border-4 border-white/20 rounded-full shadow-sm relative "
+                    >
+                        <AvatarImage src={profile} alt={first_name} />
                         <AvatarFallback className="bg-white/20 text-white rounded-full font-bold text-xl backdrop-blur-sm">
                             {first_name[0]}
                             {last_name[0]}
@@ -117,11 +148,17 @@ export default function Profile() {
                 open={showEditProfile}
                 onClose={() => setShowEditProfile(false)}
             />
- 
+
             <ChangePassword
                 user={auth.user.data}
                 open={showChangePassword}
                 onClose={() => setShowChangePassword(false)}
+            />
+            <FilePicker
+                open={showFilePicker}
+                onClose={() => setShowFilePicker(false)}
+                onFileSelect={handleUploadPhoto}
+                isLoading={loading}
             />
         </AppLayout>
     );
