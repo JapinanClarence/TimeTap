@@ -14,7 +14,7 @@ import RegisterForm from "@/features/auth/components/register-form";
 export default function Register() {
     return (
         <div className="flex w-full h-screen ">
-            <div className="flex-1/2 py-8 px-8 lg:px-10 xl:px-30 bg-white">
+            <div className="flex-1 py-8 px-8 lg:px-10 xl:px-30 bg-white">
                 <div>
                     <Link href={"/"}>
                         <div className="flex items-end">
@@ -25,8 +25,8 @@ export default function Register() {
                         </div>
                     </Link>
                 </div>
-                <div className="h-full flex flex-col justify-center ">
-                    <h2 className="text-3xl mb-2">Create your Account</h2>
+                <div className="h-full mx-auto md:max-w-sm flex flex-col justify-center ">
+                    <h2 className="text-3xl font-semibold mb-2">Create your Account</h2>
                     <p className="text-muted-foreground">
                         Fill in the form below to create your account
                     </p>
@@ -37,32 +37,11 @@ export default function Register() {
             </div>
             <GradientBg
                 className={
-                    "flex-1/2 hidden md:flex flex-col justify-between py-8 px-8 lg:px-10 xl:px-30"
+                    "flex-1 hidden md:flex flex-col justify-between py-8 px-8 lg:px-10 xl:px-30"
                 }
             >
-                <div className="inline-flex justify-end">
-                    <ul className="flex flex-row ">
-                        <li>
-                            <Button
-                                variant="link"
-                                size="lg"
-                                className="hover:no-underline px-2 text-sm text-dark "
-                            >
-                                <Link href="/">Home</Link>
-                            </Button>
-                        </li>
-                        <li>
-                            <Button
-                                variant="link"
-                                size="lg"
-                                className="hover:no-underline px-2 text-sm text-dark "
-                            >
-                                <Link href="/#feature">Feature</Link>
-                            </Button>
-                        </li>
-                    </ul>
-                </div>
-                <div className="flex flex-col justify-center">
+                
+                <div className="grow flex flex-col justify-center">
                     <h1 className="border-b-2 border-b-slate-700 text-slate-700 text-5xl text-pretty md:text-6xl lg:text-[4em]  md:leading-20 font-bold ">
                         Your attendance management hub.
                     </h1>

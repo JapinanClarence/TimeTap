@@ -109,7 +109,7 @@ export default function ChangePasswordForm({ user }: { user: UserType }) {
         }
     }, [flash]);
     return (
-        <form className="" onSubmit={handleSubmit}>
+        <form className="w-full" onSubmit={handleSubmit}>
             <FieldGroup>
                 <Field>
                     <FieldLabel htmlFor="old_password">Old Password</FieldLabel>

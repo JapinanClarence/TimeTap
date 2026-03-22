@@ -15,8 +15,8 @@ export default function ChangePassword() {
     const { auth } = usePage<ProfilePageProps>().props;
     return (
         <AdminLayout>
-            <Container className=" min-h-screen flex-1 rounded-xl space-y-5 md:min-h-min md:mt-0 p-5">
-                <div className="flex gap-2">
+            <Container className="max-w-4xl grow flex flex-col items-center justify-center min-h-screen rounded-xl space-y-5 md:min-h-min md:mt-0 p-5">
+                <div className="flex self-start gap-2">
                     <div className="bg-primary/10 text-primary size-10 inline-flex items-center justify-center rounded-lg">
                         <Lock />
                     </div>

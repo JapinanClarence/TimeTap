@@ -46,7 +46,7 @@ export default function EditProfile() {
     };
     return (
         <AdminLayout>
-            <Container className=" min-h-screen flex-1 rounded-xl md:min-h-min md:mt-0 p-5">
+            <Container className="max-w-6xl min-h-screen flex-1 rounded-xl md:min-h-min md:mt-0 p-5">
                 <div className="space-y-5 animate-fade-up ">
                     {organization.id && data.created_at && (
                         <ProfileCard
