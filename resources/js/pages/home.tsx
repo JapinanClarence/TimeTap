@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
 import Hero from "@/features/home/components/hero";
 import Feature from "@/features/home/components/feature";
 import Layout from "@/layouts/Layout";
@@ -10,9 +9,9 @@ export default function Home() {
         <Layout>
             <div id="home">
                 <Hero />
-                <HowItWorks/>
+                <HowItWorks />
                 <Feature />
-                <CTA/>
+                <CTA />
             </div>
         </Layout>
     );
