@@ -11,7 +11,7 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <>
-            <header className="fixed top-0 z-50 w-full  backdrop-blur-md">
+            <header className="fixed top-0 z-50 w-full bg-white shadow-xs border-b">
                 <Container className="mx-auto flex items-center justify-between py-3 ">
                     <Link href={"/"}>
                         <div className="flex items-end">

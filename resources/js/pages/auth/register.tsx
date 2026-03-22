@@ -2,7 +2,6 @@ import React from "react";
 import GradientBg from "@/components/ui/gradient-bg";
 import { Link } from "@inertiajs/react";
 import {  Timer } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
     Tooltip,
     TooltipContent,

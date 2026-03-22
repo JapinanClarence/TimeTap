@@ -82,18 +82,9 @@ function FeatureCard({
 export default function Feature() {
     return (
         <div id="feature" className="bg-white relative">
-            {/* <div
-                className={cn(
-                    "absolute inset-0 ",
-                    "[background-size:20px_20px]",
-                    "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
-                    "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
-                )}
-            />
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div> */}
             <Container className="py-20 z-20 relative">
                 <h1 className=" text-5xl md:text-6xl lg:text-6xl max-w-2xl font-bold ">
-                    <Badge className="block mb-2 border border-primary bg-primary/10 text-primary font-semibold">
+                  <Badge className="block bg-primary/5 border border-primary/20 font-semibold text-primary">
                         Features
                     </Badge>
                     Everything you need to manage attendance

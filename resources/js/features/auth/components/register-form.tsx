@@ -19,15 +19,9 @@ import {
     InputGroupInput,
 } from "@/components/ui/input-group";
 
-const passwordType = {
-    password: "pass",
-    confirmPass: "confirmPass",
-};
-
 export default function RegisterForm() {
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [showPasswords, setShowPasswords] = React.useState({
-        old_password: false,
         password: false,
         password_confirmation: false,
     });
