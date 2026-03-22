@@ -51,7 +51,7 @@ export default function NavMain() {
                                         size="lg"
                                         className="hover:no-underline px-2 text-sm text-dark "
                                     >
-                                        <Link href="#feature">Feature</Link>
+                                        <a href="#feature">Feature</a>
                                     </Button>
                                 </li>
                             </ul>

@@ -287,3 +287,6 @@
     }
   }
 }
+html {
+  scroll-behavior: smooth;
+}
