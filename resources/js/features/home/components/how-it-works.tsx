@@ -85,13 +85,13 @@ export default function HowItWorks() {
                                     <div
                                         key={index}
                                         onClick={() => setActiveStep(index)}
-                                        className="group cursor-pointer relative pb-5 last:pb-0"
+                                        className="group cursor-pointer relative pb-2 last:pb-0"
                                     >
                                         <div className="flex gap-8">
                                             {/* Vertical Bar + Icon Container */}
                                             <div className="relative flex gap-5 items-center flex-none">
                                                 {/* Vertical Progress Bar Overlay */}
-                                                <div className="h-full w-[2.9px] bg-border rounded overflow-hidden">
+                                                <div className="h-full w-[3.5px] bg-border rounded overflow-hidden">
                                                     {isActive && (
                                                         <motion.div
                                                             className="w-full h-full bg-primary rounded-full origin-top"

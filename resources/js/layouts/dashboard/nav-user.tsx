@@ -26,7 +26,13 @@ import {
 import { Link, useForm } from "@inertiajs/react";
 import { UserType } from "@/types/user";
 
-export function NavUser({ user }: { user: UserType }) {
+interface NavUserProps {
+    name: string;
+    profile?: string;
+    email: string;
+}
+
+export function NavUser({ name, profile, email }: NavUserProps) {
     const { isMobile } = useSidebar();
 
     const { post } = useForm();
@@ -43,21 +49,17 @@ export function NavUser({ user }: { user: UserType }) {
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage
-                                    src={user.profile}
-                                    alt={user.first_name}
-                                />
+                                <AvatarImage src={profile} alt={name} />
                                 <AvatarFallback className="rounded-lg">
-                                    {user.first_name.charAt(0).toUpperCase()}{" "}
-                                    {user.last_name.charAt(0).toUpperCase()}
+                                    {name.slice(0, 2).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {user.first_name} {user.last_name}
+                                    {name}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
-                                    {user.email}
+                                    {email}
                                 </span>
                             </div>
                             <IconDotsVertical className="ml-auto size-4" />
@@ -72,23 +74,17 @@ export function NavUser({ user }: { user: UserType }) {
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage
-                                        src={user.profile}
-                                        alt={user.first_name}
-                                    />
+                                    <AvatarImage src={profile} alt={name} />
                                     <AvatarFallback className="rounded-lg">
-                                        {user.first_name
-                                            .charAt(0)
-                                            .toUpperCase()}{" "}
-                                        {user.last_name.charAt(0).toUpperCase()}
+                                        {name.slice(0, 2).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        {user.first_name} {user.last_name}
+                                        {name}
                                     </span>
                                     <span className="text-muted-foreground truncate text-xs">
-                                        {user.email}
+                                        {email}
                                     </span>
                                 </div>
                             </div>

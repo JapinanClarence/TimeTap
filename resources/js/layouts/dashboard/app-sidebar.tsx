@@ -55,7 +55,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { auth, owned_org } = usePage<AppSidebar>().props;
  
     const userData = {
-        ...auth.user.data,
+        email: auth.user.data.email,
+        name: owned_org.name,
         profile: owned_org.image
     }
     return (
@@ -86,7 +87,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={userData} />
+                
+                <NavUser {...userData} />
             </SidebarFooter>
         </Sidebar>
     );
