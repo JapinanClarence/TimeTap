@@ -22,8 +22,8 @@ export default function Hero() {
         <GradientBg>
             <Container className="flex flex-wrap pt-12 md:pt-0 h-screen  md:h-full items-center">
                 <div className="flex-1 mt-10 md:mt-0">
-                    <div className="max-w-lg">
-                        <Badge className=" bg-primary/5 border border-primary/20 font-semibold text-primary">
+                    <div className="max-w-lg space-y-4">
+                        <Badge className="bg-primary/5 border border-primary/20 font-semibold text-primary">
                             <Check /> QR-powered attendance tracking
                         </Badge>
                         <h1 className="inline-block bg-linear-to-r from-timetap-primary via-timetap-accent to-timetap-secondary bg-clip-text text-5xl md:text-6xl lg:text-[5em]  md:leading-20 font-extrabold text-transparent">

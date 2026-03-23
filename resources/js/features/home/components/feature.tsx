@@ -1,105 +1,160 @@
-import React from "react";
-import { Badge } from "@/components/ui/badge";
-import {
-    Building2,
-    Database,
-    Key,
-    KeyRound,
-    LockKeyhole,
-    ScanQrCode,
-    TabletSmartphone,
-    TrendingUp,
-} from "lucide-react";
+import React, { useRef } from "react";
+import { useScroll, useTransform, motion } from "framer-motion";
+import { ScanQrCode, MapPinned, TrendingUp } from "lucide-react";
 import Container from "@/components/ui/container";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const features = [
     {
         title: "QR-Based Attendance",
         description:
-            "Generate unique QR codes for each event and let attendees check in instantly. Attendance is recorded in real time with accurate timestamps—no paper, no delays.",
+            "Generate unique QR codes for each event and let attendees check in instantly.",
         icon: ScanQrCode,
+        image: "/images/qr-preview.png",
     },
     {
-        title: "Organization Management",
+        title: "Geofence Verification",
         description:
-            "Create organizations, invite members, and assign roles with ease. Manage events and attendance securely across teams, all from one platform.",
-        icon: Building2,
+            "Ensure presence with location-based check-ins using virtual boundaries.",
+        icon: MapPinned,
+        image: "/images/geofence-preview.png",
     },
     {
-        title: "Attendance Reports & Insights",
+        title: "Advanced Insights",
         description:
-            "Access detailed attendance records, track participation trends, and export reports anytime. Turn attendance data into clear, actionable insights.",
+            "Access detailed attendance records and track participation trends.",
         icon: TrendingUp,
-    },
-    {
-        title: "Secure & Scalable by Design",
-        description:
-            "Optimized for large-scale events and multiple organizations. QR codes are secured with expiration and session validation.",
-        icon: LockKeyhole,
-    },
-    {
-        title: "Responsive",
-        description:
-            "Access TimeTap seamlessly across desktops, tablets, and mobile devices. The interface adapts automatically, ensuring a smooth experience wherever attendance is managed or recorded.",
-        icon: TabletSmartphone,
-    },
-    {
-        title: "Centralized Database",
-        description:
-            "All attendance records, events, and organization data are stored in a single, secure database. This ensures consistency, easy access, and reliable reporting across all devices and teams.",
-        icon: Database,
+        image: "/images/step-track.png",
     },
 ];
 
-// feature card component
-function FeatureCard({
-    title,
-    description,
-    icon: Icon,
-}: {
-    title: string;
-    description: string;
-    icon: React.ComponentType<{ className?: string }>;
-}) {
-    return (
-        <div className="group py-6 transition-all duration-200 ease-in-out hover:ml-2">
-            <div className="">
-                <Icon className="mb-2 " />
-            </div>
-
-            <div className="relative ">
-                <h2 className="mb-2 font-semibold leading-none ">{title}</h2>
-            </div>
-            <p className=" text-sm text-muted-foreground text-pretty  ">
-                {description}
-            </p>
-        </div>
-    );
-}
-
 export default function Feature() {
-    return (
-        <div id="feature" className="bg-white relative">
-            <Container className="py-20 z-20 relative">
-                <h1 className=" text-5xl md:text-6xl lg:text-6xl max-w-2xl font-bold ">
-                  <Badge className="block bg-primary/5 border border-primary/20 font-semibold text-primary">
-                        Features
-                    </Badge>
-                    Everything you need to manage attendance
-                </h1>
+    const targetRef = useRef<HTMLDivElement>(null);
 
-                <div className="grid md:grid-cols-3 mt-15 gap-6">
-                    {features.map((feature, id) => (
-                        <FeatureCard
-                            key={id}
-                            title={feature.title}
-                            description={feature.description}
-                            icon={feature.icon}
-                        />
-                    ))}
-                </div>
-            </Container>
+    const { scrollYProgress } = useScroll({
+        target: targetRef,
+        offset: ["start start", "end end"],
+    });
+
+    const { scrollYProgress: entranceProgress } = useScroll({
+        target: targetRef,
+        offset: ["start end", "start start"],
+    });
+
+    const y = useTransform(entranceProgress, [0, 1], ["8%", "0%"]);
+
+    return (
+        <div
+            ref={targetRef}
+            id="feature"
+            className="relative h-[300vh] rounded-[2rem] md:rounded-[5rem] bg-primary shadow-[0_-24px_60px_rgba(0,0,0,0.18)]"
+        >
+            <div className="sticky top-0 h-screen w-full overflow-hidden">
+                <motion.div
+                    style={{ y }}
+                    className="h-full w-full flex flex-col justify-center"
+                >
+                    <Container className="flex flex-col h-full justify-center gap-6 py-16 md:py-20">
+
+                        {/* Section header */}
+                        <div className="flex flex-col items-start gap-3 shrink-0">
+                            <Badge className="w-fit bg-white border border-primary/20 font-semibold text-primary">
+                                Features
+                            </Badge>
+                            <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl max-w-2xl font-bold tracking-tight leading-tight">
+                                Everything you need to manage attendance
+                            </h1>
+                        </div>
+
+                        {/* Content row: text left, image right */}
+                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center min-h-0 flex-1">
+
+                            {/*
+                                Left: cycling text panel
+                                - Mobile/tablet: fixed height so absolutely-positioned children
+                                  have a bounding box to animate within
+                                - lg+: self-stretches to fill the flex row, w-1/3
+                            */}
+                            <div className="relative w-full h-40 sm:h-48 lg:w-1/3 lg:h-auto lg:self-stretch shrink-0">
+                                {features.map((feature, i) => {
+                                    const step = 1 / features.length;
+                                    const start = i * step;
+                                    const end = (i + 1) * step;
+
+                                    const opacity = useTransform(
+                                        scrollYProgress,
+                                        [start, start + step / 2, end],
+                                        [0, 1, 0],
+                                    );
+                                    const itemY = useTransform(
+                                        scrollYProgress,
+                                        [start, start + step / 2, end],
+                                        [20, 0, -20],
+                                    );
+
+                                    return (
+                                        <motion.div
+                                            key={i}
+                                            style={{ opacity, y: itemY }}
+                                            className="absolute inset-0 flex flex-col justify-center pointer-events-none"
+                                        >
+                                            <div className="bg-white w-fit p-2.5 md:p-3 rounded-2xl mb-3 md:mb-4">
+                                                <feature.icon className="size-6 md:size-8 text-primary" />
+                                            </div>
+                                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
+                                                {feature.title}
+                                            </h2>
+                                            <p className="text-sm sm:text-base lg:text-lg text-gray-100 leading-relaxed">
+                                                {feature.description}
+                                            </p>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+
+                            {/*
+                                Right: cycling image panel
+                                - Shorter on mobile so it fits alongside the header
+                                - Grows taller on larger screens
+                            */}
+                            <div className="relative w-full flex-1 h-min md:h-[36vh] lg:h-[58vh] overflow-hidden">
+                                {features.map((feature, i) => {
+                                    const step = 1 / features.length;
+                                    const opacity = useTransform(
+                                        scrollYProgress,
+                                        [
+                                            i * step,
+                                            i * step + 0.1,
+                                            (i + 1) * step - 0.1,
+                                            (i + 1) * step,
+                                        ],
+                                        [0, 1, 1, 0],
+                                    );
+                                    const scale = useTransform(
+                                        scrollYProgress,
+                                        [i * step, (i + 1) * step],
+                                        [1.05, 1],
+                                    );
+
+                                    return (
+                                        <motion.div
+                                            key={i}
+                                            style={{ opacity, scale }}
+                                            className="absolute md:inset-0 flex items-center justify-center p-3 md:p-6 lg:p-8"
+                                        >
+                                            <img
+                                                className="mx-auto max-h-full max-w-full object-contain border border-white/30 rounded-2xl md:rounded-3xl lg:rounded-4xl"
+                                                src={feature.image}
+                                                alt={`Preview of ${feature.title}`}
+                                            />
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </Container>
+                </motion.div>
+            </div>
         </div>
     );
 }

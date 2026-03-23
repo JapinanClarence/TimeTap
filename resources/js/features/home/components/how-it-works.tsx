@@ -46,18 +46,18 @@ export default function HowItWorks() {
     }, [activeStep]);
 
     return (
-        <div id="feature" className="bg-white relative">
-            <Container className="py-20 z-20 relative space-y-15">
+        <div id="hiw" className="sticky top-0 bg-white">
+            <Container className="py-20 md:py-40 h-screen space-y-20">
                 <div className="flex flex-col items-center space-y-4 mb-12">
                     <Badge className=" w-fit bg-primary/5 border border-primary/20 font-semibold text-primary">
                         <Check/> Simple by design
                     </Badge>
-                    <h1 className=" text-5xl md:text-6xl font-bold tracking-tight">
+                    <h1 className=" text-4xl md:text-6xl font-bold tracking-tight">
                         How <span className="text-primary">TimeTap</span> Works?
                     </h1>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-12 items-center">
+                <div className=" flex flex-col lg:flex-row gap-12 items-center">
                     {/* Left: Dynamic Image Section */}
                     <div
                         className="flex-1 w-full aspect-video overflow-hidden"
@@ -87,7 +87,7 @@ export default function HowItWorks() {
                                         onClick={() => setActiveStep(index)}
                                         className="group cursor-pointer relative pb-2 last:pb-0"
                                     >
-                                        <div className="flex gap-8">
+                                        <div className="flex gap-5">
                                             {/* Vertical Bar + Icon Container */}
                                             <div className="relative flex gap-5 items-center flex-none">
                                                 {/* Vertical Progress Bar Overlay */}
@@ -115,7 +115,7 @@ export default function HowItWorks() {
                                                 </div>
 
                                                 <div
-                                                    className={`flex-none size-14 inline-flex items-center justify-center rounded-xl transition-colors duration-300 ${
+                                                    className={`relative flex-none size-14 inline-flex items-center justify-center rounded-xl transition-colors duration-300 ${
                                                         isActive
                                                             ? "bg-primary text-white"
                                                             : "bg-slate-100 text-slate-500"
@@ -124,7 +124,7 @@ export default function HowItWorks() {
                                                     {(() => {
                                                         const Icon = step.icon;
                                                         return (
-                                                            <Icon size={24} />
+                                                            <Icon size={20} />
                                                         );
                                                     })()}
                                                 </div>
@@ -135,11 +135,11 @@ export default function HowItWorks() {
                                                 className={`transition-all duration-300 ${isActive ? "opacity-100 translate-x-1" : "opacity-60"}`}
                                             >
                                                 <p
-                                                    className={`text-xl font-semibold  ${isActive ? "text-slate-900" : "text-slate-500"}`}
+                                                    className={`md:text-xl font-semibold  ${isActive ? "text-slate-900" : "text-slate-500"}`}
                                                 >
                                                     {step.title}
                                                 </p>
-                                                <p className="text-muted-foreground text-base max-w-md leading-relaxed">
+                                                <p className="text-muted-foreground text-sm md:text-base max-w-md leading-relaxed">
                                                     {step.desc}
                                                 </p>
                                             </div>
