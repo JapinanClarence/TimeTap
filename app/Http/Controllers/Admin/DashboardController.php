@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
+use App\Models\Attendance;
 use App\Models\Organization;
 use Inertia\Inertia;
 
@@ -11,17 +11,109 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // $user = auth()->user();
-        // $organization = $user->ownedOrganization()->firstOrFail();
-        
-        // $events = $this->getEvents($organization["id"]);
-        // dd($events);
-        return Inertia::render("admin/index");
-    }
-    private function getEvents($organization)
-    {
-        $events = Event::where("organization_id", $organization)->get();
+        $user = auth()->user();
+        $organization = $user->ownedOrganization()->firstOrFail();
 
-        return $events;
+        $events = $organization->events;
+        $allAttendances = Attendance::whereIn('event_id', $events->pluck('id'))->get();
+
+        return Inertia::render("admin/index", [
+            "stats" => [
+                "active_events" => $this->calculateActiveEvents($events),
+                "attendance_rate" => $this->calculateOverallAttendanceRate($events, $allAttendances, $organization),
+                "attendance_change" => $this->calculateAttendanceChange($events, $allAttendances, $organization),
+                "peak_time" => $this->calculatePeakAttendanceTime($allAttendances),
+                "breach_rate" => $this->calculateGeofenceBreachRate($allAttendances),
+            ]
+        ]);
+    }
+
+    /**
+     * Total Active Events: Events currently open for check-in.
+     */
+    private function calculateActiveEvents($events)
+    {
+        $now = now();
+        return $events->filter(function ($event) use ($now) {
+            return $now->between($event->start_time, $event->end_time);
+        })->count();
+    }
+
+    /**
+     * Total Attendance Rate: Calculates percentage across all events.
+     * Persists historical data for ex-members as per AttendanceController logic.
+     */
+    private function calculateOverallAttendanceRate($events, $allAttendances, Organization $organization)
+    {
+        $totalPresent = 0;
+        $totalEffective = 0;
+        $currentMemberIds = $organization->members()->pluck('users.id');
+
+        foreach ($events as $event) {
+            $eventAttendances = $allAttendances->where('event_id', $event->id);
+
+            // Users who actually showed up (Historical data)
+            $presentIds = $eventAttendances->whereNotNull('checked_in_at')->pluck('user_id')->unique();
+            $presentCount = $presentIds->count();
+
+            // Current members who were expected but didn't show up
+            $absentCount = $currentMemberIds->diff($presentIds)->count();
+
+            $totalPresent += $presentCount;
+            $totalEffective += ($presentCount + $absentCount);
+        }
+
+        return $totalEffective > 0
+            ? round(($totalPresent / $totalEffective) * 100, 1)
+            : 0;
+    }
+    private function calculateAttendanceChange($events, $allAttendances, Organization $organization)
+    {
+        $currentMonthRate = $this->calculateOverallAttendanceRate(
+            $events->whereBetween('start_date', [now()->startOfMonth(), now()->endOfMonth()]),
+            $allAttendances,
+            $organization
+        );
+
+        $lastMonthRate = $this->calculateOverallAttendanceRate(
+            $events->whereBetween('start_date', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()]),
+            $allAttendances,
+            $organization
+        );
+
+        $difference = $currentMonthRate - $lastMonthRate;
+        $prefix = $difference >= 0 ? '+' : '';
+
+        return "{$prefix}{$difference}% from last month";
+    }
+
+    /**
+     * Peak Attendance Time: Most frequent check-in hour across all data.
+     */
+    private function calculatePeakAttendanceTime($allAttendances)
+    {
+        $checkInTimes = $allAttendances->whereNotNull('checked_in_at')->map(function ($a) {
+            return $a->checked_in_at->timezone('Asia/Manila')->format('g:i A');
+        });
+
+        if ($checkInTimes->isEmpty()) return "N/A";
+
+        // Count occurrences of each timestamp and return the most frequent
+        return $checkInTimes->countBy()->sortDesc()->keys()->first();
+    }
+
+    /**
+     * Geofence Breach Rate: Percentage of attempts blocked by location boundaries.
+     */
+    private function calculateGeofenceBreachRate($allAttendances)
+    {
+        // Assumes you have a boolean 'within_geofence' or similar column 
+        // recorded during check-in attempts.
+        $totalAttempts = $allAttendances->count();
+        if ($totalAttempts === 0) return 0;
+
+        $breaches = $allAttendances->where('within_geofence', false)->count();
+
+        return round(($breaches / $totalAttempts) * 100, 1);
     }
 }

@@ -1,32 +1,44 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Users, Zap, MapPinOff } from "lucide-react";
 
-export default function AnalyticsGrid() {
+export default function AnalyticsGrid({
+    active_events,
+    attendance_rate,
+    peak_time,
+    breach_rate,
+    attendance_change
+}: {
+    active_events: number;
+    attendance_rate: number;
+    peak_time: string;
+    breach_rate: number;
+    attendance_change: string;
+}) {
     const stats = [
         {
             title: "Total Active Events",
-            value: "12",
+            value: active_events,
             description: "Currently open for check-in",
             icon: Activity,
             color: "text-blue-600",
         },
         {
             title: "Total Attendance Rate",
-            value: "88.4%",
-            description: "+2.1% from last month",
+            value: `${attendance_rate}%`,
+            description: attendance_change,
             icon: Users,
             color: "text-green-600",
         },
         {
             title: "Peak Attendance Time",
-            value: "10:15 AM",
+            value: peak_time,
             description: "Most check-ins recorded",
             icon: Zap,
             color: "text-yellow-600",
         },
         {
             title: "Geofence Breach Rate",
-            value: "4.2%",
+            value: `${breach_rate}%`,
             description: "Out-of-bounds attempts",
             icon: MapPinOff,
             color: "text-destructive",

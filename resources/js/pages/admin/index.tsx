@@ -4,6 +4,7 @@ import { AttendanceOverTime } from "@/features/admin/dashboard/components/attend
 import { AttendanceDistribution } from "@/features/admin/dashboard/components/attendance-distribution-chart";
 import { DataTable } from "@/features/admin/dashboard/components/data-table";
 import { columns, EventColumn } from "@/features/admin/dashboard/components/columns";
+import { usePage } from "@inertiajs/react";
 
 
 const data: EventColumn[] = [
@@ -31,13 +32,26 @@ const data: EventColumn[] = [
     },
 ];
 
+interface DashboardProps{
+    [key: string]: unknown;
+    stats: {
+        active_events: number;
+        attendance_rate: number;
+        peak_time: string;
+        breach_rate: number;
+        attendance_change: string;
+    }
+}
+
 export default function Dashboard() {
+    const {stats} = usePage<DashboardProps>().props;
+    console.log(stats);
     return (
         <AdminLayout>
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 px-6 md:gap-6 md:py-6">
-                        <AnalyticsGrid />
+                        <AnalyticsGrid {...stats}/>
                         <div className="grid gap-5 col-span-1 md:grid-cols-3 animate-fade-up-1">
                             <div className="md:col-span-2">
                                 <AttendanceOverTime />

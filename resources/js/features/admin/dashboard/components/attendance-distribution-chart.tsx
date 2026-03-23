@@ -44,7 +44,7 @@ export function AttendanceDistribution() {
     }, []);
 
     return (
-        <Card className="flex flex-col">
+        <Card className="flex flex-col h-full">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Scan Distribution</CardTitle>
                 <CardDescription>Admin vs User initiated scans</CardDescription>
@@ -104,7 +104,7 @@ export function AttendanceDistribution() {
                 </ChartContainer>
             </CardContent>
             <CardFooter>
-                <div className="flex w-full items-start gap-2 text-sm">
+                {/* <div className="flex w-full items-start gap-2 text-sm">
                     <div className="grid gap-2">
                         <div className="flex items-center gap-2 font-medium leading-none">
                             Trending up by 5.2% this week{" "}
@@ -114,7 +114,7 @@ export function AttendanceDistribution() {
                             Total scans recorded across all organizations
                         </div>
                     </div>
-                </div>
+                </div> */}
             </CardFooter>
         </Card>
     );

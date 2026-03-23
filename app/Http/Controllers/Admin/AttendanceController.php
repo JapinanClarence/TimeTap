@@ -90,45 +90,45 @@ class AttendanceController extends Controller
                ->values();
      }
 
-    private function calculateStats($attendances, int $currentMemberCount, $startDate, Event $event)
-{
-    $eventStarted = now()->gte(\Carbon\Carbon::parse($startDate));
+     private function calculateStats($attendances, int $currentMemberCount, $startDate, Event $event)
+     {
+          $eventStarted = now()->gte(\Carbon\Carbon::parse($startDate));
 
-    if (!$eventStarted) {
-        return [
-            "total"      => $currentMemberCount,
-            "present"    => null,
-            "absent"     => null,
-            "percentage" => null,
-        ];
-    }
+          if (!$eventStarted) {
+               return [
+                    "total"      => $currentMemberCount,
+                    "present"    => null,
+                    "absent"     => null,
+                    "percentage" => null,
+               ];
+          }
 
-    // Historical: everyone who checked in, including ex-members (persists forever)
-    $checkedInUserIds = $attendances
-        ->whereNotNull('checked_in_at')
-        ->pluck('user_id')
-        ->unique();
+          // Historical: everyone who checked in, including ex-members (persists forever)
+          $checkedInUserIds = $attendances
+               ->whereNotNull('checked_in_at')
+               ->pluck('user_id')
+               ->unique();
 
-    $presentCount = $checkedInUserIds->count();
+          $presentCount = $checkedInUserIds->count();
 
-    // Current active member IDs (source of truth for who is expected)
-    $currentMemberIds = $event->organization->members()->pluck('users.id');
+          // Current active member IDs (source of truth for who is expected)
+          $currentMemberIds = $event->organization->members()->pluck('users.id');
 
-    // Absent = current members who never checked in
-    $absentCount = $currentMemberIds->diff($checkedInUserIds)->count();
+          // Absent = current members who never checked in
+          $absentCount = $currentMemberIds->diff($checkedInUserIds)->count();
 
-    // Total = everyone who showed up (incl. ex-members) + current members who didn't
-    $effectiveTotal = $presentCount + $absentCount;
+          // Total = everyone who showed up (incl. ex-members) + current members who didn't
+          $effectiveTotal = $presentCount + $absentCount;
 
-    $percentage = $effectiveTotal > 0
-        ? round(($presentCount / $effectiveTotal) * 100, 1)
-        : 0;
+          $percentage = $effectiveTotal > 0
+               ? round(($presentCount / $effectiveTotal) * 100, 1)
+               : 0;
 
-    return [
-        "total"      => $effectiveTotal,
-        "present"    => $presentCount,
-        "absent"     => $absentCount,
-        "percentage" => $percentage,
-    ];
-}
+          return [
+               "total"      => $effectiveTotal,
+               "present"    => $presentCount,
+               "absent"     => $absentCount,
+               "percentage" => $percentage,
+          ];
+     }
 }
