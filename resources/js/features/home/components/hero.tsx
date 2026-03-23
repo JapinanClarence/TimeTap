@@ -57,7 +57,6 @@ export default function Hero() {
                             <IdCard />
                         </button>
                     </CometCard>
-                    {/* <IdCard/> */}
                 </div>
             </Container>
         </GradientBg>

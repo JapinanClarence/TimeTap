@@ -132,7 +132,7 @@ export default function HowItWorks() {
 
                                             {/* Text Content */}
                                             <div
-                                                className={` transition-all duration-300 ${isActive ? "opacity-100 translate-x-1" : "opacity-60"}`}
+                                                className={`transition-all duration-300 ${isActive ? "opacity-100 translate-x-1" : "opacity-60"}`}
                                             >
                                                 <p
                                                     className={`text-xl font-semibold  ${isActive ? "text-slate-900" : "text-slate-500"}`}

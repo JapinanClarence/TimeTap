@@ -82,7 +82,6 @@ export default function OrgForm() {
             setIsUploading(false);
         }
     };
-    console.log(data);
 
     const isStep1Valid = useMemo(() => {
         return (

@@ -69,7 +69,6 @@ function FeatureCard({
             </div>
 
             <div className="relative ">
-                {/* <div className="absolute left-0 w-1 h-6.25 bg-black/20 backdrop-blur-md rounded-md transition-all duration-200 ease-in-out group-hover:h-8" /> */}
                 <h2 className="mb-2 font-semibold leading-none ">{title}</h2>
             </div>
             <p className=" text-sm text-muted-foreground text-pretty  ">
