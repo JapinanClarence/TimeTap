@@ -55,6 +55,12 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 # Copy application source
 COPY . .
 
+# Copy Aiven CA cert — fail the build early if it's missing
+COPY docker/certs/ca.pem /var/www/html/docker/certs/ca.pem
+RUN test -f /var/www/html/docker/certs/ca.pem \
+    || (echo "ERROR: docker/certs/ca.pem not found. Download it from Aiven console." && exit 1) \
+    && chmod 644 /var/www/html/docker/certs/ca.pem
+
 # Copy built frontend assets from node stage
 COPY --from=node-builder /app/public/build ./public/build
 

@@ -10,6 +10,6 @@ storage/framework/sessions/*
 storage/framework/views/*
 public/build
 *.log
-docker/certs
+docker/certs/*.example   # keep sample files ignorable but allow ca.pem
 tests
 README.md
