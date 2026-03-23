@@ -1,19 +1,54 @@
 import AdminLayout from "@/layouts/dashboard/admin-layout";
-import React from "react";
-import { SectionCards } from "@/features/admin/dashboard/components/section-cards";
-import { ChartAreaInteractive } from "@/features/admin/dashboard/components/chat-area-interactive";
+import AnalyticsGrid from "@/features/admin/dashboard/components/analytics-grid";
+import { AttendanceOverTime } from "@/features/admin/dashboard/components/attendance-over-time-chart";
+import { AttendanceDistribution } from "@/features/admin/dashboard/components/attendance-distribution-chart";
+import { DataTable } from "@/features/admin/dashboard/components/data-table";
+import { columns, EventColumn } from "@/features/admin/dashboard/components/columns";
+
+
+const data: EventColumn[] = [
+    {
+        id: " 1",
+        title: "Cover page",
+        location: "Cover page",
+        status: "active",
+        start_date: "18",
+        end_date: "5",
+        start_time: "12:00:00",
+        end_time: "01:00:00",
+        attendees: 6,
+    },
+    {
+        id: "2",
+        title: "Table of contents",
+        location: "Table of contents",
+        status: "inactive",
+        start_date: "29",
+        end_date: "24",
+        start_time: "10:00:00",
+        end_time: "12:00:00",
+        attendees: 5
+    },
+];
 
 export default function Dashboard() {
     return (
         <AdminLayout>
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
-                    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                        <SectionCards />
-                        <div className="px-4 lg:px-6">
-                            <ChartAreaInteractive />
+                    <div className="flex flex-col gap-4 py-4 px-6 md:gap-6 md:py-6">
+                        <AnalyticsGrid />
+                        <div className="grid gap-5 col-span-1 md:grid-cols-3 animate-fade-up-1">
+                            <div className="md:col-span-2">
+                                <AttendanceOverTime />
+                            </div>
+                            <div className="">
+                                <AttendanceDistribution />
+                            </div>
                         </div>
-                        {/* <DataTable data={data} /> */}
+                        <div className="animate-fade-up-2 space-y-4">
+                            <DataTable columns={columns} data={data} />
+                        </div>
                     </div>
                 </div>
             </div>

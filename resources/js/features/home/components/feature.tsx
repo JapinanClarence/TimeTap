@@ -143,7 +143,7 @@ export default function Feature() {
                                             className="absolute md:inset-0 flex items-center justify-center p-3 md:p-6 lg:p-8"
                                         >
                                             <img
-                                                className="mx-auto max-h-full max-w-full object-contain border border-white/30 rounded-2xl md:rounded-3xl lg:rounded-4xl"
+                                                className="mx-auto max-h-full max-w-full object-contain border border-white/30 rounded-xl"
                                                 src={feature.image}
                                                 alt={`Preview of ${feature.title}`}
                                             />

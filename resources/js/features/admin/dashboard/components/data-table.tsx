@@ -20,27 +20,16 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { Plus } from "lucide-react";
-import { Link } from "@inertiajs/react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    onStatusChange: (id: number, status: string) => void;
-    processingId: number | null;
-    onGenerateQR: (data: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    onStatusChange,
-    processingId,
-    onGenerateQR,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -49,17 +38,12 @@ export function DataTable<TData, TValue>({
         React.useState<VisibilityState>({});
     const [globalFilter, setGlobalFilter] = React.useState("");
 
-    const filterColumns = ["status", "title", "location"];
+    const filterColumns = ["first_name", "last_name"];
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        meta: {
-            onStatusChange,
-            processingId,
-            onGenerateQR,
-        },
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
@@ -87,20 +71,10 @@ export function DataTable<TData, TValue>({
 
     return (
         <>
-            <div className="flex items-center justify-between gap-2 py-4">
-                <Input
-                    placeholder="Filter events..."
-                    value={globalFilter}
-                    onChange={(event) => setGlobalFilter(event.target.value)}
-                    className="max-w-sm"
-                />
-                <div className="flex items-center gap-2 ">
-                    <Link href={"/admin/events/add"}>
-                        <Button className="" size={"sm"}>
-                            <Plus />{" "}
-                            <span className="hidden md:flex">Add Event</span>
-                        </Button>
-                    </Link>
+            <div className="flex items-center justify-between gap-2">
+               <h2 className="font-semibold">Most Attended Events</h2>
+                <div className="ml-auto flex items-center gap-2 ">
+                   
                     <DataTableViewOptions table={table} />
                 </div>
             </div>
@@ -157,9 +131,6 @@ export function DataTable<TData, TValue>({
                         )}
                     </TableBody>
                 </Table>
-            </div>
-            <div className=" py-4">
-                <DataTablePagination table={table} />
             </div>
         </>
     );
