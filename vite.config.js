@@ -44,15 +44,15 @@ export default defineConfig(({ mode }) => {
         // -------------------------------------------------------
          build: {
             rollupOptions: {
-                output: {
-                    manualChunks(id) {
-                        if (id.includes("node_modules")) {
-                            if (id.includes("react")) return "react-vendor";
-                            if (id.includes("@inertiajs")) return "inertia-vendor";
-                            return "vendor";
-                        }
-                    },
-                },
+                // output: {
+                //     manualChunks(id) {
+                //         if (id.includes("node_modules")) {
+                //             if (id.includes("react")) return "react-vendor";
+                //             if (id.includes("@inertiajs")) return "inertia-vendor";
+                //             return "vendor";
+                //         }
+                //     },
+                // },
             },
         },
 
