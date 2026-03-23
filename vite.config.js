@@ -1,71 +1,32 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
-import react from "@vitejs/plugin-react";
-import path from "path";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), "");
-
-    return {
-        plugins: [
-            laravel({
-                input: ["resources/css/app.css", "resources/js/app.jsx"],
-                refresh: true,
-            }),
-            tailwindcss(),
-            react(),
-        ],
-
-        resolve: {
-            alias: {
-                "@": path.resolve(__dirname, "./resources/js"),
-            },
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ["resources/css/app.css", "resources/js/app.tsx"],
+            refresh: true,
+        }),
+        tailwindcss(),
+        react(),
+    ],
+    server: {
+        host: "0.0.0.0",
+        hmr: {
+            host: "localhost",
         },
-
-        // -------------------------------------------------------
-        // Dev server — works both locally and inside Docker
-        // -------------------------------------------------------
-        server: {
-            host: "0.0.0.0", // Bind to all interfaces (required inside Docker)
-            port: 5173,
-            strictPort: true,
-            hmr: {
-                // Use APP_URL for HMR so the browser connects back correctly.
-                // In docker-compose the Vite container is reachable on localhost:5173.
-                host: "localhost",
-                port: 5173,
-            },
-            cors: true,
+        watch: {
+            usePolling: true, // Necessary for Docker on Windows/WSL
         },
-
-        // -------------------------------------------------------
-        // Build output — Laravel expects assets in public/build
-        // -------------------------------------------------------
-        build: {
-            outDir: "public/build",
-            emptyOutDir: true,
-            manifest: true,
-            rollupOptions: {
-                output: {
-                    // Chunk vendors for better caching
-                    manualChunks(id) {
-                        if (id.includes("node_modules")) {
-                            if (id.includes("react")) return "react-vendor";
-                            if (id.includes("@inertiajs"))
-                                return "inertia-vendor";
-                            return "vendor";
-                        }
-                    },
-                },
-            },
+    },
+    resolve: {
+        alias: {
+            "@": "/resources/js",
         },
-
-        // -------------------------------------------------------
-        // Optimizations
-        // -------------------------------------------------------
-        optimizeDeps: {
-            include: ["react", "react-dom", "@inertiajs/react", "maplibre-gl"],
-        },
-    };
+    },
+    optimizeDeps: {
+        include: ["maplibre-gl"],
+    },
 });

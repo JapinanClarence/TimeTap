@@ -1,82 +1,65 @@
-version: "3.9"
-
 services:
-  # -------------------------------------------------------
-  # Laravel App (PHP-FPM + Nginx via supervisord)
-  # -------------------------------------------------------
+  # PHP Service
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: php-base
-    container_name: timetap_app
+    image: timetap-app
+    container_name: timetap-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - timetap-network
+
+  # Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: timetap-nginx
     restart: unless-stopped
     ports:
-      - "8080:80"
-    environment:
-      APP_NAME: "${APP_NAME:-timetap}"
-      APP_ENV: "${APP_ENV:-local}"
-      APP_KEY: "${APP_KEY}"
-      APP_DEBUG: "${APP_DEBUG:-true}"
-      APP_URL: "${APP_URL:-http://localhost:8080}"
-
-      # Aiven MySQL — set these in your .env
-      DB_CONNECTION: mysql
-      DB_HOST: "${DB_HOST}"
-      DB_PORT: "${DB_PORT:-3306}"
-      DB_DATABASE: "${DB_DATABASE}"
-      DB_USERNAME: "${DB_USERNAME}"
-      DB_PASSWORD: "${DB_PASSWORD}"
-      MYSQL_SSL_CA: "/var/www/html/docker/certs/ca.pem"  # Aiven CA cert path
-
-      CACHE_DRIVER: "${CACHE_DRIVER:-file}"
-      SESSION_DRIVER: "${SESSION_DRIVER:-file}"
-      QUEUE_CONNECTION: "${QUEUE_CONNECTION:-sync}"
-
-      VITE_APP_URL: "${APP_URL:-http://localhost:8080}"
+      - "80:80"
     volumes:
-      - .:/var/www/html
-      - ./docker/certs:/var/www/html/docker/certs:ro  # Mount Aiven CA cert
-      - storage_data:/var/www/html/storage
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
-      - timetap_net
-    # depends_on:
-    #   - redis
+      - timetap-network
 
-  # -------------------------------------------------------
-  # Vite Dev Server (only used in local dev)
-  # -------------------------------------------------------
-  vite:
+  node:
     image: node:20-alpine
-    container_name: timetap_vite
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-    ports:
-      - "5173:5173"
+    container_name: timetap-node
+    restart: unless-stopped
+    working_dir: /var/www
     volumes:
-      - .:/app
-      - node_modules:/app/node_modules
+      - ./:/var/www
     environment:
-      - VITE_APP_URL=${APP_URL:-http://localhost:8080}
+      - NODE_ENV=development
+    # This keeps the container running so it can watch for file changes
+    command: npm run dev
     networks:
-      - timetap_net
+      - timetap-network
 
-  # -------------------------------------------------------
-  # Redis (optional — for cache/sessions/queues)
-  # -------------------------------------------------------
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: timetap_redis
-  #   restart: unless-stopped
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - timetap_net
-
-volumes:
-  storage_data:
-  node_modules:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: timetap
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - timetap-network
 
 networks:
-  timetap_net:
+  timetap-network:
     driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
