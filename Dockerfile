@@ -10,15 +10,15 @@ RUN npm ci
 
 COPY . .
 
-# Stub .env so laravel-vite-plugin can read APP_URL
-ARG APP_URL=http://localhost
-RUN echo "APP_URL=${APP_URL}" > .env \
-    && echo "VITE_APP_URL=${APP_URL}" >> .env
+# Do NOT pass APP_URL into Vite — the plugin must produce relative asset
+# paths so Laravel renders the correct https:// URLs at runtime.
+# We only stub APP_URL to satisfy laravel-vite-plugin's env check.
+RUN echo "APP_URL=http://localhost" > .env
 
-# Run build — print full output so errors are visible in build log
+# Run build — full output visible in build log
 RUN npm run build || (echo "=== npm run build FAILED ===" && exit 1)
 
-# Show exactly what was produced regardless of success/failure
+# Show exactly what was produced
 RUN echo "=== public/build contents ===" \
     && find /app/public/build -type f 2>/dev/null || echo "(nothing found)"
 
