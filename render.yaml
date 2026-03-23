@@ -1,25 +1,72 @@
 services:
+  # -------------------------------------------------------
+  # Laravel Web Service
+  # -------------------------------------------------------
   - type: web
-    name: timetap-app
-    env: php
-    plan: free
-    buildCommand: |
-      composer install --no-interaction --optimize-autoloader
-      npm install && npm run build
-      php artisan optimize
-    startCommand: php artisan migrate --force && php artisan serve --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: timetap
-          property: connectionString
-      - key: APP_KEY
-        generateValue: true
-      - key: NODE_VERSION
-        value: 20.x
-
-  # 2. The Managed MySQL Database
-  - type: database
     name: timetap
-    engine: mysql
-    plan: free
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter          # Change to: standard, pro, etc.
+    region: singapore      # Closest to Davao, PH — change if needed
+    branch: main           # Your deploy branch
+
+    healthCheckPath: /up   # Laravel 11 built-in health route (or /api/health)
+
+    envVars:
+      - key: APP_NAME
+        value: timetap
+
+      - key: APP_ENV
+        value: production
+
+      - key: APP_DEBUG
+        value: "false"
+
+      - key: APP_KEY
+        generateValue: true   # Render auto-generates a secret
+
+      - key: APP_URL
+        value: https://timetap-v8s4.onrender.com  # Replace with your Render URL
+
+      # --- Aiven MySQL ---
+      # Set these as secret env vars in the Render dashboard
+      - key: DB_CONNECTION
+        value: mysql
+
+      - key: DB_HOST
+        sync: false   # Set in Render dashboard (Aiven hostname)
+
+      - key: DB_PORT
+        sync: false   # Aiven MySQL port (usually 3306 or custom)
+
+      - key: DB_DATABASE
+        sync: false
+
+      - key: DB_USERNAME
+        sync: false
+
+      - key: DB_PASSWORD
+        sync: false
+
+      - key: MYSQL_ATTR_SSL_CA
+        value: /var/www/html/docker/certs/ca.pem   # Aiven SSL cert
+
+      - key: DB_OPTIONS
+        value: '{"PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT": false}'
+
+      # --- Cache / Session ---
+      - key: CACHE_DRIVER
+        value: file
+
+      - key: SESSION_DRIVER
+        value: file
+
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      - key: LOG_CHANNEL
+        value: stderr        # Render streams stderr to its log dashboard
+
+      - key: LOG_LEVEL
+        value: error
