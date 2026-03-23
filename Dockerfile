@@ -9,7 +9,18 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+
+# Stub .env so laravel-vite-plugin can read APP_URL
+ARG APP_URL=http://localhost
+RUN echo "APP_URL=${APP_URL}" > .env \
+    && echo "VITE_APP_URL=${APP_URL}" >> .env
+
+# Run build — print full output so errors are visible in build log
+RUN npm run build || (echo "=== npm run build FAILED ===" && exit 1)
+
+# Show exactly what was produced regardless of success/failure
+RUN echo "=== public/build contents ===" \
+    && find /app/public/build -type f 2>/dev/null || echo "(nothing found)"
 
 # ============================================================
 # Stage 2: PHP — production Laravel image

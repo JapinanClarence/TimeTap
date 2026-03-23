@@ -42,18 +42,13 @@ export default defineConfig(({ mode }) => {
         // -------------------------------------------------------
         // Build output — Laravel expects assets in public/build
         // -------------------------------------------------------
-        build: {
-            outDir: "public/build",
-            emptyOutDir: true,
-            manifest: true,
+         build: {
             rollupOptions: {
                 output: {
-                    // Chunk vendors for better caching
                     manualChunks(id) {
                         if (id.includes("node_modules")) {
                             if (id.includes("react")) return "react-vendor";
-                            if (id.includes("@inertiajs"))
-                                return "inertia-vendor";
+                            if (id.includes("@inertiajs")) return "inertia-vendor";
                             return "vendor";
                         }
                     },

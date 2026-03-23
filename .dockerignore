@@ -8,7 +8,8 @@ storage/logs/*
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
-public/build
+# public/build is intentionally NOT ignored — the Dockerfile node-builder
+# stage generates it and copies it into the PHP stage via COPY --from
 *.log
 docker/certs/*.example   # keep sample files ignorable but allow ca.pem
 tests

@@ -13,6 +13,11 @@ services:
 
     healthCheckPath: /up   # Laravel 11 built-in health route (or /api/health)
 
+    # Pass APP_URL into the Vite build stage so manifest.json is generated
+    # with the correct base URL baked in.
+    dockerBuildArgs:
+      APP_URL: https://timetap-v8s4.onrender.com   # your actual Render URL
+
     envVars:
       - key: APP_NAME
         value: timetap
@@ -27,7 +32,7 @@ services:
         generateValue: true   # Render auto-generates a secret
 
       - key: APP_URL
-        value: https://timetap-v8s4.onrender.com  # Replace with your Render URL
+        value: https://timetap-v8s4.onrender.com
 
       # --- Aiven MySQL ---
       # Set these as secret env vars in the Render dashboard
