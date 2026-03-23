@@ -106,7 +106,7 @@ export function AttendanceOverTime() {
                             <TrendingUp className="h-4 w-4" />
                         </div>
                         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            Total scans recorded across all organizations
+                            Showing total scan distribution across all active events
                         </div>
                     </div>
                 </div>

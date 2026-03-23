@@ -17,12 +17,6 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-import { TrendingUp } from "lucide-react";
-
-const distributionData = [
-    { method: "user_scan", count: 1240, fill: "var(--color-user_scan)" },
-    { method: "admin_scan", count: 310, fill: "var(--color-admin_scan)" },
-];
 
 const distributionConfig = {
     count: {
@@ -38,7 +32,25 @@ const distributionConfig = {
     },
 } satisfies ChartConfig;
 
-export function AttendanceDistribution() {
+export function AttendanceDistribution({
+    data,
+}: {
+    data: {
+        method: string;
+        count: number;
+    }[];
+}) {
+    const distributionData = data.map((attendance_data) => {
+        const fill =
+            attendance_data.method === "user_scan"
+                ? "var(--color-user_scan)"
+                : "var(--color-admin_scan)";
+        return {
+            ...attendance_data,
+            fill,
+        };
+    });
+    console.log(distributionData);
     const totalScans = React.useMemo(() => {
         return distributionData.reduce((acc, curr) => acc + curr.count, 0);
     }, []);

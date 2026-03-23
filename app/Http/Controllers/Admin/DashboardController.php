@@ -24,8 +24,26 @@ class DashboardController extends Controller
                 "attendance_change" => $this->calculateAttendanceChange($events, $allAttendances, $organization),
                 "peak_time" => $this->calculatePeakAttendanceTime($allAttendances),
                 "breach_rate" => $this->calculateGeofenceBreachRate($allAttendances),
-            ]
+            ],
+            "attendance_distribution" =>  $this->calculateScanDistribution($allAttendances),
         ]);
+    }
+
+    private function calculateScanDistribution($allAttendances)
+    {
+        // Group by the 'method' column and count occurrences
+        $counts = $allAttendances->groupBy('method')->map->count();
+
+        return [
+            [
+                "method" => "user_scan",
+                "count"  => $counts->get('user_scan', 0),
+            ],
+            [
+                "method" => "admin_scan",
+                "count"  => $counts->get('admin_scan', 0),
+            ],
+        ];
     }
 
     /**

@@ -40,12 +40,16 @@ interface DashboardProps{
         peak_time: string;
         breach_rate: number;
         attendance_change: string;
-    }
+    }, 
+    attendance_distribution:{
+        method:string;
+        count: number;
+    }[]
 }
 
 export default function Dashboard() {
-    const {stats} = usePage<DashboardProps>().props;
-    console.log(stats);
+    const {stats, attendance_distribution} = usePage<DashboardProps>().props;
+ 
     return (
         <AdminLayout>
             <div className="flex flex-1 flex-col">
@@ -57,7 +61,7 @@ export default function Dashboard() {
                                 <AttendanceOverTime />
                             </div>
                             <div className="">
-                                <AttendanceDistribution />
+                                <AttendanceDistribution data={attendance_distribution}/>
                             </div>
                         </div>
                         <div className="animate-fade-up-2 space-y-4">
