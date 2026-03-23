@@ -50,7 +50,6 @@ export function AttendanceDistribution({
             fill,
         };
     });
-    console.log(distributionData);
     const totalScans = React.useMemo(() => {
         return distributionData.reduce((acc, curr) => acc + curr.count, 0);
     }, []);

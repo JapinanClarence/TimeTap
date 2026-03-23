@@ -18,14 +18,6 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-    { day: "Monday", count: 186 },
-    { day: "Tuesday", count: 305 },
-    { day: "Wednesday", count: 237 },
-    { day: "Thursday", count: 73 },
-    { day: "Friday", count: 209 },
-    { day: "Saturday", count: 214 },
-];
 
 const chartConfig = {
     count: {
@@ -34,7 +26,14 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function AttendanceOverTime() {
+export function AttendanceOverTime({
+    data,
+}: {
+    data: {
+        day: string;
+        count: number;
+    }[];
+}) {
     return (
         <Card>
             <CardHeader>
@@ -50,7 +49,7 @@ export function AttendanceOverTime() {
                 >
                     <AreaChart
                         accessibilityLayer
-                        data={chartData}
+                        data={data}
                         margin={{
                             left: 12,
                             right: 12,
@@ -106,7 +105,8 @@ export function AttendanceOverTime() {
                             <TrendingUp className="h-4 w-4" />
                         </div>
                         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            Showing total scan distribution across all active events
+                            Showing total scan distribution across all active
+                            events
                         </div>
                     </div>
                 </div>
