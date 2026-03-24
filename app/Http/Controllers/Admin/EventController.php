@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Models\Organization;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -60,18 +58,7 @@ class EventController extends Controller
                "coordinates.*.lat" => "numeric",
           ]);
 
-          // 1. Extract coordinates
-          $coords = $data['coordinates'];
-
-          // 2. Format as: "long lat, long lat, long lat"
-          $pointsString = collect($coords)
-               ->map(fn($c) => "{$c['long']} {$c['lat']}")
-               ->implode(', ');
-
-          // 3. Polygons MUST close. Append the first point to the end.
-          $firstPoint = "{$coords[0]['long']} {$coords[0]['lat']}";
-          $wkt = "POLYGON(({$pointsString}, {$firstPoint}))";
-
+          $wkt = $this->formatPolygonWkt($data['coordinates']);
           $org = auth()->user()->ownedOrganization()->first();
 
           // 4. Create the record
@@ -118,25 +105,11 @@ class EventController extends Controller
                "coordinates.*.lat" => "required|numeric",
           ]);
 
-          // 1. Extract coordinates
-          $coords = $data['coordinates'];
+          $wkt = $this->formatPolygonWkt($data['coordinates']);
 
-          // 2. Format as: "long lat, long lat, long lat"
-          $pointsString = collect($coords)
-               ->map(fn($c) => "{$c['long']} {$c['lat']}")
-               ->implode(', ');
-
-          // 3. Polygons MUST close. Append the first point to the end.
-          $firstPoint = "{$coords[0]['long']} {$coords[0]['lat']}";
-          $wkt = "POLYGON(({$pointsString}, {$firstPoint}))";
-
-          // 2. Update the model
-          // We separate the spatial column from the regular columns
           $event->fill(collect($data)->except('coordinates')->toArray());
-
           // Set the spatial column using a raw database expression
           $event->area = DB::raw("ST_GeomFromText('$wkt', 4326)"); // 4326 is standard GPS SRID
-
           $event->save();
 
           return redirect()->route("admin.events")
@@ -154,5 +127,21 @@ class EventController extends Controller
 
           // 3. Redirect back (Inertia will refresh the props automatically)
           return back()->with('message', 'Status updated successfully!');
+     }
+
+     /**
+      * Convert coordinate array into a WKT Polygon string for MySQL 8.0 (SRID 4326).
+      */
+     private function formatPolygonWkt(array $coordinates): string
+     {
+          // Map to "lat long" format for MySQL 8.0 compatibility
+          $points = collect($coordinates)
+               ->map(fn($c) => "{$c['lat']} {$c['long']}")
+               ->implode(', ');
+
+          // Polygons must be closed: the first point must match the last.
+          $firstPoint = "{$coordinates[0]['lat']} {$coordinates[0]['long']}";
+
+          return "POLYGON(({$points}, {$firstPoint}))";
      }
 }

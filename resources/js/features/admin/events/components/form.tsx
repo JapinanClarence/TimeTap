@@ -29,7 +29,7 @@ export default function Form({ method = "add", event_data }: EventFormProps) {
     // coords live under `area.coordinates`.  fall back to empty/blank values
     // for the add case (or missing properties).
     const initialData: EventType = useMemo(() => {
-        console.log(event_data)
+    
         if (method === "edit" && event_data) {
             return {
                 title: event_data.title || "",
