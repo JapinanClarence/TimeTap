@@ -12,6 +12,12 @@ services:
     branch: main           # Your deploy branch
 
     healthCheckPath: /up
+    
+    dockerBuildArgs:
+      APP_NAME: timetap
+      VITE_APP_NAME: timetap
+      VITE_CLOUDINARY_CLOUD_NAME: ""   # override in Render dashboard
+      VITE_CLOUDINARY_PRESET: "" 
 
     envVars:
       - key: APP_NAME

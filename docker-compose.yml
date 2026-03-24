@@ -9,6 +9,13 @@ services:
       context: .
       dockerfile: Dockerfile
       target: php-base
+      args:
+        # VITE_ vars are baked into the JS bundle during the node-builder
+        # stage. Add any new VITE_ variable here AND in the Dockerfile ARGs.
+        APP_NAME: "${APP_NAME:-timetap}"
+        VITE_APP_NAME: "${APP_NAME:-timetap}"
+        VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
+        VITE_CLOUDINARY_PRESET: "${VITE_CLOUDINARY_PRESET:-}"
     container_name: timetap_app
     restart: unless-stopped
     ports:
@@ -34,6 +41,8 @@ services:
       QUEUE_CONNECTION: "${QUEUE_CONNECTION:-sync}"
 
       VITE_APP_URL: "${APP_URL:-http://localhost:8080}"
+      VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
+      VITE_CLOUDINARY_PRESET: "${VITE_CLOUDINARY_PRESET:-}"
     volumes:
       - .:/var/www/html
       - ./docker/certs:/var/www/html/docker/certs:ro  # Mount Aiven CA cert
@@ -58,6 +67,9 @@ services:
       - node_modules:/app/node_modules
     environment:
       - VITE_APP_URL=${APP_URL:-http://localhost:8080}
+      - VITE_APP_NAME=${APP_NAME:-timetap}
+      - VITE_CLOUDINARY_CLOUD_NAME=${VITE_CLOUDINARY_CLOUD_NAME:-}
+      - VITE_CLOUDINARY_PRESET=${VITE_CLOUDINARY_PRESET:-}
     networks:
       - timetap_net
 
@@ -76,7 +88,7 @@ services:
 volumes:
   storage_data:
   node_modules:
-
+  vite_build:
 networks:
   timetap_net:
     driver: bridge
