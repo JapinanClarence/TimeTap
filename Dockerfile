@@ -10,10 +10,20 @@ RUN npm ci
 
 COPY . .
 
-# Do NOT pass APP_URL into Vite — the plugin must produce relative asset
-# paths so Laravel renders the correct https:// URLs at runtime.
-# We only stub APP_URL to satisfy laravel-vite-plugin's env check.
-RUN echo "APP_URL=http://localhost" > .env
+# VITE_ vars are statically inlined into the JS bundle by Vite at build time.
+# They MUST exist in .env before `npm run build` runs — container environment
+# variables are NOT read by Vite during build, only .env files are.
+ARG APP_NAME=timetap
+ARG VITE_APP_NAME=${APP_NAME}
+ARG VITE_CLOUDINARY_CLOUD_NAME=
+ARG VITE_CLOUDINARY_PRESET=
+
+RUN echo "APP_URL=http://localhost" > .env \
+    && echo "APP_NAME=${APP_NAME}" >> .env \
+    && echo "VITE_APP_NAME=${VITE_APP_NAME}" >> .env \
+    && echo "VITE_CLOUDINARY_CLOUD_NAME=${VITE_CLOUDINARY_CLOUD_NAME}" >> .env \
+    && echo "VITE_CLOUDINARY_PRESET=${VITE_CLOUDINARY_PRESET}" >> .env \
+    && echo "=== .env written for Vite build ===" && cat .env
 
 # Run build — full output visible in build log
 RUN npm run build || (echo "=== npm run build FAILED ===" && exit 1)
@@ -80,9 +90,11 @@ RUN composer dump-autoload --optimize --classmap-authoritative \
     && composer run-script post-autoload-dump || true
 
 # Set permissions
+# 775 on storage/cache so www-data group can always write,
+# even when docker compose watch syncs files owned by the host user.
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Copy config files
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf

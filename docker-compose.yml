@@ -10,8 +10,8 @@ services:
       dockerfile: Dockerfile
       target: php-base
       args:
-        # VITE_ vars are baked into the JS bundle during the node-builder
-        # stage. Add any new VITE_ variable here AND in the Dockerfile ARGs.
+        # Passed into the node-builder stage so Vite bakes them into the bundle.
+        # Add any new VITE_ var here AND as an ARG in the Dockerfile.
         APP_NAME: "${APP_NAME:-timetap}"
         VITE_APP_NAME: "${APP_NAME:-timetap}"
         VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
@@ -27,43 +27,63 @@ services:
       APP_DEBUG: "${APP_DEBUG:-true}"
       APP_URL: "${APP_URL:-http://localhost:8080}"
 
-      # Aiven MySQL — set these in your .env
       DB_CONNECTION: mysql
       DB_HOST: "${DB_HOST}"
       DB_PORT: "${DB_PORT:-3306}"
       DB_DATABASE: "${DB_DATABASE}"
       DB_USERNAME: "${DB_USERNAME}"
       DB_PASSWORD: "${DB_PASSWORD}"
-      MYSQL_SSL_CA: "/var/www/html/docker/certs/ca.pem"  # Aiven CA cert path
+      MYSQL_SSL_CA: "/var/www/html/docker/certs/ca.pem"
 
       CACHE_DRIVER: "${CACHE_DRIVER:-file}"
       SESSION_DRIVER: "${SESSION_DRIVER:-file}"
       QUEUE_CONNECTION: "${QUEUE_CONNECTION:-sync}"
 
-      VITE_APP_URL: "${APP_URL:-http://localhost:8080}"
+      VITE_APP_NAME: "${APP_NAME:-timetap}"
       VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
       VITE_CLOUDINARY_PRESET: "${VITE_CLOUDINARY_PRESET:-}"
     volumes:
       - .:/var/www/html
-      - ./docker/certs:/var/www/html/docker/certs:ro  # Mount Aiven CA cert
+      - ./docker/certs:/var/www/html/docker/certs:ro
       - storage_data:/var/www/html/storage
+      # Protects the Vite build output from being wiped by the host bind-mount.
+      # Without this, the host's empty public/build/ overwrites the built assets.
+      - vite_build:/var/www/html/public/build
     networks:
       - timetap_net
-    # depends_on:
-    #   - redis
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /var/www/html/app
+        - action: sync
+          path: ./routes
+          target: /var/www/html/routes
+        - action: sync
+          path: ./config
+          target: /var/www/html/config
+        - action: sync
+          path: ./resources/views
+          target: /var/www/html/resources/views
+        - action: sync
+          path: ./database
+          target: /var/www/html/database
+        - action: rebuild
+          path: composer.json
+        - action: rebuild
+          path: composer.lock
 
   # -------------------------------------------------------
-  # Vite Dev Server (only used in local dev)
+  # Vite Dev Server (HMR — local dev only)
   # -------------------------------------------------------
   vite:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.vite   # needs build context for `rebuild` watch action
     container_name: timetap_vite
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev"
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
       - node_modules:/app/node_modules
     environment:
       - VITE_APP_URL=${APP_URL:-http://localhost:8080}
@@ -72,23 +92,29 @@ services:
       - VITE_CLOUDINARY_PRESET=${VITE_CLOUDINARY_PRESET:-}
     networks:
       - timetap_net
-
-  # -------------------------------------------------------
-  # Redis (optional — for cache/sessions/queues)
-  # -------------------------------------------------------
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: timetap_redis
-  #   restart: unless-stopped
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - timetap_net
+    develop:
+      watch:
+        - action: sync
+          path: ./resources/js
+          target: /app/resources/js
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./resources/css
+          target: /app/resources/css
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: package-lock.json
 
 volumes:
   storage_data:
   node_modules:
+  # Holds public/build so the host bind-mount can't wipe the Vite output
   vite_build:
+
 networks:
   timetap_net:
     driver: bridge
