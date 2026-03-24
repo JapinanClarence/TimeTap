@@ -24,39 +24,6 @@ export default defineConfig(({ mode }) => {
         },
 
         // -------------------------------------------------------
-        // Dev server — works both locally and inside Docker
-        // -------------------------------------------------------
-        server: {
-            host: "0.0.0.0", // Bind to all interfaces (required inside Docker)
-            port: 5173,
-            strictPort: true,
-            hmr: {
-                // Use APP_URL for HMR so the browser connects back correctly.
-                // In docker-compose the Vite container is reachable on localhost:5173.
-                host: "localhost",
-                port: 5173,
-            },
-            cors: true,
-        },
-
-        // -------------------------------------------------------
-        // Build output — Laravel expects assets in public/build
-        // -------------------------------------------------------
-         build: {
-            rollupOptions: {
-                // output: {
-                //     manualChunks(id) {
-                //         if (id.includes("node_modules")) {
-                //             if (id.includes("react")) return "react-vendor";
-                //             if (id.includes("@inertiajs")) return "inertia-vendor";
-                //             return "vendor";
-                //         }
-                //     },
-                // },
-            },
-        },
-
-        // -------------------------------------------------------
         // Optimizations
         // -------------------------------------------------------
         optimizeDeps: {
