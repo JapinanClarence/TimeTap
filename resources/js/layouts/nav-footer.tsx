@@ -6,7 +6,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 export default function NavFooter() {
     return (
         <div className=" relative ">
-            <Container className="relative py-30 flex flex-col items-end">
+            <Container className="relative py-16 md:py-30 flex flex-col items-end">
                 <div>
                     <div className="flex text-start gap-3 leading-5">
                         <Tooltip >

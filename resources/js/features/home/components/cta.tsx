@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function CTA() {
     return (
-        <div id="cta" className="py-10  bg-white relative">
+        <div id="cta" className=" bg-white relative">
             <div
                 className={cn(
                     "absolute inset-0 ",
@@ -17,7 +17,7 @@ export default function CTA() {
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
             <Container
                 className={
-                    "relative py-30 flex flex-col  gap-10 items-center justify-center"
+                    "relative flex flex-col md:h-[70vh] py-16 gap-10 items-center justify-center"
                 }
             >
                 <div className="max-w-3xl">

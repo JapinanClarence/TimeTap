@@ -46,8 +46,8 @@ export default function HowItWorks() {
     }, [activeStep]);
 
     return (
-        <div id="hiw" className="sticky top-0 place-content-center h-screen  bg-white overflow-hidden">
-            <Container className="py-20 md:py-40 h-screen space-y-20">
+        <div id="hiw" className="sticky top-0 place-content-center bg-white overflow-hidden">
+            <Container className="py-16 md:py-40  place-content-center space-y-20">
                 <div className="flex flex-col items-center space-y-4 mb-12">
                     <Badge className=" w-fit bg-primary/5 border border-primary/20 font-semibold text-primary">
                         <Check/> Simple by design

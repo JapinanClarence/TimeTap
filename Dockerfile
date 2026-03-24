@@ -14,13 +14,15 @@ COPY . .
 # They MUST exist in .env before `npm run build` runs — container environment
 # variables are NOT read by Vite during build, only .env files are.
 ARG APP_NAME=timetap
-ARG VITE_APP_NAME=${APP_NAME}
 ARG VITE_CLOUDINARY_CLOUD_NAME=
 ARG VITE_CLOUDINARY_PRESET=
 
+# Write .env for Vite — all values are expanded in the RUN shell from ARGs.
+# VITE_APP_NAME is derived from APP_NAME directly in shell (not as a separate ARG)
+# to avoid Docker ARG-to-ARG interpolation which produces literal "${APP_NAME}".
 RUN echo "APP_URL=http://localhost" > .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
-    && echo "VITE_APP_NAME=${VITE_APP_NAME}" >> .env \
+    && echo "VITE_APP_NAME=${APP_NAME}" >> .env \
     && echo "VITE_CLOUDINARY_CLOUD_NAME=${VITE_CLOUDINARY_CLOUD_NAME}" >> .env \
     && echo "VITE_CLOUDINARY_PRESET=${VITE_CLOUDINARY_PRESET}" >> .env \
     && echo "=== .env written for Vite build ===" && cat .env

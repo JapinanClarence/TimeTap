@@ -95,7 +95,7 @@ export default function StickyFeaturesSection() {
                 className="relative bg-primary rounded-3xl -mt-8 z-10"
                 style={{ height: `${features.length * 90}vh` }}
             >
-                <div className="sticky top-[5vh] h-[90vh] flex flex-col gap-5 items-stretch container mx-auto py-20 px-8 lg:px-10 xl:px-30">
+                <div className="sticky top-[5vh] h-[90vh] flex flex-col gap-5 items-stretch container mx-auto py-16 px-8 lg:px-10 xl:px-30">
                     <div className="flex flex-col items-start gap-3 shrink-0">
                         <Badge className="w-fit bg-white border border-primary/20 font-semibold text-primary">
                             Features
@@ -106,7 +106,7 @@ export default function StickyFeaturesSection() {
                     </div>
                     <div className="w-full grid grid-cols-1 md:grid-cols-[0.60fr_1fr] gap-5 h-full">
                         {/* ── Left panel ── */}
-                        <div className="bg-white border rounded-2xl p-7 flex flex-col justify-between ">
+                        <div className=" bg-white border aspect-square md:aspect-auto rounded-2xl p-7 place-content-center flex flex-col justify-between ">
                             {/* Feature content */}
                             <div className="relative flex-1">
                                 {features.map((feature, i) => {
@@ -165,7 +165,7 @@ export default function StickyFeaturesSection() {
                         </div>
 
                         {/* ── Right panel ── */}
-                        <div className="relative  rounded-2xl overflow-hidden  hidden md:block">
+                        <div className="relative  rounded-2xl overflow-hidden hidden md:block">
                             {features.map((feature, i) => {
                                 const Icon = feature.icon;
                                 const isActive = activeIndex === i;
