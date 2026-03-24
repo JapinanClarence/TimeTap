@@ -55,9 +55,9 @@ class EventController extends Controller
                "end_time" => "required|date_format:H:i:s",
 
                // Validate the array AND its contents
-               "coordinates" => "required|array|min:3",
-               "coordinates.*.long" => "required|numeric",
-               "coordinates.*.lat" => "required|numeric",
+               "coordinates" => "array|min:3",
+               "coordinates.*.long" => "numeric",
+               "coordinates.*.lat" => "numeric",
           ]);
 
           // 1. Extract coordinates

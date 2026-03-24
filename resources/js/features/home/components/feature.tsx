@@ -1,10 +1,18 @@
-import React, { useRef } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
-import { ScanQrCode, MapPinned, TrendingUp } from "lucide-react";
-import Container from "@/components/ui/container";
-import { Badge } from "@/components/ui/badge";
+"use client";
 
-const features = [
+import { useEffect, useRef, useState } from "react";
+import { ScanQrCode, MapPinned, TrendingUp, LucideIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+interface Feature {
+    title: string;
+    description: string;
+    icon: LucideIcon;
+    image: string;
+}
+
+const features: Feature[] = [
     {
         title: "QR-Based Attendance",
         description:
@@ -28,133 +36,160 @@ const features = [
     },
 ];
 
-export default function Feature() {
-    const targetRef = useRef<HTMLDivElement>(null);
+export default function StickyFeaturesSection() {
+    const [activeIndex, setActiveIndex] = useState(0);
+    const sectionRef = useRef<HTMLDivElement>(null);
 
-    const { scrollYProgress } = useScroll({
-        target: targetRef,
-        offset: ["start start", "end end"],
-    });
+    useEffect(() => {
+        const SCROLL_PER_SLIDE = window.innerHeight * 0.9;
 
-    const { scrollYProgress: entranceProgress } = useScroll({
-        target: targetRef,
-        offset: ["start end", "start start"],
-    });
+        const handleScroll = () => {
+            const section = sectionRef.current;
+            if (!section) return;
 
-    const y = useTransform(entranceProgress, [0, 1], ["8%", "0%"]);
+            const scrolledIntoSection = -section.getBoundingClientRect().top;
+
+            if (scrolledIntoSection < 0) {
+                setActiveIndex(0);
+                return;
+            }
+
+            const index = Math.min(
+                Math.floor(scrolledIntoSection / SCROLL_PER_SLIDE),
+                features.length - 1,
+            );
+            setActiveIndex(Math.max(0, index));
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <div
-            ref={targetRef}
-            id="feature"
-            className="relative h-[300vh] rounded-[2rem] md:rounded-[5rem] bg-primary shadow-[0_-24px_60px_rgba(0,0,0,0.18)]"
-        >
-            <div className="sticky top-0 h-screen w-full overflow-hidden">
-                <motion.div
-                    style={{ y }}
-                    className="h-full w-full flex flex-col justify-center"
-                >
-                    <Container className="flex flex-col h-full justify-center gap-6 py-16 md:py-20">
+        <>
+            {/* ── Intro ── */}
+            {/* <div className="relative min-h-[90vh] bg-white flex justify-center items-center px-6 py-24">
+                <div className="max-w-lg text-center">
+                    <p className="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-5">
+                        Attendance, reimagined
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight text-neutral-900 mb-6">
+                        <span className="relative inline-block">
+                            One platform
+                            <span className="absolute bottom-0.5 left-0 right-0 h-[3px] rounded-full bg-primary" />
+                        </span>{" "}
+                        &amp; zero attendance headaches
+                    </h2>
+                    <p className="text-base text-neutral-500 leading-relaxed max-w-sm mx-auto">
+                        From QR check-ins to geofenced verification — we handle
+                        the complexity so you can focus on running great events.
+                    </p>
+                </div>
+            </div> */}
 
-                        {/* Section header */}
-                        <div className="flex flex-col items-start gap-3 shrink-0">
-                            <Badge className="w-fit bg-white border border-primary/20 font-semibold text-primary">
-                                Features
-                            </Badge>
-                            <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl max-w-2xl font-bold tracking-tight leading-tight">
-                                Everything you need to manage attendance
-                            </h1>
-                        </div>
-
-                        {/* Content row: text left, image right */}
-                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center min-h-0 flex-1">
-
-                            {/*
-                                Left: cycling text panel
-                                - Mobile/tablet: fixed height so absolutely-positioned children
-                                  have a bounding box to animate within
-                                - lg+: self-stretches to fill the flex row, w-1/3
-                            */}
-                            <div className="relative w-full h-40 sm:h-48 lg:w-1/3 lg:h-auto lg:self-stretch shrink-0">
+            {/* ── Sticky section ── */}
+            <section
+                ref={sectionRef}
+                id="feature"
+                className="relative bg-primary rounded-3xl -mt-8 z-10"
+                style={{ height: `${features.length * 90}vh` }}
+            >
+                <div className="sticky top-[5vh] h-[90vh] flex flex-col gap-5 items-stretch container mx-auto py-20 px-8 lg:px-10 xl:px-30">
+                    <div className="flex flex-col items-start gap-3 shrink-0">
+                        <Badge className="w-fit bg-white border border-primary/20 font-semibold text-primary">
+                            Features
+                        </Badge>
+                        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl max-w-2xl font-bold tracking-tight leading-tight">
+                            Everything you need to manage attendance
+                        </h1>
+                    </div>
+                    <div className="w-full grid grid-cols-1 md:grid-cols-[0.60fr_1fr] gap-5 h-full">
+                        {/* ── Left panel ── */}
+                        <div className="bg-white border rounded-2xl p-7 flex flex-col justify-between ">
+                            {/* Feature content */}
+                            <div className="relative flex-1">
                                 {features.map((feature, i) => {
-                                    const step = 1 / features.length;
-                                    const start = i * step;
-                                    const end = (i + 1) * step;
-
-                                    const opacity = useTransform(
-                                        scrollYProgress,
-                                        [start, start + step / 2, end],
-                                        [0, 1, 0],
-                                    );
-                                    const itemY = useTransform(
-                                        scrollYProgress,
-                                        [start, start + step / 2, end],
-                                        [20, 0, -20],
-                                    );
-
+                                    const Icon = feature.icon;
+                                    const isActive = activeIndex === i;
                                     return (
-                                        <motion.div
-                                            key={i}
-                                            style={{ opacity, y: itemY }}
-                                            className="absolute inset-0 flex flex-col justify-center pointer-events-none"
+                                        <div
+                                            key={feature.title}
+                                            className={`absolute inset-0 flex flex-col space-y-5  transition-all duration-500 ${
+                                                isActive
+                                                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                                                    : "opacity-0 translate-y-3 pointer-events-none"
+                                            }`}
                                         >
-                                            <div className="bg-white w-fit p-2.5 md:p-3 rounded-2xl mb-3 md:mb-4">
-                                                <feature.icon className="size-6 md:size-8 text-primary" />
+                                            <div className="flex items-center gap-3 mb-5">
+                                                <span className="w-9 h-9 rounded-xl bg-white border   flex items-center justify-center shrink-0">
+                                                    <Icon
+                                                        size={18}
+                                                        strokeWidth={1.8}
+                                                    />
+                                                </span>
+                                                <span className="text-xs font-semibold tracking-widest ">
+                                                    0{i + 1}
+                                                </span>
                                             </div>
-                                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
+
+                                          <Separator/>
+
+                                            <h3 className="text-2xl md:text-[1.75rem] font-bold  leading-tight tracking-tight mb-4">
                                                 {feature.title}
-                                            </h2>
-                                            <p className="text-sm sm:text-base lg:text-lg text-gray-100 leading-relaxed">
+                                            </h3>
+                                            <p className="text-sm text-muted-foreground leading-relaxed">
                                                 {feature.description}
                                             </p>
-                                        </motion.div>
+                                        </div>
                                     );
                                 })}
                             </div>
-
-                            {/*
-                                Right: cycling image panel
-                                - Shorter on mobile so it fits alongside the header
-                                - Grows taller on larger screens
-                            */}
-                            <div className="relative w-full flex-1 h-min md:h-[36vh] lg:h-[58vh] overflow-hidden">
-                                {features.map((feature, i) => {
-                                    const step = 1 / features.length;
-                                    const opacity = useTransform(
-                                        scrollYProgress,
-                                        [
-                                            i * step,
-                                            i * step + 0.1,
-                                            (i + 1) * step - 0.1,
-                                            (i + 1) * step,
-                                        ],
-                                        [0, 1, 1, 0],
-                                    );
-                                    const scale = useTransform(
-                                        scrollYProgress,
-                                        [i * step, (i + 1) * step],
-                                        [1.05, 1],
-                                    );
-
-                                    return (
-                                        <motion.div
+                            <Separator/>
+                            {/* Bottom row */}
+                            <div className="flex items-center justify-between pt-5">
+                                {/* Step dots */}
+                                <div className="flex items-center gap-1.5">
+                                    {features.map((_, i) => (
+                                        <div
                                             key={i}
-                                            style={{ opacity, scale }}
-                                            className="absolute md:inset-0 flex items-center justify-center p-3 md:p-6 lg:p-8"
-                                        >
-                                            <img
-                                                className="mx-auto max-h-full max-w-full object-contain border border-white/30 rounded-xl"
-                                                src={feature.image}
-                                                alt={`Preview of ${feature.title}`}
-                                            />
-                                        </motion.div>
-                                    );
-                                })}
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                                                activeIndex === i
+                                                    ? "w-5 bg-black"
+                                                    : "w-1.5 bg-neutral-200"
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </Container>
-                </motion.div>
-            </div>
-        </div>
+
+                        {/* ── Right panel ── */}
+                        <div className="relative  rounded-2xl overflow-hidden  hidden md:block">
+                            {features.map((feature, i) => {
+                                const Icon = feature.icon;
+                                const isActive = activeIndex === i;
+                                return (
+                                    <div
+                                        key={feature.title}
+                                        className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+                                            isActive
+                                                ? "opacity-100 translate-y-0 pointer-events-auto"
+                                                : "opacity-0 translate-y-4 pointer-events-none"
+                                        }`}
+                                    >
+                                        <img
+                                            className="h-full w-full border object-cover rounded-2xl "
+                                            src={feature.image}
+                                            alt={`Preview of ${feature.title}`}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </>
     );
 }

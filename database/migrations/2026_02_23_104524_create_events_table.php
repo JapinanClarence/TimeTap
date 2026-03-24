@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->time('end_time');
             $table->enum('status', ['active', 'inactive'])
                 ->default('active');
-            $table->geometry('area'); // This stores the Polygon
+            $table->geometry('area')->nullable(); // This stores the Polygon
             $table->spatialIndex('area'); // Critical for speed
             $table->timestamps();
             $table->foreignUlid('organization_id')->constrained()->cascadeOnDelete();

@@ -1,12 +1,12 @@
 "use client";
 
 import Hero from "@/features/home/components/hero";
-import Feature from "@/features/home/components/feature";
 import Layout from "@/layouts/Layout";
 import CTA from "@/features/home/components/cta";
 import HowItWorks from "@/features/home/components/how-it-works";
 import { useRef } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
+import StickyFeaturesSection from "@/features/home/components/feature";
 
 export default function Home() {
     /**
@@ -23,37 +23,16 @@ export default function Home() {
         offset: ["start start", "end end"],
     });
 
-    const hiwY       = useTransform(scrollYProgress, [0, 0.25], ["0%", "-8%"]);
-    const hiwScale   = useTransform(scrollYProgress, [0, 0.25], [1, 0.94]);
-    const hiwOpacity = useTransform(scrollYProgress, [0, 0.2],  [1, 0]);
+    const hiwY = useTransform(scrollYProgress, [0.15, 0.35], ["0%", "-8%"]);
+    const hiwScale = useTransform(scrollYProgress, [0.15, 0.35], [1, 0.94]);
+    const hiwOpacity = useTransform(scrollYProgress, [0.15, 0.3], [1, 0]);
 
     return (
         <Layout>
             <div id="home" className="relative bg-white">
                 <Hero />
-
-                {/*
-                    Shared container: gives HIW and Feature a common scroll
-                    timeline so they animate relative to each other.
-                */}
-                <div ref={containerRef} className="relative">
-
-                    {/* HIW — sticky, shrinks + fades as Feature arrives */}
-                    <div className="sticky top-0 z-10 h-screen overflow-hidden">
-                        <motion.div
-                            style={{ y: hiwY, scale: hiwScale, opacity: hiwOpacity }}
-                            className="h-full w-full"
-                        >
-                            <HowItWorks />
-                        </motion.div>
-                    </div>
-
-                    {/* Feature — slides up over HIW */}
-                    <div className="relative z-20">
-                        <Feature />
-                    </div>
-                </div>
-
+                <HowItWorks/>
+                <StickyFeaturesSection />
                 <CTA />
             </div>
         </Layout>

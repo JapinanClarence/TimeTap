@@ -95,8 +95,7 @@ export default function OrgForm() {
 
     const isStep2Valid = useMemo(() => {
         return (
-            data.organization_name.trim() !== "" &&
-            data.description.trim() !== ""
+            data.organization_name.trim() !== "" 
         );
     }, [data]);
 

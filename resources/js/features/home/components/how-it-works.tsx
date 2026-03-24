@@ -46,13 +46,13 @@ export default function HowItWorks() {
     }, [activeStep]);
 
     return (
-        <div id="hiw" className="sticky top-0 bg-white">
+        <div id="hiw" className="sticky top-0 place-content-center h-screen  bg-white overflow-hidden">
             <Container className="py-20 md:py-40 h-screen space-y-20">
                 <div className="flex flex-col items-center space-y-4 mb-12">
                     <Badge className=" w-fit bg-primary/5 border border-primary/20 font-semibold text-primary">
                         <Check/> Simple by design
                     </Badge>
-                    <h1 className=" text-4xl md:text-6xl font-bold tracking-tight">
+                    <h1 className="text-center md:text-start text-4xl md:text-6xl font-bold tracking-tight">
                         How <span className="text-primary">TimeTap</span> Works?
                     </h1>
                 </div>
@@ -60,7 +60,7 @@ export default function HowItWorks() {
                 <div className=" flex flex-col lg:flex-row gap-12 items-center">
                     {/* Left: Dynamic Image Section */}
                     <div
-                        className="flex-1 w-full aspect-video overflow-hidden"
+                        className="hidden md:flex flex-1 w-full aspect-video overflow-hidden"
                     >
                         <AnimatePresence mode="wait">
                             <motion.img

@@ -8,45 +8,42 @@ import { CometCard } from "@/components/ui/comet-card";
 
 export default function Hero() {
     const words = [
-        {
-            text: "Scan.",
-        },
-        {
-            text: "Tap.",
-        },
-        {
-            text: "Attend.",
-        },
+        { text: "Scan." },
+        { text: "Tap." },
+        { text: "Attend." },
     ];
+
     return (
         <GradientBg>
-            <Container className="flex flex-wrap pt-12 md:pt-0 h-screen  md:h-full items-center">
-                <div className="flex-1 mt-10 md:mt-0">
-                    <div className="max-w-lg space-y-4">
+            <Container className="flex flex-col lg:flex-row gap-5 py-16 lg:py-0 min-h-screen items-center justify-center overflow-hidden">
+
+                {/* ── Text ── */}
+                <div className="flex-1 flex justify-center md:justify-start mt-10 md:mt-0">
+                    <div className="max-w-lg space-y-4 text-center  md:text-start">
                         <Badge className="bg-primary/5 border border-primary/20 font-semibold text-primary">
                             <Check /> QR-powered attendance tracking
                         </Badge>
-                        <h1 className="inline-block bg-linear-to-r from-timetap-primary via-timetap-accent to-timetap-secondary bg-clip-text text-5xl md:text-6xl lg:text-[5em]  md:leading-20 font-extrabold text-transparent">
+                        <h1 className="inline-block bg-linear-to-r from-timetap-primary via-timetap-accent to-timetap-secondary bg-clip-text text-4xl sm:text-5xl md:text-6xl lg:text-[5em] leading-tight md:leading-tight lg:leading-20 font-extrabold text-transparent">
                             Welcome to TimeTap
                         </h1>
-                        {/* <p className="text-2xl md:text-3xl font-bold">Scan. Tap. Attend.</p> */}
                         <TypewriterEffect
-                            cursorClassName={"w-[3px] lg:h-6"}
-                            className={"text-start lg:text-2xl"}
+                            cursorClassName="w-[3px] lg:h-6"
+                            className="text-center md:text-start lg:text-2xl"
                             words={words}
                         />
-                        <p className="text-gray-700 ">
+                        <p className="text-gray-700 text-sm sm:text-base">
                             Create events, scan QR codes, and track attendance
-                            in real time all in one scalable platform.
+                            in real time — all in one scalable platform.
                         </p>
                     </div>
                 </div>
 
-                <div className="flex-1 flex items-center  justify-center md:flex-none md:shrink">
+                {/* ── Card ── */}
+                <div className="shrink-0 items-center justify-center py-4 lg:py-12">
                     <CometCard rotateDepth={12} translateDepth={1}>
                         <button
                             type="button"
-                            className=" my-10 flex w-70 md:w-80 cursor-pointer flex-col items-stretch rounded-xl border-0 bg-[#1F2121]saturate-0 md:my-20"
+                            className="flex w-full md:w-72 lg:w-80 cursor-pointer flex-col items-stretch rounded-xl border-0 bg-white"
                             aria-label="Id card"
                             style={{
                                 transformStyle: "preserve-3d",
@@ -58,6 +55,7 @@ export default function Hero() {
                         </button>
                     </CometCard>
                 </div>
+
             </Container>
         </GradientBg>
     );

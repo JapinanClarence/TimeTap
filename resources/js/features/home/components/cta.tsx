@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function CTA() {
     return (
-        <div id="cta" className="py-20  bg-white relative">
+        <div id="cta" className="py-10  bg-white relative">
             <div
                 className={cn(
                     "absolute inset-0 ",
