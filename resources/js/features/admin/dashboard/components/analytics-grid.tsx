@@ -18,7 +18,7 @@ export default function AnalyticsGrid({
         {
             title: "Total Active Events",
             value: active_events,
-            description: "Currently open for check-in",
+            description: "Total events created",
             icon: Activity,
             color: "text-blue-600",
         },

@@ -17,6 +17,7 @@ class DashboardController extends Controller
         $organization = $user->ownedOrganization()->firstOrFail();
 
         $events = $organization->events;
+
         $allAttendances = Attendance::whereIn('event_id', $events->pluck('id'))->get();
 
         return Inertia::render("admin/index", [
@@ -55,10 +56,7 @@ class DashboardController extends Controller
      */
     private function calculateActiveEvents($events)
     {
-        $now = now();
-        return $events->filter(function ($event) use ($now) {
-            return $now->between($event->start_time, $event->end_time);
-        })->count();
+        return $events->where("status", "active")->count();
     }
 
     /**
@@ -168,6 +166,7 @@ class DashboardController extends Controller
     private function getTopAttendedEvents($organizationId)
     {
         return Event::where("organization_id", $organizationId)
+            ->where("status", "active")
             ->withCount(['attendances as attendees' => function ($query) {
                 // Only count unique users who have a valid check-in timestamp
                 $query->whereNotNull('checked_in_at')
@@ -177,15 +176,11 @@ class DashboardController extends Controller
             ->take(10)
             ->get(['id', 'title', 'location', 'start_date', 'end_date', 'start_time', 'end_time'])
             ->map(function ($event) {
-                // Add a dynamic status based on the current time
-                $now = now();
-                $isActive = $now->between($event->start_time, $event->end_time);
-
                 return [
                     "id"         => $event->id,
                     "title"      => $event->title,
                     "location"   => $event->location,
-                    "status"     => $isActive ? "active" : "inactive",
+                    "status"     => $event->status,
                     "start_date" => $event->start_date,
                     "end_date"   => $event->end_date,
                     "start_time" => $event->start_time,
