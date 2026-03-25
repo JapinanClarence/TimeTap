@@ -32,7 +32,7 @@ interface DashboardProps {
 export default function Dashboard() {
     const { stats, attendance_distribution, attendance_chart, top_events } =
         usePage<DashboardProps>().props;
- 
+    console.log(stats);
     return (
         <AdminLayout>
             <div className="flex flex-1 flex-col">
