@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import { Spinner } from "@/components/ui/spinner";
 import { ArrowUpRight, Building, Eye, EyeClosed } from "lucide-react";
@@ -34,6 +34,12 @@ export default function LoginForm() {
         }
         return setShowPassword(true);
     };
+
+    // const handleGoogleLogin = () =>{
+    //    router.visit("/auth/google", {
+    //     method:"get"
+    //    })
+    // }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -112,7 +118,7 @@ export default function LoginForm() {
                     </Button>
                     <FieldSeparator>Or</FieldSeparator>
                     <Button variant="outline" type="button">
-                        Login with Google
+                        <a href="/auth/google">Login with Google</a>
                     </Button>
                     <div className="w-full inline-flex  border rounded-md  p-2 text-sm font-medium mb-2">
                         <Building

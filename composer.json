@@ -13,6 +13,7 @@
         "cloudinary-labs/cloudinary-laravel": "*",
         "inertiajs/inertia-laravel": "*",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "*",
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
