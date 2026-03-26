@@ -7,17 +7,16 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: starter          # Change to: standard, pro, etc.
-    region: singapore      # Closest to Davao, PH — change if needed
-    branch: main           # Your deploy branch
+    plan: starter
+    region: singapore
+    branch: main
 
     healthCheckPath: /up
-    
+
     dockerBuildArgs:
       APP_NAME: timetap
-      VITE_APP_NAME: timetap
-      VITE_CLOUDINARY_CLOUD_NAME: ""   # override in Render dashboard
-      VITE_CLOUDINARY_PRESET: "" 
+      VITE_CLOUDINARY_CLOUD_NAME: ""  
+      VITE_CLOUDINARY_PRESET: ""      
 
     envVars:
       - key: APP_NAME
@@ -30,25 +29,33 @@ services:
         value: "false"
 
       - key: APP_KEY
-        generateValue: true   # Render auto-generates a secret
+        generateValue: true
 
       - key: APP_URL
-        value: https://timetap-v8s4.onrender.com
+        value: https://timetap.japinanc.space
 
-      # Forces Laravel's asset() and Vite helpers to always use https://
       - key: ASSET_URL
-        value: https://timetap-v8s4.onrender.com
+        value: https://timetap.japinanc.space
+
+      # --- Google OAuth ---
+      - key: GOOGLE_CLIENT_ID
+        sync: false  
+
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false  
+
+      - key: GOOGLE_REDIRECT_URI
+        value: https://timetap.japinanc.space/auth/google/callback
 
       # --- Aiven MySQL ---
-      # Set these as secret env vars in the Render dashboard
       - key: DB_CONNECTION
         value: mysql
 
       - key: DB_HOST
-        sync: false   # Set in Render dashboard (Aiven hostname)
+        sync: false
 
       - key: DB_PORT
-        sync: false   # Aiven MySQL port (usually 3306 or custom)
+        sync: false
 
       - key: DB_DATABASE
         sync: false
@@ -60,7 +67,7 @@ services:
         sync: false
 
       - key: MYSQL_ATTR_SSL_CA
-        value: /var/www/html/docker/certs/ca.pem   # Aiven SSL cert
+        value: /var/www/html/docker/certs/ca.pem
 
       - key: DB_OPTIONS
         value: '{"PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT": false}'
@@ -76,7 +83,7 @@ services:
         value: sync
 
       - key: LOG_CHANNEL
-        value: stderr        # Render streams stderr to its log dashboard
+        value: stderr
 
       - key: LOG_LEVEL
         value: error

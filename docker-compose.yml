@@ -13,7 +13,6 @@ services:
         # Passed into the node-builder stage so Vite bakes them into the bundle.
         # Add any new VITE_ var here AND as an ARG in the Dockerfile.
         APP_NAME: "${APP_NAME:-timetap}"
-        VITE_APP_NAME: "${APP_NAME:-timetap}"
         VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
         VITE_CLOUDINARY_PRESET: "${VITE_CLOUDINARY_PRESET:-}"
     container_name: timetap_app
@@ -39,15 +38,21 @@ services:
       SESSION_DRIVER: "${SESSION_DRIVER:-file}"
       QUEUE_CONNECTION: "${QUEUE_CONNECTION:-sync}"
 
+      # --- Vite (runtime reference only — actual values baked in at build time) ---
       VITE_APP_NAME: "${APP_NAME:-timetap}"
       VITE_CLOUDINARY_CLOUD_NAME: "${VITE_CLOUDINARY_CLOUD_NAME:-}"
       VITE_CLOUDINARY_PRESET: "${VITE_CLOUDINARY_PRESET:-}"
+
+      # --- Google OAuth ---
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      # Derived from APP_URL at runtime — matches your .env pattern
+      GOOGLE_REDIRECT_URI: "${APP_URL:-http://localhost:8080}/auth/google/callback"
     volumes:
       - .:/var/www/html
       - ./docker/certs:/var/www/html/docker/certs:ro
       - storage_data:/var/www/html/storage
       # Protects the Vite build output from being wiped by the host bind-mount.
-      # Without this, the host's empty public/build/ overwrites the built assets.
       - vite_build:/var/www/html/public/build
     networks:
       - timetap_net
@@ -79,7 +84,7 @@ services:
   vite:
     build:
       context: .
-      dockerfile: Dockerfile.vite   # needs build context for `rebuild` watch action
+      dockerfile: Dockerfile.vite
     container_name: timetap_vite
     ports:
       - "5173:5173"
@@ -112,7 +117,6 @@ services:
 volumes:
   storage_data:
   node_modules:
-  # Holds public/build so the host bind-mount can't wipe the Vite output
   vite_build:
 
 networks:
