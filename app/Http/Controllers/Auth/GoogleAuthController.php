@@ -19,29 +19,37 @@ class GoogleAuthController extends Controller
         $googleUser = Socialite::driver('google')->user();
 
         // Get the full name from Google
-        $fullName = $googleUser->getName(); // e.g., "Clarence S. Japinan"
+        $fullName = $googleUser->getName();
 
         // Split by spaces
         $nameParts = explode(' ', $fullName);
 
         if (count($nameParts) > 1) {
-            $lastName = array_pop($nameParts); // Takes "Japinan"
-            $firstName = implode(' ', $nameParts); // Takes "Clarence S."
+            $lastName = array_pop($nameParts); 
+            $firstName = implode(' ', $nameParts); 
         } else {
             $firstName = $fullName;
-            $lastName = ''; // Fallback if they only have one name
+            $lastName = '.';
         }
+        $user = User::where('email', $googleUser->getEmail())->first();
 
-        $user = User::updateOrCreate([
-            'google_id' => $googleUser->getId(),
-        ], [
-            'first_name' => $firstName,
-            'last_name'  => $lastName,
-            'email'      => $googleUser->getEmail(),
-            'password'   => null, // Ensure password is not required for Google users
-            'profile' => $googleUser->getAvatar(),
-        ]);
-
+        if ($user) {
+            $user->update([
+                'google_id' => $googleUser->getId(),
+                'profile'   => $googleUser->getAvatar(),
+                'first_name' => $user->first_name ?? $firstName,
+                'last_name'  => ($user->last_name === '.' || is_null($user->last_name)) ? $lastName : $user->last_name,
+            ]);
+        } else {
+            $user = User::create([
+                'google_id'  => $googleUser->getId(),
+                'first_name' => $firstName,
+                'last_name'  => $lastName,
+                'email'      => $googleUser->getEmail(),
+                'profile'    => $googleUser->getAvatar(),
+                'password'   => null,
+            ]);
+        }
         Auth::login($user);
 
         return redirect()->intended('/dashboard');
