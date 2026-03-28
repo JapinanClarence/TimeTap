@@ -13,6 +13,7 @@ import { Link, router } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import { Spinner } from "@/components/ui/spinner";
 import { ArrowUpRight, Building, Eye, EyeClosed } from "lucide-react";
+import { IconBrandGoogleFilled } from "@tabler/icons-react";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState<Boolean>(false);
@@ -117,8 +118,8 @@ export default function LoginForm() {
                         Login
                     </Button>
                     <FieldSeparator>Or</FieldSeparator>
-                    <Button variant="outline" type="button">
-                        <a href="/auth/google">Login with Google</a>
+                    <Button variant="outline" type="button" asChild>
+                        <a href="/auth/google"><IconBrandGoogleFilled/> Login with Google</a>
                     </Button>
                     <div className="w-full inline-flex  border rounded-md  p-2 text-sm font-medium mb-2">
                         <Building
