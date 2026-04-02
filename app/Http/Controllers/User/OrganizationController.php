@@ -62,6 +62,7 @@ class OrganizationController extends Controller
                 'users.id',
                 'users.first_name',
                 'users.last_name',
+                'users.profile',
                 'user_organizations.created_at as joined_at'
             ])
             ->latest('user_organizations.created_at');

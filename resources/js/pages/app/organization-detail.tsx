@@ -36,7 +36,7 @@ export default function OrganizationDetail() {
     const { organization, joined_at, stats, events, members } =
         usePage<OrganizationDetailProps>().props;
     const [showSheet, setShowSheet] = useState(false);
- 
+    console.log(members);
     // 2. Helper function to group any array by Month
     const getGroupedData = (dataArray: typeof events) => {
         return dataArray.reduce(

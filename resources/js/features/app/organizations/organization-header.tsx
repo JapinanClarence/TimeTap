@@ -39,7 +39,7 @@ export default function OrganziationHeader({
 
             <div className="flex items-start  gap-5 grow">
                 <Avatar className="flex-none size-15 md:h-full md:w-30 aspect-square rounded-xl border border-white/20 shadow-sm">
-                    <AvatarImage src={image} />
+                    <AvatarImage src={image} alt={name} />
                     <AvatarFallback className="rounded-xl bg-white/90 border border-white text-primary text-xl font-bold h-full w-full">
                         {name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
