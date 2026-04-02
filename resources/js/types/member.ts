@@ -5,6 +5,7 @@ export type MemberType = {
     id?: string;
     gender?: string;
     created_at?:string;
+    profile?:string;
 };
 export type InvitationCodeType = {
     code: string;

@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/avatar";
 import { MemberType } from "@/types/member";
 import { Deferred } from "@inertiajs/react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface OrganizationHeaderProps extends OrganizationType {
     joined_at: string;
@@ -40,6 +39,7 @@ export default function OrganziationHeader({
 
             <div className="flex items-start  gap-5 grow">
                 <Avatar className="flex-none size-15 md:h-full md:w-30 aspect-square rounded-xl border border-white/20 shadow-sm">
+                    <AvatarImage src={image} />
                     <AvatarFallback className="rounded-xl bg-white/90 border border-white text-primary text-xl font-bold h-full w-full">
                         {name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
@@ -75,8 +75,8 @@ export default function OrganziationHeader({
                                 onClick={onShowMembers}
                             >
                                 {displayMembers.map((member) => (
-                                    <Avatar  key={member.id}>
-                                        <AvatarImage src={""} />
+                                    <Avatar key={member.id}>
+                                        <AvatarImage src={member.profile} />
                                         <AvatarFallback>
                                             {member.first_name[0]}
                                             {member.last_name[0]}
